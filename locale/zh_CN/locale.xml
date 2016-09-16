@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
+
+<!--
+  * plugins/importexport/quickSubmit/locale/zh_CN/locale.xml
+  *
+  * Copyright (c) 2013-2016 Simon Fraser University Library
+  * Copyright (c) 2000-2016 John Willinsky
+  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  *
+  * Localization strings for the zh_CN (简体中文) locale.
+  *
+  -->
+ 
+<locale name="zh_CN" full_name="简体中文">
+	<message key="plugins.importexport.quickSubmit.addToExisting">添加到现有期刊：</message>
+	<message key="plugins.importexport.quickSubmit.chooseDestination">提交地址</message>
+	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">选择是将新稿件添加到已存在期刊还是编辑队列。</message>
+	<message key="plugins.importexport.quickSubmit.displayName">快速投稿插件</message>
+	<message key="plugins.importexport.quickSubmit.description">一步提交插件</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">该插件允许你快速的添加完整的稿件到编辑队列或者定向到期刊。</message>
+	<message key="plugins.importexport.quickSubmit.issueRequired">你必须为添加的文章选择一本期刊。</message>
+	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Leave unpublished</message>
+	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">保存并继续</message>
+	<message key="plugins.importexport.quickSubmit.submissionData">投递日期</message>	
+	<message key="plugins.importexport.quickSubmit.submissionDescription">选择一个最终稿件作为这次提交的文件。</message>	
+	<message key="plugins.importexport.quickSubmit.submissionRequired">你必须为这次提交上传一个文件。</message>	
+	<message key="plugins.importexport.quickSubmit.success">文章已添加</message>
+	<message key="plugins.importexport.quickSubmit.successDescription">创建文章成功</message>
+	<message key="plugins.importexport.quickSubmit.successReturn">返回快速投稿插件</message>
+</locale>

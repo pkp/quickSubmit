@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
+
+<!--
+  * plugins/importexport/quickSubmit/locale/ru_RU/locale.xml
+  *
+  * Copyright (c) 2013-2016 Simon Fraser University Library
+  * Copyright (c) 2003-2016 John Willinsky
+  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  *
+  * Localization strings for the ru_RU (Русский) locale.
+  * With updates from Pavel Pisklakov (revising translation). 
+  -->
+ 
+<locale name="ru_RU" full_name="Русский">
+	<message key="plugins.importexport.quickSubmit.addToExisting">Добавить к существующему выпуску:</message>
+	<message key="plugins.importexport.quickSubmit.chooseDestination">Куда отправить</message>
+	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Выберите, хотите ли вы добавить новые материалы к существующему выпуску или оставить их в очереди на редактирование.</message>
+	<message key="plugins.importexport.quickSubmit.displayName">Плагин «Быстрая отправка»</message>
+	<message key="plugins.importexport.quickSubmit.description">Плагин отправки в один шаг</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">Этот плагин позволяет вам быстро добавлять готовые материалы в очередь на редактирование или напрямую в выпуск.</message>
+	<message key="plugins.importexport.quickSubmit.issueRequired">Вы должны выбрать выпуск, к которому вы хотите добавить статью.</message>
+	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Оставить неопубликованным</message>
+	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Сохранить и создать другой</message>
+	<message key="plugins.importexport.quickSubmit.submissionData">Данные для отправки</message>	
+	<message key="plugins.importexport.quickSubmit.submissionDescription">Выберите файл, который будет использоваться в качестве файла окончательных гранок для данного материала.</message>	
+	<message key="plugins.importexport.quickSubmit.submissionRequired">Вы должны загрузить файл для этого материала.</message>	
+	<message key="plugins.importexport.quickSubmit.success">Статья добавлена</message>
+	<message key="plugins.importexport.quickSubmit.successDescription">Статья была успешно создана.</message>
+	<message key="plugins.importexport.quickSubmit.successReturn">Вернуться к плагину «Быстрая отправка».</message>
+</locale>
