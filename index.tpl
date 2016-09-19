@@ -57,6 +57,9 @@ $(function(){
 
 	{csrf}
 	{include file="common/formErrors.tpl"}
+	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
+
+	{include file="submission/form/section.tpl" readOnly=$formParams.readOnly}
 
 	{include file="core:submission/submissionMetadataFormTitleFields.tpl"}
 	{include file="submission/submissionMetadataFormFields.tpl"}
@@ -69,7 +72,7 @@ $(function(){
 
 		{$additionalContributorsFields}
 	{/fbvFormArea}
-
+	 
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="submitStep2FormNotification"}
 
 	{url|assign:submissionFilesGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.files.submission.SubmissionWizardFilesGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}
