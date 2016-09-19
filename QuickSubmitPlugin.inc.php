@@ -47,7 +47,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		return __('plugins.importexport.quickSubmit.description');
 	}
 
-	function display(&$args, $request) {
+	function display($args, $request) {
 		$templateMgr =& TemplateManager::getManager();
         $templateMgr->register_function('plugin_url', array(&$this, 'smartyPluginUrl'));
 
@@ -82,12 +82,16 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 * @param $args array
 	 */
 	function saveSubmit($args, $request) {
+        $templateMgr =& TemplateManager::getManager($request);
+
         $this->import('QuickSubmitForm');
         $form = new QuickSubmitForm($this, $request);
         $form->readInputData();
 
         if($form->validate()){
             $form->execute();
+            $templateMgr->display('submitSuccess.tpl');
+            //$request->redirect(null, 'management', 'importexport', array('plugin', $this->getName()));
         }
         else {
             $form->display();
