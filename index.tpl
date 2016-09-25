@@ -15,32 +15,12 @@
 
 {literal}
 <script type="text/javascript">
-<!--
-// Move author up/down
-function moveAuthor(dir, authorIndex) {
-	var form = document.getElementById('submit');
-	form.moveAuthor.value = 1;
-	form.moveAuthorDir.value = dir;
-	form.moveAuthorIndex.value = authorIndex;
-	form.submit();
-}
-
-// Update the required attribute of the abstract field
-function updateAbstractRequired() {
-	var a = {{/literal}{foreach from=$sectionAbstractsRequired key=rSectionId item=rAbstractRequired}{$rSectionId|escape}: {$rAbstractRequired|escape}, {/foreach}{literal}};
-	var selectedIndex = document.getElementById('submit').sectionId.selectedIndex;
-	var sectionId = document.getElementById('submit').sectionId.options[selectedIndex].value;
-	var abstractRequired = a[sectionId];
-	var e = document.getElementById("abstractRequiredAsterisk");
-	e.style.visibility = abstractRequired?"visible":"hidden";
-}
-// -->
 
 $(function(){
 		// Attach the JS form handler.
 	
 		$('#quickSubmitForm').pkpHandler(
-			'$.pkp.controllers.form.AjaxFormHandler'
+			'$.pkp.controllers.form.FormHandler'
 		);
 	}
 );
@@ -78,9 +58,15 @@ $(function(){
 	{url|assign:submissionFilesGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.files.submission.SubmissionWizardFilesGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}
 	{load_url_in_div id="submissionFilesGridDiv" url=$submissionFilesGridUrl}
 
-	{capture assign="cancelUrl"}{plugin_url path="cancelSubmit"}{/capture}
+	{capture assign="cancelUrl"}{plugin_url path="cancelSubmit" submissionId="$submissionId"}{/capture}
 
 	{fbvFormButtons id="quickSubmit" submitText="common.save" cancelUrl=$cancelUrl cancelUrlTarget="_self"}
+
+
+	{*
+	{fbvElement type="submit" label="common.save" id="quickSubmitSave" name="quickSubmitSave" value="1" class="export" inline=true}
+	{fbvElement type="submit" label="common.cancel" id="quickSubmitCancel" name="quickSubmitCancel" value="1" class="markRegistered" inline=true}
+	*}
 </form>
 
 {include file="common/footer.tpl"}

@@ -9,10 +9,10 @@
  *
  *}
 {strip}
-{assign var="pageTitle" value="plugins.importexport.quickSubmit.success"}
+{assign var="pageTitle" value="plugins.importexport.quickSubmit.cancel"}
 {include file="common/header.tpl"}
 {/strip}
 
-<p>{translate key="plugins.importexport.quickSubmit.successDescription"}  <a href="{plugin_url}">{translate key="plugins.importexport.quickSubmit.successReturn"}</a></p>
+<p>{translate key="plugins.importexport.quickSubmit.cancelDescription"}  <a href="{plugin_url}">{translate key="plugins.importexport.quickSubmit.successReturn"}</a></p>
 
 {include file="common/footer.tpl"}

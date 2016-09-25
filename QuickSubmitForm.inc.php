@@ -28,13 +28,14 @@ class QuickSubmitForm extends Form {
 	function QuickSubmitForm($plugin, $request) {
 		parent::Form($plugin->getTemplatePath() . 'index.tpl');
 
-		$this->request =& $request;
+		$this->request = $request;
 		$journal =& $request->getJournal();
 
 		$this->addCheck(new FormValidatorPost($this));
         $this->addCheck(new FormValidator($this, 'title', 'required', 'admin.settings.form.titleRequired'));
         $this->addCheck(new FormValidator($this, 'abstract', 'required', 'admin.settings.form.abstractRequired'));
         $this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($journal->getId())));
+        // $this->addCheck(new FormValidatorCustom($this, 'authorsGridContainer', 'required', 'user.subscriptions.form.typeIdValid', create_function('$submissionId', '$authorDao = DAORegistry::getDAO(\'AuthorDAO\'); return ($authorDao->getAuthorCountBySubmissionId($submissionId) != 0);'), array($request->getUserVar('submissionId'))));
 	}
 
 	/**
@@ -77,6 +78,24 @@ class QuickSubmitForm extends Form {
 		$section = $sectionDao->getById($this->getData('sectionId'), $context->getId());
 		if (!$section) return false;
 
+        // Validate existance of authors
+        $submissionDao = Application::getSubmissionDAO();
+        $submission = $submissionDao->getById($this->getData('submissionId'), $context->getId(), false);
+
+        if (isset($submission)) {
+            $authors = $submission->getAuthors();
+            if (!(isset($authors) && is_array($authors) && count($authors) != 0)) {
+                $this->addError('authorsGridContainer', 'user.subscriptions.form.typeIdValid');
+                $this->errorFields['authorsGridContainer'] = 1;
+
+                return false;
+            }
+        }
+        else {
+            
+            return false;
+        }
+
 		return true;
 	}
 
@@ -88,28 +107,9 @@ class QuickSubmitForm extends Form {
         $journal =& $request->getJournal();
         $supportedSubmissionLocales = $journal->getSetting('supportedSubmissionLocales');
 
-
-        //// Try these locales in order until we find one that's
-        //// supported to use as a default.
-        //$fallbackLocales = array_keys($supportedSubmissionLocales);
-        //$tryLocales = array(
-        //    $this->getFormLocale(), // Current form locale
-        //    AppLocale::getLocale(), // Current UI locale
-        //    $journal->getPrimaryLocale(), // Journal locale
-        //    $supportedSubmissionLocales[array_shift($fallbackLocales)] // Fallback: first one on the list
-        //);
         $this->_data = array();
-        //foreach ($tryLocales as $locale) {
-        //    if (in_array($locale, $supportedSubmissionLocales)) {
-        //        // Found a default to use
-        //        $this->_data['locale'] = $locale;
-        //        break;
-        //    }
-        //}
 
-
-
-        if (!isset($this->submission)){
+        if (!isset($this->submissionId)){
             $sectionDao = DAORegistry::getDAO('SectionDAO');
             $sectionOptions = $sectionDao->getSectionTitles($journal->getId());
 
@@ -158,12 +158,21 @@ class QuickSubmitForm extends Form {
 				'citations',
 				'title',
 				'abstract',
-				'locale'
+				'locale',
+                'submissionId'
 			)
 		);
 
 		$this->readUserDateVars(array('datePublished'));
 	}
+
+    /**
+     * cancel submit
+     */
+    function cancel() {
+        $submissionDao = Application::getSubmissionDAO();
+        $submissionDao->deleteById($this->getData('submissionId'));
+    }
 
 	/**
 	 * Save settings.
@@ -178,11 +187,8 @@ class QuickSubmitForm extends Form {
 		$journal =& $router->getContext($request);
 
         $article = $articleDao -> newDataObject();
-		//$article->setLocale($this->getData('locale'));
-		//$article->setUserId($user->getId());
 		$article->setJournalId($journal->getId());
 		$article->setSectionId($this->getData('sectionId'));
-		// $article->setLanguage($this->getData('language'));
 		$article->setTitle($this->getData('title'), null); // Localized
 		$article->setAbstract($this->getData('abstract'), null); // Localized
 		//$article->setDiscipline($this->getData('discipline'), null); // Localized
@@ -210,172 +216,9 @@ class QuickSubmitForm extends Form {
 		$articleDao->insertObject($article);
 		$articleId = $article->getId();
 
-		// Add authors
-        //$authorDao =& DAORegistry::getDAO('AuthorDAO'); /* @var $authorDao AuthorDAO */
-        //$authors = $this->getData('authors');
-        //for ($i=0, $count=count($authors); $i < $count; $i++) {
-        //    if ($authors[$i]['authorId'] > 0) {
-        //        // Update an existing author
-        //        $author =& $authorDao->getAuthor($authors[$i]['authorId'], $articleId);
-        //        $isExistingAuthor = true;
-        //    } else {
-        //        // Create a new author
-        //        $author = new Author();
-        //        $isExistingAuthor = false;
-        //    }
-
-        //    if ($author != null) {
-        //        $author->setSubmissionId($articleId);
-        //        $author->setFirstName($authors[$i]['firstName']);
-        //        $author->setMiddleName($authors[$i]['middleName']);
-        //        $author->setLastName($authors[$i]['lastName']);
-        //        if (array_key_exists('affiliation', $authors[$i])) {
-        //            $author->setAffiliation($authors[$i]['affiliation'], null);
-        //        }
-        //        $author->setCountry($authors[$i]['country']);
-        //        $author->setEmail($authors[$i]['email']);
-        //        $author->setData('orcid', $authors[$i]['orcid']);
-        //        $author->setUrl($authors[$i]['url']);
-        //        if (array_key_exists('competingInterests', $authors[$i])) {
-        //            $author->setCompetingInterests($authors[$i]['competingInterests'], null);
-        //        }
-        //        $author->setBiography($authors[$i]['biography'], null);
-        //        $author->setPrimaryContact($this->getData('primaryContact') == $i ? 1 : 0);
-        //        $author->setSequence($authors[$i]['seq']);
-
-        //        if ($isExistingAuthor == false) {
-        //            $authorDao->insertAuthor($author);
-        //        }
-        //    }
-        //}
-
 		// Setup default copyright/license metadata after status is set and authors are attached.
 		$article->initializePermissions();
 		$articleDao->updateLocaleFields($article);
-
-		// Add the submission files as galleys
-        //import('classes.file.TemporaryFileManager');
-        //import('classes.file.ArticleFileManager');
-        //$tempFileIds = $this->getData('tempFileId');
-        //$temporaryFileManager = new TemporaryFileManager();
-        //$articleFileManager = new ArticleFileManager($articleId);
-        //$designatedPrimary = false;
-        //foreach (array_keys($tempFileIds) as $locale) {
-        //    $temporaryFile = $temporaryFileManager->getFile($tempFileIds[$locale], $user->getId());
-        //    $fileId = null;
-        //    if ($temporaryFile) {
-        //        $fileId = $articleFileManager->temporaryFileToArticleFile($temporaryFile, ARTICLE_FILE_SUBMISSION);
-        //        $fileType = $temporaryFile->getFileType();
-
-        //        if (strstr($fileType, 'html')) {
-        //            import('classes.article.ArticleHTMLGalley');
-        //            $galley = new ArticleHTMLGalley();
-        //        } else {
-        //            import('classes.article.ArticleGalley');
-        //            $galley = new ArticleGalley();
-        //        }
-        //        $galley->setArticleId($articleId);
-        //        $galley->setFileId($fileId);
-        //        $galley->setLocale($locale);
-
-        //        if ($galley->isHTMLGalley()) {
-        //            $galley->setLabel('HTML');
-        //        } else {
-        //            if (strstr($fileType, 'pdf')) {
-        //                $galley->setLabel('PDF');
-        //            } else if (strstr($fileType, 'postscript')) {
-        //                $galley->setLabel('Postscript');
-        //            } else if (strstr($fileType, 'xml')) {
-        //                $galley->setLabel('XML');
-        //            } else {
-        //                $galley->setLabel(__('common.untitled'));
-        //            }
-        //        }
-
-        //        $galleyDao =& DAORegistry::getDAO('ArticleGalleyDAO');
-        //        $galleyDao->insertGalley($galley);
-
-        //        if (!$designatedPrimary) {
-        //            $article->setSubmissionFileId($fileId);
-        //            $article->setReviewFileId($fileId);
-        //            if ($locale == $journal->getPrimaryLocale()) {
-        //                // Used to make sure that *some* file
-        //                // is designated Review Version, but
-        //                // preferrably the primary locale.
-        //                $designatedPrimary = true;
-        //            }
-        //        }
-        //    }
-
-        //    // Update file search index
-        //    import('classes.search.ArticleSearchIndex');
-        //    $articleSearchIndex = new ArticleSearchIndex();
-        //    if (isset($galley)) {
-        //        $articleSearchIndex->articleFileChanged(
-        //            $galley->getArticleId(), ARTICLE_SEARCH_GALLEY_FILE, $galley->getFileId()
-        //        );
-        //    }
-        //    $articleSearchIndex->articleChangesFinished();
-        //}
-
-
-        //// Designate this as the review version by default.
-        //$authorSubmissionDao =& DAORegistry::getDAO('AuthorSubmissionDAO');
-        //$authorSubmission =& $authorSubmissionDao->getAuthorSubmission($articleId);
-        //import('classes.submission.author.AuthorAction');
-        //AuthorAction::designateReviewVersion($authorSubmission, true);
-
-        //// Accept the submission
-        //$sectionEditorSubmission =& $sectionEditorSubmissionDao->getSectionEditorSubmission($articleId);
-        //$articleFileManager = new ArticleFileManager($articleId);
-        //$sectionEditorSubmission->setReviewFile($articleFileManager->getFile($article->getSubmissionFileId()));
-        //import('classes.submission.sectionEditor.SectionEditorAction');
-        //SectionEditorAction::recordDecision($sectionEditorSubmission, SUBMISSION_EDITOR_DECISION_ACCEPT, $this->request);
-
-        //// Create signoff infrastructure
-        //$copyeditInitialSignoff = $signoffDao->build('SIGNOFF_COPYEDITING_INITIAL', ASSOC_TYPE_ARTICLE, $articleId);
-        //$copyeditAuthorSignoff = $signoffDao->build('SIGNOFF_COPYEDITING_AUTHOR', ASSOC_TYPE_ARTICLE, $articleId);
-        //$copyeditFinalSignoff = $signoffDao->build('SIGNOFF_COPYEDITING_FINAL', ASSOC_TYPE_ARTICLE, $articleId);
-        //$copyeditInitialSignoff->setUserId(0);
-        //$copyeditAuthorSignoff->setUserId($user->getId());
-        //$copyeditFinalSignoff->setUserId(0);
-        //$signoffDao->updateObject($copyeditInitialSignoff);
-        //$signoffDao->updateObject($copyeditAuthorSignoff);
-        //$signoffDao->updateObject($copyeditFinalSignoff);
-
-        //$layoutSignoff = $signoffDao->build('SIGNOFF_LAYOUT', ASSOC_TYPE_ARTICLE, $articleId);
-        //$layoutSignoff->setUserId(0);
-        //$signoffDao->updateObject($layoutSignoff);
-
-        //$proofAuthorSignoff = $signoffDao->build('SIGNOFF_PROOFREADING_AUTHOR', ASSOC_TYPE_ARTICLE, $articleId);
-        //$proofProofreaderSignoff = $signoffDao->build('SIGNOFF_PROOFREADING_PROOFREADER', ASSOC_TYPE_ARTICLE, $articleId);
-        //$proofLayoutEditorSignoff = $signoffDao->build('SIGNOFF_PROOFREADING_LAYOUT', ASSOC_TYPE_ARTICLE, $articleId);
-        //$proofAuthorSignoff->setUserId($user->getId());
-        //$proofProofreaderSignoff->setUserId(0);
-        //$proofLayoutEditorSignoff->setUserId(0);
-        //$signoffDao->updateObject($proofAuthorSignoff);
-        //$signoffDao->updateObject($proofProofreaderSignoff);
-        //$signoffDao->updateObject($proofLayoutEditorSignoff);
-
-        //import('classes.author.form.submit.AuthorSubmitForm');
-        //AuthorSubmitForm::assignEditors($article);
-
-        //$articleDao->updateArticle($article);
-
-        //// Add to end of editing queue
-        //import('classes.submission.editor.EditorAction');
-        //if (isset($galley)) EditorAction::expediteSubmission($article, $this->request);
-
-        //if ($this->getData('destination') == "issue") {
-        //    // Add to an existing issue
-        //    $issueId = $this->getData('issueId');
-        //    $this->scheduleForPublication($articleId, $issueId);
-        //}
-
-        //// Import the references list.
-        //$citationDao =& DAORegistry::getDAO('CitationDAO');
-        //$rawCitationList = $article->getCitations();
-        //$citationDao->importCitations($request, ASSOC_TYPE_ARTICLE, $articleId, $rawCitationList);
 
 		// Index article.
 		import('classes.search.ArticleSearchIndex');

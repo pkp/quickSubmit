@@ -27,4 +27,6 @@
 	<message key="plugins.importexport.quickSubmit.success">Article Added</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Article creation was successful.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Return to QuickSubmit plugin.</message>
+  <message key="plugins.importexport.quickSubmit.cancel">Submission Cancelled</message>
+	<message key="plugins.importexport.quickSubmit.cancelDescription">Article creation was cancelled.</message>
 </locale>

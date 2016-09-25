@@ -74,7 +74,15 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	}
 
     function cancelSubmit($args, $request) {
-        print("blublu");
+        $templateMgr = TemplateManager::getManager($request);
+
+        $this->import('QuickSubmitForm');
+        $form = new QuickSubmitForm($this, $request);
+        $form->readInputData();
+
+        $form->cancel();
+        $templateMgr->display($this->getTemplatePath() . 'submitCancelled.tpl');
+
     }
 
 	/**
@@ -82,7 +90,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 * @param $args array
 	 */
 	function saveSubmit($args, $request) {
-        $templateMgr =& TemplateManager::getManager($request);
+        $templateMgr = TemplateManager::getManager($request);
 
         $this->import('QuickSubmitForm');
         $form = new QuickSubmitForm($this, $request);
@@ -90,8 +98,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
         if($form->validate()){
             $form->execute();
-            $templateMgr->display('submitSuccess.tpl');
-            //$request->redirect(null, 'management', 'importexport', array('plugin', $this->getName()));
+            $templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
         }
         else {
             $form->display();
