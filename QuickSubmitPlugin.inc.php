@@ -49,139 +49,139 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 	function display($args, $request) {
 		$templateMgr =& TemplateManager::getManager();
-        $templateMgr->register_function('plugin_url', array(&$this, 'smartyPluginUrl'));
+		$templateMgr->register_function('plugin_url', array(&$this, 'smartyPluginUrl'));
 
-        if (count($args) == 1) {
-            if ($args[0] == 'saveSubmit'){
-                $this->saveSubmit($args, $request);
-            }
-            else if ($args[0] == 'cancelSubmit'){
-                $this->cancelSubmit($args, $request);
-            }
-        }
-        else {
-            $this->import('QuickSubmitForm');
+		if (count($args) == 1) {
+			if ($args[0] == 'saveSubmit'){
+				$this->saveSubmit($args, $request);
+			}
+			else if ($args[0] == 'cancelSubmit'){
+				$this->cancelSubmit($args, $request);
+			}
+		}
+		else {
+			$this->import('QuickSubmitForm');
 
-            $form =& new QuickSubmitForm($this, $request);
+			$form =& new QuickSubmitForm($this, $request);
 
-            if ($form->isLocaleResubmit()) {
-                $form->readInputData();
-            } else {
-                $form->initData();
-            }
-            $form->display();
-        }
+			if ($form->isLocaleResubmit()) {
+				$form->readInputData();
+			} else {
+				$form->initData();
+			}
+			$form->display();
+		}
 	}
 
-    function cancelSubmit($args, $request) {
-        $templateMgr = TemplateManager::getManager($request);
+	function cancelSubmit($args, $request) {
+		$templateMgr = TemplateManager::getManager($request);
 
-        $this->import('QuickSubmitForm');
-        $form = new QuickSubmitForm($this, $request);
-        $form->readInputData();
+		$this->import('QuickSubmitForm');
+		$form = new QuickSubmitForm($this, $request);
+		$form->readInputData();
 
-        $form->cancel();
-        $templateMgr->display($this->getTemplatePath() . 'submitCancelled.tpl');
+		$form->cancel();
+		$templateMgr->display($this->getTemplatePath() . 'submitCancelled.tpl');
 
-    }
+	}
 
 	/**
 	 * Save the submitted form
 	 * @param $args array
 	 */
 	function saveSubmit($args, $request) {
-        $templateMgr = TemplateManager::getManager($request);
+		$templateMgr = TemplateManager::getManager($request);
 
-        $this->import('QuickSubmitForm');
-        $form = new QuickSubmitForm($this, $request);
-        $form->readInputData();
+		$this->import('QuickSubmitForm');
+		$form = new QuickSubmitForm($this, $request);
+		$form->readInputData();
 
-        if($form->validate()){
-            $form->execute();
-            $templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
-        }
-        else {
-            $form->display();
-        }
+		if($form->validate()){
+			$form->execute();
+			$templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
+		}
+		else {
+			$form->display();
+		}
 
-        //print("blabla");
-        //$templateMgr =& TemplateManager::getManager();
+		//print("blabla");
+		//$templateMgr =& TemplateManager::getManager();
 
 
-        //if (checkPhpVersion('5.0.0')) { // WARNING: This form needs $this in constructor
-        //    $form = new QuickSubmitForm($this, $request);
-        //} else {
-        //    $form =& new QuickSubmitForm($this, $request);
-        //}
-        //$form->readInputData();
-        //$formLocale = $form->getFormLocale();
+		//if (checkPhpVersion('5.0.0')) { // WARNING: This form needs $this in constructor
+		//    $form = new QuickSubmitForm($this, $request);
+		//} else {
+		//    $form =& new QuickSubmitForm($this, $request);
+		//}
+		//$form->readInputData();
+		//$formLocale = $form->getFormLocale();
 
-        //if ($request->getUserVar('addAuthor')) {
-        //    $editData = true;
-        //    $authors = $form->getData('authors');
-        //    $authors[] = array();
-        //    $form->setData('authors', $authors);
-        //} else if (($delAuthor = $request->getUserVar('delAuthor')) && count($delAuthor) == 1) {
-        //    $editData = true;
-        //    list($delAuthor) = array_keys($delAuthor);
-        //    $delAuthor = (int) $delAuthor;
-        //    $authors = $form->getData('authors');
-        //    if (isset($authors[$delAuthor]['authorId']) && !empty($authors[$delAuthor]['authorId'])) {
-        //        $deletedAuthors = explode(':', $form->getData('deletedAuthors'));
-        //        array_push($deletedAuthors, $authors[$delAuthor]['authorId']);
-        //        $form->setData('deletedAuthors', join(':', $deletedAuthors));
-        //    }
-        //    array_splice($authors, $delAuthor, 1);
-        //    $form->setData('authors', $authors);
+		//if ($request->getUserVar('addAuthor')) {
+		//    $editData = true;
+		//    $authors = $form->getData('authors');
+		//    $authors[] = array();
+		//    $form->setData('authors', $authors);
+		//} else if (($delAuthor = $request->getUserVar('delAuthor')) && count($delAuthor) == 1) {
+		//    $editData = true;
+		//    list($delAuthor) = array_keys($delAuthor);
+		//    $delAuthor = (int) $delAuthor;
+		//    $authors = $form->getData('authors');
+		//    if (isset($authors[$delAuthor]['authorId']) && !empty($authors[$delAuthor]['authorId'])) {
+		//        $deletedAuthors = explode(':', $form->getData('deletedAuthors'));
+		//        array_push($deletedAuthors, $authors[$delAuthor]['authorId']);
+		//        $form->setData('deletedAuthors', join(':', $deletedAuthors));
+		//    }
+		//    array_splice($authors, $delAuthor, 1);
+		//    $form->setData('authors', $authors);
 
-        //    if ($form->getData('primaryContact') == $delAuthor) {
-        //        $form->setData('primaryContact', 0);
-        //    }
-        //} else if ($request->getUserVar('moveAuthor')) {
-        //    $editData = true;
-        //    $moveAuthorDir = $request->getUserVar('moveAuthorDir');
-        //    $moveAuthorDir = $moveAuthorDir == 'u' ? 'u' : 'd';
-        //    $moveAuthorIndex = (int) $request->getUserVar('moveAuthorIndex');
-        //    $authors = $form->getData('authors');
+		//    if ($form->getData('primaryContact') == $delAuthor) {
+		//        $form->setData('primaryContact', 0);
+		//    }
+		//} else if ($request->getUserVar('moveAuthor')) {
+		//    $editData = true;
+		//    $moveAuthorDir = $request->getUserVar('moveAuthorDir');
+		//    $moveAuthorDir = $moveAuthorDir == 'u' ? 'u' : 'd';
+		//    $moveAuthorIndex = (int) $request->getUserVar('moveAuthorIndex');
+		//    $authors = $form->getData('authors');
 
-        //    if (!(($moveAuthorDir == 'u' && $moveAuthorIndex <= 0) || ($moveAuthorDir == 'd' && $moveAuthorIndex >= count($authors) - 1))) {
-        //        $tmpAuthor = $authors[$moveAuthorIndex];
-        //        $primaryContact = $form->getData('primaryContact');
-        //        if ($moveAuthorDir == 'u') {
-        //            $authors[$moveAuthorIndex] = $authors[$moveAuthorIndex - 1];
-        //            $authors[$moveAuthorIndex - 1] = $tmpAuthor;
-        //            if ($primaryContact == $moveAuthorIndex) {
-        //                $form->setData('primaryContact', $moveAuthorIndex - 1);
-        //            } else if ($primaryContact == ($moveAuthorIndex - 1)) {
-        //                $form->setData('primaryContact', $moveAuthorIndex);
-        //            }
-        //        } else {
-        //            $authors[$moveAuthorIndex] = $authors[$moveAuthorIndex + 1];
-        //            $authors[$moveAuthorIndex + 1] = $tmpAuthor;
-        //            if ($primaryContact == $moveAuthorIndex) {
-        //                $form->setData('primaryContact', $moveAuthorIndex + 1);
-        //            } else if ($primaryContact == ($moveAuthorIndex + 1)) {
-        //                $form->setData('primaryContact', $moveAuthorIndex);
-        //            }
-        //        }
-        //    }
-        //    $form->setData('authors', $authors);
-        //} else if ($request->getUserVar('uploadSubmissionFile')) {
-        //    $editData = true;
-        //    $tempFileId = $form->getData('tempFileId');
-        //    $tempFileId[$formLocale] = $form->uploadSubmissionFile('submissionFile');
-        //    $form->setData('tempFileId', $tempFileId);
-        //}
+		//    if (!(($moveAuthorDir == 'u' && $moveAuthorIndex <= 0) || ($moveAuthorDir == 'd' && $moveAuthorIndex >= count($authors) - 1))) {
+		//        $tmpAuthor = $authors[$moveAuthorIndex];
+		//        $primaryContact = $form->getData('primaryContact');
+		//        if ($moveAuthorDir == 'u') {
+		//            $authors[$moveAuthorIndex] = $authors[$moveAuthorIndex - 1];
+		//            $authors[$moveAuthorIndex - 1] = $tmpAuthor;
+		//            if ($primaryContact == $moveAuthorIndex) {
+		//                $form->setData('primaryContact', $moveAuthorIndex - 1);
+		//            } else if ($primaryContact == ($moveAuthorIndex - 1)) {
+		//                $form->setData('primaryContact', $moveAuthorIndex);
+		//            }
+		//        } else {
+		//            $authors[$moveAuthorIndex] = $authors[$moveAuthorIndex + 1];
+		//            $authors[$moveAuthorIndex + 1] = $tmpAuthor;
+		//            if ($primaryContact == $moveAuthorIndex) {
+		//                $form->setData('primaryContact', $moveAuthorIndex + 1);
+		//            } else if ($primaryContact == ($moveAuthorIndex + 1)) {
+		//                $form->setData('primaryContact', $moveAuthorIndex);
+		//            }
+		//        }
+		//    }
+		//    $form->setData('authors', $authors);
+		//} else if ($request->getUserVar('uploadSubmissionFile')) {
+		//    $editData = true;
+		//    $tempFileId = $form->getData('tempFileId');
+		//    $tempFileId[$formLocale] = $form->uploadSubmissionFile('submissionFile');
+		//    $form->setData('tempFileId', $tempFileId);
+		//}
 
-        //if ($request->getUserVar('createAnother') && $form->validate()) {
-        //    $form->execute();
-        //    $request->redirect(null, 'manager', 'importexport', array('plugin', $this->getName()));
-        //} else if (!isset($editData) && $form->validate()) {
-        //    $form->execute();
-        //    $templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
-        //} else {
-        //    $form->display();
-        //}
+		//if ($request->getUserVar('createAnother') && $form->validate()) {
+		//    $form->execute();
+		//    $request->redirect(null, 'manager', 'importexport', array('plugin', $this->getName()));
+		//} else if (!isset($editData) && $form->validate()) {
+		//    $form->execute();
+		//    $templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
+		//} else {
+		//    $form->display();
+		//}
 
 	}
 
@@ -205,9 +205,9 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		return $smarty->smartyUrl($params, $smarty);
 	}
 
-    /**
-     * @copydoc PKPImportExportPlugin::usage
-     */
+	/**
+	 * @copydoc PKPImportExportPlugin::usage
+	 */
 	function usage($scriptName) {
 		fatalError('Not implemented');
 	}
