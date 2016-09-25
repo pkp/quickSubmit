@@ -23,19 +23,18 @@ class QuickSubmitForm extends Form {
 	/**
 	 * Constructor
 	 * @param $plugin object
-     * @param $request object
+	 * @param $request object
 	 */
 	function QuickSubmitForm($plugin, $request) {
 		parent::Form($plugin->getTemplatePath() . 'index.tpl');
 
 		$this->request = $request;
 		$journal =& $request->getJournal();
-
 		$this->addCheck(new FormValidatorPost($this));
-        $this->addCheck(new FormValidator($this, 'title', 'required', 'admin.settings.form.titleRequired'));
-        $this->addCheck(new FormValidator($this, 'abstract', 'required', 'admin.settings.form.abstractRequired'));
-        $this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($journal->getId())));
-        // $this->addCheck(new FormValidatorCustom($this, 'authorsGridContainer', 'required', 'user.subscriptions.form.typeIdValid', create_function('$submissionId', '$authorDao = DAORegistry::getDAO(\'AuthorDAO\'); return ($authorDao->getAuthorCountBySubmissionId($submissionId) != 0);'), array($request->getUserVar('submissionId'))));
+		$this->addCheck(new FormValidator($this, 'title', 'required', 'admin.settings.form.titleRequired'));
+		$this->addCheck(new FormValidator($this, 'abstract', 'required', 'admin.settings.form.abstractRequired'));
+		$this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($journal->getId())));
+		// $this->addCheck(new FormValidatorCustom($this, 'authorsGridContainer', 'required', 'user.subscriptions.form.typeIdValid', create_function('$submissionId', '$authorDao = DAORegistry::getDAO(\'AuthorDAO\'); return ($authorDao->getAuthorCountBySubmissionId($submissionId) != 0);'), array($request->getUserVar('submissionId'))));
 	}
 
 	/**
@@ -50,13 +49,13 @@ class QuickSubmitForm extends Form {
 	 * Display the form.
 	 */
 	function display() {
-        $request =& $this->request;
-        $journal =& $request->getJournal();
+		$request =& $this->request;
+		$journal =& $request->getJournal();
 
-        $templateMgr =& TemplateManager::getManager($request);
-        $templateMgr->assign('abstractsRequired', true);
+		$templateMgr =& TemplateManager::getManager($request);
+		$templateMgr->assign('abstractsRequired', true);
 
-        // Get section for this context
+		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
 		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($journal->getId());
 		$templateMgr->assign('sectionOptions', $sectionOptions);
@@ -64,10 +63,10 @@ class QuickSubmitForm extends Form {
 		parent::display();
 	}
 
-    /**
-     * Perform additional validation checks
-     * @copydoc Form::validate
-     */
+	/**
+	 * Perform additional validation checks
+	 * @copydoc Form::validate
+	 */
 	function validate() {
 		if (!parent::validate()) return false;
 
@@ -78,55 +77,56 @@ class QuickSubmitForm extends Form {
 		$section = $sectionDao->getById($this->getData('sectionId'), $context->getId());
 		if (!$section) return false;
 
-        // Validate existance of authors
-        $submissionDao = Application::getSubmissionDAO();
-        $submission = $submissionDao->getById($this->getData('submissionId'), $context->getId(), false);
+		// Validate existance of authors
+		$submissionDao = Application::getSubmissionDAO();
+		$submission = $submissionDao->getById($this->getData('submissionId'), $context->getId(), false);
 
-        if (isset($submission)) {
-            $authors = $submission->getAuthors();
-            if (!(isset($authors) && is_array($authors) && count($authors) != 0)) {
-                $this->addError('authorsGridContainer', 'user.subscriptions.form.typeIdValid');
-                $this->errorFields['authorsGridContainer'] = 1;
+		if (isset($submission)) {
+			$authors = $submission->getAuthors();
+			if (!(isset($authors) && is_array($authors) && count($authors) != 0)) {
+				$this->addError('authorsGridContainer', 'user.subscriptions.form.typeIdValid');
+				$this->errorFields['authorsGridContainer'] = 1;
 
-                return false;
-            }
-        }
-        else {
-            
-            return false;
-        }
+				return false;
+			}
+		}
+		else {
+
+			return false;
+		}
 
 		return true;
+
 	}
 
 	/**
 	 * Initialize form data for a new form.
 	 */
 	function initData() {
-        $request =& $this->request;
-        $journal =& $request->getJournal();
-        $supportedSubmissionLocales = $journal->getSetting('supportedSubmissionLocales');
+		$request =& $this->request;
+		$journal =& $request->getJournal();
+		$supportedSubmissionLocales = $journal->getSetting('supportedSubmissionLocales');
 
-        $this->_data = array();
+		$this->_data = array();
 
-        if (!isset($this->submissionId)){
-            $sectionDao = DAORegistry::getDAO('SectionDAO');
-            $sectionOptions = $sectionDao->getSectionTitles($journal->getId());
+		if (!isset($this->submissionId)){
+			$sectionDao = DAORegistry::getDAO('SectionDAO');
+			$sectionOptions = $sectionDao->getSectionTitles($journal->getId());
 
-            $submissionDao = Application::getSubmissionDAO();
-            $this->submission = $submissionDao->newDataObject();
-            $user = $request->getUser();
-            $this->submission->setContextId($journal->getId());
-            //$this->setSubmissionData($this->submission);
-            $this->submission->stampStatusModified();
-            $this->submission->setSubmissionProgress($this->step + 1);
-            $this->submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
-            $this->submission->setCopyrightNotice($journal->getLocalizedSetting('copyrightNotice'), $this->getData('locale'));
-            $this->submission->setSectionId(current(array_keys($sectionOptions)));
-            // Insert the submission
-            $this->submissionId = $submissionDao->insertObject($this->submission);
-            $this->setData('submissionId', $this->submissionId);
-        }
+			$submissionDao = Application::getSubmissionDAO();
+			$this->submission = $submissionDao->newDataObject();
+			$user = $request->getUser();
+			$this->submission->setContextId($journal->getId());
+			//$this->setSubmissionData($this->submission);
+			$this->submission->stampStatusModified();
+			$this->submission->setSubmissionProgress($this->step + 1);
+			$this->submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
+			$this->submission->setCopyrightNotice($journal->getLocalizedSetting('copyrightNotice'), $this->getData('locale'));
+			$this->submission->setSectionId(current(array_keys($sectionOptions)));
+			// Insert the submission
+			$this->submissionId = $submissionDao->insertObject($this->submission);
+			$this->setData('submissionId', $this->submissionId);
+		}
 
 
 	}
@@ -159,20 +159,20 @@ class QuickSubmitForm extends Form {
 				'title',
 				'abstract',
 				'locale',
-                'submissionId'
+				'submissionId'
 			)
 		);
 
 		$this->readUserDateVars(array('datePublished'));
 	}
 
-    /**
-     * cancel submit
-     */
-    function cancel() {
-        $submissionDao = Application::getSubmissionDAO();
-        $submissionDao->deleteById($this->getData('submissionId'));
-    }
+	/**
+	 * cancel submit
+	 */
+	function cancel() {
+		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao->deleteById($this->getData('submissionId'));
+	}
 
 	/**
 	 * Save settings.
@@ -186,7 +186,7 @@ class QuickSubmitForm extends Form {
 		$router =& $request->getRouter();
 		$journal =& $router->getContext($request);
 
-        $article = $articleDao -> newDataObject();
+		$article = $articleDao -> newDataObject();
 		$article->setJournalId($journal->getId());
 		$article->setSectionId($this->getData('sectionId'));
 		$article->setTitle($this->getData('title'), null); // Localized
