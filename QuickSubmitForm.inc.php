@@ -20,6 +20,9 @@ class QuickSubmitForm extends Form {
 	/** @var $request object */
 	var $request;
 
+	/** @var $submissionId int */
+	var $submissionId;
+
 	/**
 	 * Constructor
 	 * @param $plugin object
