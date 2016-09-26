@@ -17,6 +17,18 @@
 <script type="text/javascript">
 
 $(function(){
+		$('input[type=radio][name=articleStatus]').change(function() {
+			if (this.value == '0') {
+				$('#issueId').prop('disabled', 'disabled');
+			}
+			else if (this.value == '1') {
+				$('#issueId').attr('disabled', false);
+			}
+		});
+	}
+);
+
+$(function(){
 		// Attach the JS form handler.
 	
 		$('#quickSubmitForm').pkpHandler(
@@ -38,6 +50,23 @@ $(function(){
 	{csrf}
 	{include file="common/formErrors.tpl"}
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
+
+	{*
+	<select id='issueId'>
+	<option value="0"></option>
+	{iterate from=issues item=issue}
+		<option value="$issue->getBestIssueId()">{$issue->getIssueIdentification()|strip_unsafe_html|nl2br}</option>
+	{/iterate}
+	</select>
+	*}
+
+	{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=true label='Unpublished' translate=false}
+	{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=false label='Published' translate=false}
+	
+
+	{assign var=issueDescription value="editor.publishedIssues"}
+	{fbvElement type="select" id="issueId" label=$issueDescription from=$issueOptions selected=$issueId translate=false disabled=true size=$fbvStyles.size.MEDIUM}
+
 
 	{include file="submission/form/section.tpl" readOnly=$formParams.readOnly}
 

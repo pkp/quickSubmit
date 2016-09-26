@@ -63,6 +63,17 @@ class QuickSubmitForm extends Form {
 		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($journal->getId());
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
+		// Get published Issues
+		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issuesIterator = $issueDao->getPublishedIssues($journal->getId());
+		$issues = $issuesIterator->toArray();
+		foreach ($issues as $issue) {
+			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
+		}
+		$issueOptions[0] = __('plugins.importexport.common.filter.issue');
+		ksort($issueOptions);
+		$templateMgr->assign('issueOptions', $issueOptions);
+
 		parent::display();
 	}
 
