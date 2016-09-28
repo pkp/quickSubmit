@@ -17,16 +17,25 @@
 <script type="text/javascript">
 
 $(function(){
-		$('input[type=radio][name=articleStatus]').change(function() {
-			if (this.value == '0') {
-				$('#issueId').prop('disabled', 'disabled');
-			}
-			else if (this.value == '1') {
-				$('#issueId').attr('disabled', false);
-			}
-		});
+		
 	}
 );
+
+$(document).ready(function() {
+	$('input[type=radio][name=articleStatus]').change(function() {
+		if ($(this).is(':checked') && this.value == '0') {
+			$('#issueId').prop('disabled', 'disabled');
+		}
+		else if ($(this).is(':checked') && this.value == '1') {
+			$('#issueId').attr('disabled', false);
+		}
+		else {
+			$('#issueId').prop('disabled', 'disabled');
+		}
+	});
+
+	$('input[type=radio][name=articleStatus]').trigger('change');
+});
 
 $(function(){
 		// Attach the JS form handler.
@@ -60,8 +69,8 @@ $(function(){
 	</select>
 	*}
 
-	{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=true label='Unpublished' translate=false}
-	{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=false label='Published' translate=false}
+	{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus_uncheched label='Unpublished' translate=false}
+	{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus_cheched label='Published' translate=false}
 	
 
 	{assign var=issueDescription value="editor.publishedIssues"}

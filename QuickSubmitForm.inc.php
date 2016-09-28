@@ -58,6 +58,24 @@ class QuickSubmitForm extends Form {
 		$templateMgr =& TemplateManager::getManager($request);
 		$templateMgr->assign('abstractsRequired', true);
 
+		// manage post request
+		$issueId = $this->getData('issueId');
+		if (isset($issueId)) {
+			if ($issueId == 1) {
+				$templateMgr->assign('articleStatus_cheched', '');
+				$templateMgr->assign('articleStatus_uncheched', 'checked');
+			}
+			else {
+				$templateMgr->assign('articleStatus_cheched', 'checked');
+				$templateMgr->assign('articleStatus_uncheched', '');
+			}
+		}
+		else {
+			$templateMgr->assign('articleStatus_uncheched', 'checked');
+			$templateMgr->assign('articleStatus_cheched', '');
+		}
+
+
 		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
 		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($journal->getId());
@@ -107,6 +125,17 @@ class QuickSubmitForm extends Form {
 		else {
 
 			return false;
+		}
+
+		// Validate Issue if Published is selected
+		// if articleStatus == 1 => should have issueId
+		if ($this->getData('articleStatus') == 1) {
+			if (!$this->getData('issueId') || $this->getData('issueId') == 0) {
+				$this->addError('issueId', 'user.subscriptions.form.typeIdValid');
+				$this->errorFields['issueId'] = 1;
+
+				return false;
+			}
 		}
 
 		return true;
@@ -173,7 +202,9 @@ class QuickSubmitForm extends Form {
 				'title',
 				'abstract',
 				'locale',
-				'submissionId'
+				'submissionId',
+				'articleStatus',
+				'issueId'
 			)
 		);
 
