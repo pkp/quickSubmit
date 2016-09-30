@@ -16,35 +16,26 @@
 {literal}
 <script type="text/javascript">
 
-$(function(){
-		
-	}
-);
+	$(function(){
+		$('input[type=radio][name=articleStatus]').change(function() {
+			if ($(this).is(':checked') && this.value == '0') {
+				$('#issueId').prop('disabled', 'disabled');
+			}
+			else if ($(this).is(':checked') && this.value == '1') {
+				$('#issueId').attr('disabled', false);
+			}
+			else {
+				$('#issueId').prop('disabled', 'disabled');
+			}
+		});
 
-$(document).ready(function() {
-	$('input[type=radio][name=articleStatus]').change(function() {
-		if ($(this).is(':checked') && this.value == '0') {
-			$('#issueId').prop('disabled', 'disabled');
-		}
-		else if ($(this).is(':checked') && this.value == '1') {
-			$('#issueId').attr('disabled', false);
-		}
-		else {
-			$('#issueId').prop('disabled', 'disabled');
-		}
-	});
-
-	$('input[type=radio][name=articleStatus]').trigger('change');
-});
-
-$(function(){
-		// Attach the JS form handler.
+		$('input[type=radio][name=articleStatus]').trigger('change');	
 	
+		// Attach the JS form handler.
 		$('#quickSubmitForm').pkpHandler(
 			'$.pkp.controllers.form.FormHandler'
-		);
-	}
-);
+		);	
+	});
 
 </script>
 
@@ -59,15 +50,6 @@ $(function(){
 	{csrf}
 	{include file="common/formErrors.tpl"}
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
-
-	{*
-	<select id='issueId'>
-	<option value="0"></option>
-	{iterate from=issues item=issue}
-		<option value="$issue->getBestIssueId()">{$issue->getIssueIdentification()|strip_unsafe_html|nl2br}</option>
-	{/iterate}
-	</select>
-	*}
 
 	{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus_uncheched label='Unpublished' translate=false}
 	{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus_cheched label='Published' translate=false}
@@ -100,11 +82,6 @@ $(function(){
 
 	{fbvFormButtons id="quickSubmit" submitText="common.save" cancelUrl=$cancelUrl cancelUrlTarget="_self"}
 
-
-	{*
-	{fbvElement type="submit" label="common.save" id="quickSubmitSave" name="quickSubmitSave" value="1" class="export" inline=true}
-	{fbvElement type="submit" label="common.cancel" id="quickSubmitCancel" name="quickSubmitCancel" value="1" class="markRegistered" inline=true}
-	*}
 </form>
 
 {include file="common/footer.tpl"}
