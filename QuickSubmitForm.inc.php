@@ -153,24 +153,25 @@ class QuickSubmitForm extends Form {
 		$this->_data = array();
 
 		if (!isset($this->submissionId)){
+            // TODO: Manage no Sections exist
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
 			$sectionOptions = $sectionDao->getSectionTitles($journal->getId());
 
+            // Create and insert a new submission
 			$submissionDao = Application::getSubmissionDAO();
-			$this->submission = $submissionDao->newDataObject();
-			$user = $request->getUser();
-			$this->submission->setContextId($journal->getId());
-			//$this->setSubmissionData($this->submission);
-			$this->submission->stampStatusModified();
-			$this->submission->setSubmissionProgress($this->step + 1);
-			$this->submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
-			$this->submission->setCopyrightNotice($journal->getLocalizedSetting('copyrightNotice'), $this->getData('locale'));
-			$this->submission->setSectionId(current(array_keys($sectionOptions)));
+			$submission = $submissionDao->newDataObject();
+			$submission->setContextId($journal->getId());
+            $submission->setStatus(STATUS_QUEUED);
+            $submission->setSubmissionProgress(0);
+			$submission->stampStatusModified();
+			$submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
+			$submission->setCopyrightNotice($journal->getLocalizedSetting('copyrightNotice'), $this->getData('locale'));
+			$submission->setSectionId(current(array_keys($sectionOptions)));
+
 			// Insert the submission
-			$this->submissionId = $submissionDao->insertObject($this->submission);
+			$this->submissionId = $submissionDao->insertObject($submission);
 			$this->setData('submissionId', $this->submissionId);
 		}
-
 
 	}
 
@@ -223,7 +224,7 @@ class QuickSubmitForm extends Form {
 	 * Save settings.
 	 */
 	function execute() {
-		$articleDao =& DAORegistry::getDAO('ArticleDAO');
+		// $articleDao =& DAORegistry::getDAO('ArticleDAO');
 
 		$application =& PKPApplication::getApplication();
 		$request =& $this->request;
@@ -231,45 +232,90 @@ class QuickSubmitForm extends Form {
 		$router =& $request->getRouter();
 		$journal =& $router->getContext($request);
 
-		$article = $articleDao -> newDataObject();
-		$article->setJournalId($journal->getId());
-		$article->setSectionId($this->getData('sectionId'));
-		$article->setTitle($this->getData('title'), null); // Localized
-		$article->setAbstract($this->getData('abstract'), null); // Localized
-		//$article->setDiscipline($this->getData('discipline'), null); // Localized
-		//$article->setSubjectClass($this->getData('subjectClass'), null); // Localized
-		//$article->setSubject($this->getData('subject'), null); // Localized
-		//$article->setCoverageGeo($this->getData('coverageGeo'), null); // Localized
-		//$article->setCoverageChron($this->getData('coverageChron'), null); // Localized
-		//$article->setCoverageSample($this->getData('coverageSample'), null); // Localized
-		//$article->setType($this->getData('type'), null); // Localized
-		//$article->setSponsor($this->getData('sponsor'), null); // Localized
-		//$article->setCitations($this->getData('citations'));
-		//$article->setPages($this->getData('pages'));
+        // Get current submission
+        $submissionDao = Application::getSubmissionDAO();
+        $submission = $submissionDao->getById($this->getData('submissionId'));
 
-		// Set some default values so the ArticleDAO doesn't complain when adding this article
-		$article->setDateSubmitted(Core::getCurrentDate());
-		$article->setStatus($this->getData('destination') == 'queue' ? STATUS_QUEUED : STATUS_PUBLISHED);
-		$article->setSubmissionProgress(0);
-		$article->stampStatusModified();
-		$article->setCurrentRound(1);
-		$article->setFastTracked(1);
-		$article->setHideAuthor(0);
-		//$article->setCommentsStatus(0);
+        $submission->setJournalId($journal->getId());
+        $submission->setSectionId($this->getData('sectionId'));
+        $submission->setTitle($this->getData('title'), null); // Localized
+        $submission->setSubtitle($this->getData('subtitle'), null);
+        $submission->setAbstract($this->getData('abstract'), null); // Localized
 
-		// Insert the article to get it's ID
-		$articleDao->insertObject($article);
-		$articleId = $article->getId();
+        //$article->setDiscipline($this->getData('discipline'), null); // Localized
+        //$article->setSubjectClass($this->getData('subjectClass'), null); // Localized
+        //$article->setSubject($this->getData('subject'), null); // Localized
+        //$article->setCoverageGeo($this->getData('coverageGeo'), null); // Localized
+        //$article->setCoverageChron($this->getData('coverageChron'), null); // Localized
+        //$article->setCoverageSample($this->getData('coverageSample'), null); // Localized
+        //$article->setType($this->getData('type'), null); // Localized
+        //$article->setSponsor($this->getData('sponsor'), null); // Localized
+        //$article->setCitations($this->getData('citations'));
+        //$article->setPages($this->getData('pages'));
 
-		// Setup default copyright/license metadata after status is set and authors are attached.
-		$article->initializePermissions();
-		$articleDao->updateLocaleFields($article);
+        // articleStatus == 1 -> Published and to an Issue
+        if ($this->getData('articleStatus') == 1) {
+            $publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
 
-		// Index article.
-		import('classes.search.ArticleSearchIndex');
-		$articleSearchIndex = new ArticleSearchIndex();
-		$articleSearchIndex->articleMetadataChanged($article);
-		$articleSearchIndex->articleChangesFinished();
+            // Get Issue
+            $issueDao = DAORegistry::getDAO('IssueDAO');
+            $issue = $issueDao->getById($this->getData('issueId'));
+
+			$publishedSubmission = $publishedSubmissionDao->newDataObject();
+			$publishedSubmission->setId($submission->getId());
+			$publishedSubmission->setDatePublished(strtotime($issue->getDatePublished()));
+			$publishedSubmission->setSequence(REALLY_BIG_NUMBER);
+			$publishedSubmission->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
+			$publishedSubmission->setIssueId($issue->getId());
+			$publishedSubmissionDao->insertObject($publishedSubmission);
+
+
+            $submission->setStatus(STATUS_PUBLISHED);
+            // $submission->setIssueId($issue->getId());
+
+        }
+
+        $submission->setDateSubmitted(Core::getCurrentDate());
+        $submissionDao->updateObject($submission);
+
+        //$article = $articleDao -> newDataObject();
+        //$article->setJournalId($journal->getId());
+        //$article->setSectionId($this->getData('sectionId'));
+        //$article->setTitle($this->getData('title'), null); // Localized
+        //$article->setAbstract($this->getData('abstract'), null); // Localized
+        ////$article->setDiscipline($this->getData('discipline'), null); // Localized
+        ////$article->setSubjectClass($this->getData('subjectClass'), null); // Localized
+        ////$article->setSubject($this->getData('subject'), null); // Localized
+        ////$article->setCoverageGeo($this->getData('coverageGeo'), null); // Localized
+        ////$article->setCoverageChron($this->getData('coverageChron'), null); // Localized
+        ////$article->setCoverageSample($this->getData('coverageSample'), null); // Localized
+        ////$article->setType($this->getData('type'), null); // Localized
+        ////$article->setSponsor($this->getData('sponsor'), null); // Localized
+        ////$article->setCitations($this->getData('citations'));
+        ////$article->setPages($this->getData('pages'));
+
+        //// Set some default values so the ArticleDAO doesn't complain when adding this article
+        //$article->setDateSubmitted(Core::getCurrentDate());
+        //$article->setStatus($this->getData('destination') == 'queue' ? STATUS_QUEUED : STATUS_PUBLISHED);
+        //$article->setSubmissionProgress(0);
+        //$article->stampStatusModified();
+        //$article->setCurrentRound(1);
+        //$article->setFastTracked(1);
+        //$article->setHideAuthor(0);
+
+        //// Insert the article to get it's ID
+        //$articleDao->insertObject($article);
+        //$articleId = $article->getId();
+
+        //// Setup default copyright/license metadata after status is set and authors are attached.
+        //$article->initializePermissions();
+        //$articleDao->updateLocaleFields($article);
+
+        //// Index article.
+        //import('classes.search.ArticleSearchIndex');
+        //$articleSearchIndex = new ArticleSearchIndex();
+        //$articleSearchIndex->articleMetadataChanged($article);
+        //$articleSearchIndex->articleChangesFinished();
 	}
 
 	/**
