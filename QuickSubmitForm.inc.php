@@ -37,7 +37,6 @@ class QuickSubmitForm extends Form {
 		$this->addCheck(new FormValidator($this, 'title', 'required', 'admin.settings.form.titleRequired'));
 		$this->addCheck(new FormValidator($this, 'abstract', 'required', 'admin.settings.form.abstractRequired'));
 		$this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($journal->getId())));
-		// $this->addCheck(new FormValidatorCustom($this, 'authorsGridContainer', 'required', 'user.subscriptions.form.typeIdValid', create_function('$submissionId', '$authorDao = DAORegistry::getDAO(\'AuthorDAO\'); return ($authorDao->getAuthorCountBySubmissionId($submissionId) != 0);'), array($request->getUserVar('submissionId'))));
 	}
 
 	/**
