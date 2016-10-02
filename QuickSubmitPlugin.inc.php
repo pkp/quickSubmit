@@ -25,6 +25,12 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 * 	the plugin will not be registered.
 	 */
 	function register($category, $path) {
+		AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON,
+			LOCALE_COMPONENT_APP_SUBMISSION,
+			LOCALE_COMPONENT_APP_AUTHOR,
+			LOCALE_COMPONENT_APP_EDITOR,
+			LOCALE_COMPONENT_PKP_SUBMISSION);
+
 		$success = parent::register($category, $path);
 		$this->addLocaleData();
 		return $success;

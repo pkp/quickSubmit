@@ -63,7 +63,7 @@
 
 	{include file="core:submission/submissionMetadataFormTitleFields.tpl"}
 	{include file="submission/submissionMetadataFormFields.tpl"}
-	{include file="core:submission/submissionMetadataFormFields.tpl"}
+
 
 	{fbvFormArea id="contributors"}
 		<!--  Contributors -->

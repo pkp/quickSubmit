@@ -16,12 +16,25 @@
 
 import('lib.pkp.classes.form.Form');
 
+// This class contains a static method to describe metadata field settings
+import('lib.pkp.controllers.grid.settings.metadata.MetadataGridHandler');
+import('classes.submission.SubmissionMetadataFormImplementation');
+
 class QuickSubmitForm extends Form {
 	/** @var $request object */
 	var $request;
 
+	/** @var $submission Submission */
+	var $submission;
+
+	/** @var $context Journal */
+	var $context;
+
 	/** @var $submissionId int */
 	var $submissionId;
+
+	/** @var SubmissionMetadataFormImplementation */
+	var $_metadataFormImplem;
 
 	/**
 	 * Constructor
@@ -32,11 +45,20 @@ class QuickSubmitForm extends Form {
 		parent::Form($plugin->getTemplatePath() . 'index.tpl');
 
 		$this->request = $request;
-		$journal =& $request->getJournal();
+		$this->context = $request->getContext();
+
+		$this->_metadataFormImplem = new SubmissionMetadataFormImplementation($this);
+
+		if ($request->getUserVar('submissionId')) {
+			$this->submissionId  = $request->getUserVar('submissionId');
+			$submissionDao = Application::getSubmissionDAO();
+			$this->submission = $submissionDao->getById($request->getUserVar('submissionId'), $this->context->getId(), false);
+
+			$this->_metadataFormImplem->addChecks($this->submission);
+		}
+
 		$this->addCheck(new FormValidatorPost($this));
-		$this->addCheck(new FormValidator($this, 'title', 'required', 'admin.settings.form.titleRequired'));
-		$this->addCheck(new FormValidator($this, 'abstract', 'required', 'admin.settings.form.abstractRequired'));
-		$this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($journal->getId())));
+		$this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->context->getId())));
 	}
 
 	/**
@@ -44,18 +66,24 @@ class QuickSubmitForm extends Form {
 	 * @return array
 	 */
 	function getLocaleFieldNames() {
-		return array('tempFileId', 'title', 'abstract', 'discipline', 'subjectClass', 'subject', 'coverageGeo', 'coverageChron', 'coverageSample', 'type', 'sponsor');
+		//$result = array_merge(array('title', 'abstract'), $this->_metadataFormImplem->getLocaleFieldNames());
+		return $this->_metadataFormImplem->getLocaleFieldNames();
 	}
 
 	/**
 	 * Display the form.
 	 */
 	function display() {
-		$request =& $this->request;
-		$journal =& $request->getJournal();
-
-		$templateMgr =& TemplateManager::getManager($request);
+		$templateMgr = TemplateManager::getManager($this->request);
 		$templateMgr->assign('abstractsRequired', true);
+
+		// Tell the form what fields are enabled (and which of those are required)
+		foreach (array_keys(MetadataGridHandler::getNames()) as $field) {
+			$templateMgr->assign($a = array(
+				$field . 'Enabled' => $this->context->getSetting($field . 'EnabledSubmission'),
+				$field . 'Required' => $this->context->getSetting($field . 'Required')
+			));
+		}
 
 		// manage post request
 		$issueId = $this->getData('issueId');
@@ -77,12 +105,12 @@ class QuickSubmitForm extends Form {
 
 		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($journal->getId());
+		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($this->context->getId());
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
 		// Get published Issues
 		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$issuesIterator = $issueDao->getPublishedIssues($journal->getId());
+		$issuesIterator = $issueDao->getPublishedIssues($this->context->getId());
 		$issues = $issuesIterator->toArray();
 		foreach ($issues as $issue) {
 			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
@@ -102,29 +130,9 @@ class QuickSubmitForm extends Form {
 		if (!parent::validate()) return false;
 
 		// Validate that the section ID is attached to this journal.
-		$request = Application::getRequest();
-		$context = $request->getContext();
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$section = $sectionDao->getById($this->getData('sectionId'), $context->getId());
+		$section = $sectionDao->getById($this->getData('sectionId'), $this->context->getId());
 		if (!$section) return false;
-
-		// Validate existance of authors
-		$submissionDao = Application::getSubmissionDAO();
-		$submission = $submissionDao->getById($this->getData('submissionId'), $context->getId(), false);
-
-		if (isset($submission)) {
-			$authors = $submission->getAuthors();
-			if (!(isset($authors) && is_array($authors) && count($authors) != 0)) {
-				$this->addError('authorsGridContainer', 'user.subscriptions.form.typeIdValid');
-				$this->errorFields['authorsGridContainer'] = 1;
-
-				return false;
-			}
-		}
-		else {
-
-			return false;
-		}
 
 		// Validate Issue if Published is selected
 		// if articleStatus == 1 => should have issueId
@@ -145,31 +153,31 @@ class QuickSubmitForm extends Form {
 	 * Initialize form data for a new form.
 	 */
 	function initData() {
-		$request =& $this->request;
-		$journal =& $request->getJournal();
-		$supportedSubmissionLocales = $journal->getSetting('supportedSubmissionLocales');
-
 		$this->_data = array();
 
 		if (!isset($this->submissionId)){
             // TODO: Manage no Sections exist
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
-			$sectionOptions = $sectionDao->getSectionTitles($journal->getId());
+			$sectionOptions = $sectionDao->getSectionTitles($this->context->getId());
 
             // Create and insert a new submission
 			$submissionDao = Application::getSubmissionDAO();
 			$submission = $submissionDao->newDataObject();
-			$submission->setContextId($journal->getId());
+			$submission->setContextId($this->context->getId());
             $submission->setStatus(STATUS_QUEUED);
             $submission->setSubmissionProgress(0);
 			$submission->stampStatusModified();
 			$submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
-			$submission->setCopyrightNotice($journal->getLocalizedSetting('copyrightNotice'), $this->getData('locale'));
+			//$submission->setCopyrightNotice($this->context->getLocalizedSetting('copyrightNotice'), $this->getData('locale'));
 			$submission->setSectionId(current(array_keys($sectionOptions)));
 
 			// Insert the submission
 			$this->submissionId = $submissionDao->insertObject($submission);
 			$this->setData('submissionId', $this->submissionId);
+
+			$this->_metadataFormImplem->initData($submission);
+
+			$this->submission = $submission;
 		}
 
 	}
@@ -178,33 +186,14 @@ class QuickSubmitForm extends Form {
 	 * Assign form data to user-submitted data.
 	 */
 	function readInputData() {
+		$this->_metadataFormImplem->readInputData();
+
 		$this->readUserVars(
 			array(
-				'tempFileId',
-				'destination',
 				'issueId',
-				'pages',
 				'sectionId',
-				'authors',
-				'primaryContact',
-				'title',
-				'abstract',
-				'discipline',
-				'subjectClass',
-				'subject',
-				'coverageGeo',
-				'coverageChron',
-				'coverageSample',
-				'type',
-				'language',
-				'sponsor',
-				'citations',
-				'title',
-				'abstract',
-				'locale',
 				'submissionId',
 				'articleStatus',
-				'issueId'
 			)
 		);
 
@@ -223,34 +212,13 @@ class QuickSubmitForm extends Form {
 	 * Save settings.
 	 */
 	function execute() {
-		// $articleDao =& DAORegistry::getDAO('ArticleDAO');
-
 		$application =& PKPApplication::getApplication();
-		$request =& $this->request;
-		$user =& $request->getUser();
-		$router =& $request->getRouter();
-		$journal =& $router->getContext($request);
 
-        // Get current submission
-        $submissionDao = Application::getSubmissionDAO();
-        $submission = $submissionDao->getById($this->getData('submissionId'));
+		// Execute submission metadata related operations.
+		$this->_metadataFormImplem->execute($this->submission, $this->request);
 
-        $submission->setJournalId($journal->getId());
-        $submission->setSectionId($this->getData('sectionId'));
-        $submission->setTitle($this->getData('title'), null); // Localized
-        $submission->setSubtitle($this->getData('subtitle'), null);
-        $submission->setAbstract($this->getData('abstract'), null); // Localized
-
-        //$article->setDiscipline($this->getData('discipline'), null); // Localized
-        //$article->setSubjectClass($this->getData('subjectClass'), null); // Localized
-        //$article->setSubject($this->getData('subject'), null); // Localized
-        //$article->setCoverageGeo($this->getData('coverageGeo'), null); // Localized
-        //$article->setCoverageChron($this->getData('coverageChron'), null); // Localized
-        //$article->setCoverageSample($this->getData('coverageSample'), null); // Localized
-        //$article->setType($this->getData('type'), null); // Localized
-        //$article->setSponsor($this->getData('sponsor'), null); // Localized
-        //$article->setCitations($this->getData('citations'));
-        //$article->setPages($this->getData('pages'));
+        $this->submission->setJournalId($this->context->getId());
+        $this->submission->setSectionId($this->getData('sectionId'));
 
         // articleStatus == 1 -> Published and to an Issue
         if ($this->getData('articleStatus') == 1) {
@@ -261,7 +229,7 @@ class QuickSubmitForm extends Form {
             $issue = $issueDao->getById($this->getData('issueId'));
 
 			$publishedSubmission = $publishedSubmissionDao->newDataObject();
-			$publishedSubmission->setId($submission->getId());
+			$publishedSubmission->setId($this->submission->getId());
 			$publishedSubmission->setDatePublished(strtotime($issue->getDatePublished()));
 			$publishedSubmission->setSequence(REALLY_BIG_NUMBER);
 			$publishedSubmission->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
@@ -269,122 +237,23 @@ class QuickSubmitForm extends Form {
 			$publishedSubmissionDao->insertObject($publishedSubmission);
 
 
-            $submission->setStatus(STATUS_PUBLISHED);
-            // $submission->setIssueId($issue->getId());
-
+            $this->submission->setStatus(STATUS_PUBLISHED);
         }
 
-        $submission->setDateSubmitted(Core::getCurrentDate());
-        $submissionDao->updateObject($submission);
+        $this->submission->setDateSubmitted(Core::getCurrentDate());
 
-        //$article = $articleDao -> newDataObject();
-        //$article->setJournalId($journal->getId());
-        //$article->setSectionId($this->getData('sectionId'));
-        //$article->setTitle($this->getData('title'), null); // Localized
-        //$article->setAbstract($this->getData('abstract'), null); // Localized
-        ////$article->setDiscipline($this->getData('discipline'), null); // Localized
-        ////$article->setSubjectClass($this->getData('subjectClass'), null); // Localized
-        ////$article->setSubject($this->getData('subject'), null); // Localized
-        ////$article->setCoverageGeo($this->getData('coverageGeo'), null); // Localized
-        ////$article->setCoverageChron($this->getData('coverageChron'), null); // Localized
-        ////$article->setCoverageSample($this->getData('coverageSample'), null); // Localized
-        ////$article->setType($this->getData('type'), null); // Localized
-        ////$article->setSponsor($this->getData('sponsor'), null); // Localized
-        ////$article->setCitations($this->getData('citations'));
-        ////$article->setPages($this->getData('pages'));
-
-        //// Set some default values so the ArticleDAO doesn't complain when adding this article
-        //$article->setDateSubmitted(Core::getCurrentDate());
-        //$article->setStatus($this->getData('destination') == 'queue' ? STATUS_QUEUED : STATUS_PUBLISHED);
-        //$article->setSubmissionProgress(0);
-        //$article->stampStatusModified();
-        //$article->setCurrentRound(1);
-        //$article->setFastTracked(1);
-        //$article->setHideAuthor(0);
-
-        //// Insert the article to get it's ID
-        //$articleDao->insertObject($article);
-        //$articleId = $article->getId();
+		$submissionDao = Application::getSubmissionDAO();
+        $submissionDao->updateObject($this->submission);
 
         //// Setup default copyright/license metadata after status is set and authors are attached.
-        //$article->initializePermissions();
-        //$articleDao->updateLocaleFields($article);
+        //$submission->initializePermissions();
+        //$submissionDao->updateLocaleFields($submission);
 
         //// Index article.
         //import('classes.search.ArticleSearchIndex');
         //$articleSearchIndex = new ArticleSearchIndex();
-        //$articleSearchIndex->articleMetadataChanged($article);
+        //$articleSearchIndex->articleMetadataChanged($submission);
         //$articleSearchIndex->articleChangesFinished();
-	}
-
-	/**
-	 * Schedule an article for publication in a given issue
-	 */
-	function scheduleForPublication($articleId, $issueId) {
-		$sectionEditorSubmissionDao =& DAORegistry::getDAO('SectionEditorSubmissionDAO');
-		$publishedArticleDao =& DAORegistry::getDAO('PublishedArticleDAO');
-		$sectionDao =& DAORegistry::getDAO('SectionDAO');
-		$issueDao =& DAORegistry::getDAO('IssueDAO');
-
-		$request =& $this->request;
-		$journal =& $request->getJournal();
-		$submission =& $sectionEditorSubmissionDao->getSectionEditorSubmission($articleId);
-		$publishedArticle =& $publishedArticleDao->getPublishedArticleByArticleId($articleId);
-		$issue =& $issueDao->getIssueById($issueId, $journal->getId());
-
-		if ($issue) {
-			// Schedule against an issue.
-			if ($publishedArticle) {
-				$publishedArticle->setIssueId($issueId);
-				$publishedArticleDao->updatePublishedArticle($publishedArticle);
-			} else {
-				$publishedArticle = new PublishedArticle();
-				$publishedArticle->setId($submission->getId());
-				$publishedArticle->setIssueId($issueId);
-				$publishedArticle->setDatePublished($this->getData('datePublished'));
-				$publishedArticle->setSeq(REALLY_BIG_NUMBER);
-				$publishedArticle->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
-
-				$publishedArticleDao->insertPublishedArticle($publishedArticle);
-
-				// Resequence the articles.
-				$publishedArticleDao->resequencePublishedArticles($submission->getSectionId(), $issueId);
-
-				// If we're using custom section ordering, and if this is the first
-				// article published in a section, make sure we enter a custom ordering
-				// for it. (Default at the end of the list.)
-				if ($sectionDao->customSectionOrderingExists($issueId)) {
-					if ($sectionDao->getCustomSectionOrder($issueId, $submission->getSectionId()) === null) {
-						$sectionDao->insertCustomSectionOrder($issueId, $submission->getSectionId(), REALLY_BIG_NUMBER);
-						$sectionDao->resequenceCustomSectionOrders($issueId);
-					}
-				}
-			}
-		} else {
-			if ($publishedArticle) {
-				// This was published elsewhere; make sure we don't
-				// mess up sequencing information.
-				$publishedArticleDao->resequencePublishedArticles($submission->getSectionId(), $publishedArticle->getIssueId());
-				$publishedArticleDao->deletePublishedArticleByArticleId($articleId);
-			}
-		}
-		$submission->stampStatusModified();
-
-		if ($issue && $issue->getPublished()) {
-			$submission->setStatus(STATUS_PUBLISHED);
-			if ($publishedArticle && !$publishedArticle->getDatePublished()) {
-				$publishedArticle->setDatePublished($issue->getDatePublished());
-			}
-		} else {
-			$submission->setStatus(STATUS_QUEUED);
-		}
-
-		$sectionEditorSubmissionDao->updateSectionEditorSubmission($submission);
-		// Call initialize permissions again to check if copyright year needs to be initialized.
-		$articleDao =& DAORegistry::getDAO('ArticleDAO');
-		$article = $articleDao->getArticle($articleId);
-		$article->initializePermissions();
-		$articleDao->updateLocaleFields($article);
 	}
 }
 
