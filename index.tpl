@@ -48,7 +48,6 @@
 	{if $submissionId}<input type="hidden" name="submissionId" value="{$submissionId|escape}"/>{/if}
 
 	{csrf}
-	{include file="common/formErrors.tpl"}
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
 
 	{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus_uncheched label='Unpublished' translate=false}
