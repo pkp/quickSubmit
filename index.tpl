@@ -12,34 +12,14 @@
 {assign var="pageTitle" value="plugins.importexport.quickSubmit.displayName"}
 {include file="common/header.tpl"}
 {/strip}
+<script src="{$baseUrl}/plugins/importexport/quickSubmit/js/QuickSubmitFormHandler.js"></script>
 
-{literal}
-<script type="text/javascript">
-
-	$(function(){
-		$('input[type=radio][name=articleStatus]').change(function() {
-			if ($(this).is(':checked') && this.value == '0') {
-				$('#issueId').prop('disabled', 'disabled');
-			}
-			else if ($(this).is(':checked') && this.value == '1') {
-				$('#issueId').attr('disabled', false);
-			}
-			else {
-				$('#issueId').prop('disabled', 'disabled');
-			}
-		});
-
-		$('input[type=radio][name=articleStatus]').trigger('change');	
-	
-		// Attach the JS form handler.
-		$('#quickSubmitForm').pkpHandler(
-			'$.pkp.controllers.form.FormHandler'
-		);	
-	});
-
+<script>
+	$(function() {ldelim}
+		// Attach the form handler.
+		$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
+	{rdelim});
 </script>
-
-{/literal}
 
 <div id="quickSubmitPlugin" class="pkp_page_content pkp_pageQuickSubmit"> 
 	<p>{translate key="plugins.importexport.quickSubmit.descriptionLong"}</p>
