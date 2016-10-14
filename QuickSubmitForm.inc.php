@@ -136,7 +136,7 @@ class QuickSubmitForm extends Form {
 		// if articleStatus == 1 => should have issueId
 		if ($this->getData('articleStatus') == 1) {
 			if (!$this->getData('issueId') || $this->getData('issueId') == 0) {
-				$this->addError('issueId', 'user.subscriptions.form.typeIdValid');
+				$this->addError('issueId', 'author.submit.form.sectionRequired');
 				$this->errorFields['issueId'] = 1;
 
 				return false;
