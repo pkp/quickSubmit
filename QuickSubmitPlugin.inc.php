@@ -54,8 +54,8 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	}
 
 	function display($args, $request) {
-		$templateMgr =& TemplateManager::getManager();
-		$templateMgr->register_function('plugin_url', array(&$this, 'smartyPluginUrl'));
+		$templateMgr = TemplateManager::getManager();
+		$templateMgr->register_function('plugin_url', array($this, 'smartyPluginUrl'));
 
 		if (count($args) == 1) {
 			if ($args[0] == 'saveSubmit'){
@@ -68,13 +68,9 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		else {
 			$this->import('QuickSubmitForm');
 
-			$form =& new QuickSubmitForm($this, $request);
+			$form = new QuickSubmitForm($this, $request);
 
-			if ($form->isLocaleResubmit()) {
-				$form->readInputData();
-			} else {
-				$form->initData();
-			}
+            $form->initData();
 			$form->display();
 		}
 	}
