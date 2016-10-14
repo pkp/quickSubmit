@@ -210,12 +210,12 @@ class QuickSubmitForm extends Form {
 	 * Save settings.
 	 */
 	function execute() {
-		$application =& PKPApplication::getApplication();
+		$application = PKPApplication::getApplication();
 
 		// Execute submission metadata related operations.
 		$this->_metadataFormImplem->execute($this->submission, $this->request);
 
-        $this->submission->setJournalId($this->context->getId());
+        // $this->submission->setJournalId($this->context->getId());
         $this->submission->setSectionId($this->getData('sectionId'));
 
         // articleStatus == 1 -> Published and to an Issue
