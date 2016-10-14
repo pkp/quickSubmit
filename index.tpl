@@ -41,46 +41,48 @@
 
 {/literal}
 
+<div id="quickSubmitPlugin" class="pkp_page_content pkp_pagequickSubmit"> 
+	<p>{translate key="plugins.importexport.quickSubmit.descriptionLong"}</p>
 
-<p>{translate key="plugins.importexport.quickSubmit.descriptionLong"}</p>
+	<form class="pkp_form" id="quickSubmitForm" method="post" action="{plugin_url path="saveSubmit"}">
+		{if $submissionId}<input type="hidden" name="submissionId" value="{$submissionId|escape}"/>{/if}
 
-<form class="pkp_form" id="quickSubmitForm" method="post" action="{plugin_url path="saveSubmit"}">
-	{if $submissionId}<input type="hidden" name="submissionId" value="{$submissionId|escape}"/>{/if}
+		{csrf}
+		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
 
-	{csrf}
-	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
-
-	{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus_uncheched label='Unpublished' translate=false}
-	{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus_cheched label='Published' translate=false}
+		{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus_uncheched label='Unpublished' translate=false}
+		{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus_cheched label='Published' translate=false}
 	
 
-	{assign var=issueDescription value="editor.publishedIssues"}
-	{fbvElement type="select" id="issueId" label=$issueDescription from=$issueOptions selected=$issueId translate=false disabled=true size=$fbvStyles.size.MEDIUM}
+		{assign var=issueDescription value="editor.publishedIssues"}
+		{fbvElement type="select" id="issueId" label=$issueDescription from=$issueOptions selected=$issueId translate=false disabled=true size=$fbvStyles.size.MEDIUM}
 
 
-	{include file="submission/form/section.tpl" readOnly=$formParams.readOnly}
+		{include file="submission/form/section.tpl" readOnly=$formParams.readOnly}
 
-	{include file="core:submission/submissionMetadataFormTitleFields.tpl"}
-	{include file="submission/submissionMetadataFormFields.tpl"}
+		{include file="core:submission/submissionMetadataFormTitleFields.tpl"}
+		{include file="submission/submissionMetadataFormFields.tpl"}
 
 
-	{fbvFormArea id="contributors"}
-		<!--  Contributors -->
-		{url|assign:authorGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.users.author.AuthorGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}
-		{load_url_in_div id="authorsGridContainer" url=$authorGridUrl}
+		{fbvFormArea id="contributors"}
+			<!--  Contributors -->
+			{url|assign:authorGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.users.author.AuthorGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}
+			{load_url_in_div id="authorsGridContainer" url=$authorGridUrl}
 
-		{$additionalContributorsFields}
-	{/fbvFormArea}
+			{$additionalContributorsFields}
+		{/fbvFormArea}
 	 
-	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="submitStep2FormNotification"}
+		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="submitStep2FormNotification"}
 
-	{url|assign:submissionFilesGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.files.submission.SubmissionWizardFilesGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}
-	{load_url_in_div id="submissionFilesGridDiv" url=$submissionFilesGridUrl}
+		{url|assign:submissionFilesGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.files.submission.SubmissionWizardFilesGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}
+		{load_url_in_div id="submissionFilesGridDiv" url=$submissionFilesGridUrl}
 
-	{capture assign="cancelUrl"}{plugin_url path="cancelSubmit" submissionId="$submissionId"}{/capture}
+		{capture assign="cancelUrl"}{plugin_url path="cancelSubmit" submissionId="$submissionId"}{/capture}
 
-	{fbvFormButtons id="quickSubmit" submitText="common.save" cancelUrl=$cancelUrl cancelUrlTarget="_self"}
+		{fbvFormButtons id="quickSubmit" submitText="common.save" cancelUrl=$cancelUrl cancelUrlTarget="_self"}
 
-</form>
+	</form>
+</div>
+
 
 {include file="common/footer.tpl"}
