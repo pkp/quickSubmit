@@ -91,13 +91,11 @@ class QuickSubmitForm extends Form {
 			if ($issueId == 1) {
 				$templateMgr->assign('articleStatus_cheched', '');
 				$templateMgr->assign('articleStatus_uncheched', 'checked');
-			}
-			else {
+			} else {
 				$templateMgr->assign('articleStatus_cheched', 'checked');
 				$templateMgr->assign('articleStatus_uncheched', '');
 			}
-		}
-		else {
+		} else {
 			$templateMgr->assign('articleStatus_uncheched', 'checked');
 			$templateMgr->assign('articleStatus_cheched', '');
 		}

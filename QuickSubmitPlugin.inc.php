@@ -60,12 +60,10 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		if (count($args) == 1) {
 			if ($args[0] == 'saveSubmit'){
 				$this->saveSubmit($args, $request);
-			}
-			else if ($args[0] == 'cancelSubmit'){
+			} else if ($args[0] == 'cancelSubmit'){
 				$this->cancelSubmit($args, $request);
 			}
-		}
-		else {
+		} else {
 			$this->import('QuickSubmitForm');
 
 			$form = new QuickSubmitForm($this, $request);
@@ -101,8 +99,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		if($form->validate()){
 			$form->execute();
 			$templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
-		}
-		else {
+		} else {
 			$form->display();
 		}
 	}
