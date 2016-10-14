@@ -248,6 +248,7 @@ class QuickSubmitForm extends Form {
             $this->submission->setStatus(STATUS_PUBLISHED);
         }
 
+        $this->submission->setStageId(WORKFLOW_STAGE_ID_PRODUCTION);
         $this->submission->setDateSubmitted(Core::getCurrentDate());
 
 		$submissionDao = Application::getSubmissionDAO();

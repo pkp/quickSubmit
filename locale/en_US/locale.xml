@@ -31,4 +31,5 @@
 	<message key="plugins.importexport.quickSubmit.cancelDescription">Article creation was cancelled.</message>
   <message key="plugins.importexport.quickSubmit.published">Published</message>
   <message key="plugins.importexport.quickSubmit.unpublished">Unpublished</message>
+  <message key="plugins.importexport.quickSubmit.goToSubmission">Go to Submission</message>
 </locale>

@@ -41,7 +41,7 @@
 
 {/literal}
 
-<div id="quickSubmitPlugin" class="pkp_page_content pkp_pagequickSubmit"> 
+<div id="quickSubmitPlugin" class="pkp_page_content pkp_pageQuickSubmit"> 
 	<p>{translate key="plugins.importexport.quickSubmit.descriptionLong"}</p>
 
 	<form class="pkp_form" id="quickSubmitForm" method="post" action="{plugin_url path="saveSubmit"}">

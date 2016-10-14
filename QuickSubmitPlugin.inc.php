@@ -98,6 +98,9 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 		if($form->validate()){
 			$form->execute();
+            $templateMgr->assign('submissionId', $form->submissionId);
+            $templateMgr->assign('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
+
 			$templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
 		} else {
 			$form->display();
