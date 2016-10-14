@@ -81,8 +81,15 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		$form->readInputData();
 
 		$form->cancel();
-		$templateMgr->display($this->getTemplatePath() . 'submitCancelled.tpl');
 
+        // Submission removal notification.
+        $notificationContent = __('notification.removedSubmission');
+        $currentUser = $request->getUser();
+        $notificationMgr = new NotificationManager();
+        $notificationMgr->createTrivialNotification($currentUser->getId(), NOTIFICATION_TYPE_SUCCESS, array('contents' => $notificationContent));
+
+        $path = array('plugin', $this->getName());
+        $request->redirect(null, null, null, $path, null, null);
 	}
 
 	/**
