@@ -46,7 +46,7 @@
 			};
     $.pkp.classes.Helper.inherits(
 			$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler,
-			$.pkp.controllers.form.AjaxFormHandler);
+			$.pkp.controllers.form.FormHandler);
 
 
     /**
