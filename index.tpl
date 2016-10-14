@@ -50,8 +50,10 @@
 		{csrf}
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
 
-		{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus_uncheched label='Unpublished' translate=false}
-		{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus_cheched label='Published' translate=false}
+		{fbvFormSection list="true"}
+			{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus_uncheched label='Unpublished' translate=false}
+			{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus_cheched label='Published' translate=false}
+		{/fbvFormSection}
 	
 
 		{assign var=issueDescription value="editor.publishedIssues"}
