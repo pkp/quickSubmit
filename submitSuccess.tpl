@@ -13,6 +13,9 @@
 {include file="common/header.tpl"}
 {/strip}
 
-<p>{translate key="plugins.importexport.quickSubmit.successDescription"}  <a href="{plugin_url}">{translate key="plugins.importexport.quickSubmit.successReturn"}</a></p>
+<div class="pkp_page_content pkp_successQuickSubmit">
+	<p>{translate key="plugins.importexport.quickSubmit.successDescription"}  <a href="{plugin_url}">{translate key="plugins.importexport.quickSubmit.successReturn"}</a></p>
+</div>
+
 
 {include file="common/footer.tpl"}
