@@ -99,11 +99,9 @@ class QuickSubmitForm extends Form {
 		// manage post request
 		$issueId = $this->getData('issueId');
 
-        // TODO defstat: Why at callback - after errors, the Unpublished radio button is always selected. JQuery?
-
         $templateMgr->assign('articleStatus_unchecked', 'checked');
         $templateMgr->assign('articleStatus_checked', '');
-        if (isset($issueId) && $issueId != 1) {
+        if (isset($issueId) && $issueId != 0) {
             $templateMgr->assign('articleStatus_checked', 'checked');
             $templateMgr->assign('articleStatus_unchecked', '');
         }
