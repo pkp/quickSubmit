@@ -59,6 +59,12 @@ class QuickSubmitForm extends Form {
 
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->context->getId())));
+
+		// Validation checks for this form
+		$supportedSubmissionLocales = $this->context->getSupportedSubmissionLocales();
+		if (!is_array($supportedSubmissionLocales) || count($supportedSubmissionLocales) < 1) 
+			$supportedSubmissionLocales = array($this->context->getPrimaryLocale());
+		$this->addCheck(new FormValidatorInSet($this, 'locale', 'required', 'submission.submit.form.localeRequired', $supportedSubmissionLocales));
 	}
 
 	/**
@@ -76,6 +82,11 @@ class QuickSubmitForm extends Form {
 	function display() {
 		$templateMgr = TemplateManager::getManager($this->request);
 		$templateMgr->assign('abstractsRequired', true);
+
+		$templateMgr->assign(
+			'supportedSubmissionLocaleNames',
+			$this->context->getSupportedSubmissionLocaleNames()
+		);
 
 		// Tell the form what fields are enabled (and which of those are required)
 		foreach (array_keys(MetadataGridHandler::getNames()) as $field) {
@@ -112,6 +123,7 @@ class QuickSubmitForm extends Form {
 
 
 		// Get section for this context
+
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
 		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($this->context->getId());
 		$templateMgr->assign('sectionOptions', $sectionOptions);
@@ -164,6 +176,25 @@ class QuickSubmitForm extends Form {
 		$this->_data = array();
 
 		if (!isset($this->submissionId)){
+			$supportedSubmissionLocales = $this->context->getSupportedSubmissionLocales();
+
+			// Try these locales in order until we find one that's
+			// supported to use as a default.
+			$tryLocales = array(
+				$this->getFormLocale(), // Current form locale
+				AppLocale::getLocale(), // Current UI locale
+				$this->context->getPrimaryLocale(), // Context locale
+				$supportedSubmissionLocales[array_shift(array_keys($supportedSubmissionLocales))] // Fallback: first one on the list
+			);
+
+			foreach ($tryLocales as $locale) {
+				if (in_array($locale, $supportedSubmissionLocales)) {
+					// Found a default to use
+					$this->_data['locale'] = $locale;
+					break;
+				}
+			}
+
             // TODO: Manage no Sections exist
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
 			$sectionOptions = $sectionDao->getSectionTitles($this->context->getId());
@@ -202,6 +233,7 @@ class QuickSubmitForm extends Form {
 				'sectionId',
 				'submissionId',
 				'articleStatus',
+				'locale'
 			)
 		);
 
@@ -248,6 +280,7 @@ class QuickSubmitForm extends Form {
             $this->submission->setStatus(STATUS_PUBLISHED);
         }
 
+		$this->submission->setLocale($this->getData('locale'));
         $this->submission->setStageId(WORKFLOW_STAGE_ID_PRODUCTION);
         $this->submission->setDateSubmitted(Core::getCurrentDate());
 

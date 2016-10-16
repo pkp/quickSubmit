@@ -38,6 +38,18 @@
 			{fbvElement type="select" id="issueId" label=$issueDescription from=$issueOptions selected=$issueId translate=false disabled=true size=$fbvStyles.size.MEDIUM}
 		{/fbvFormSection}
 
+		{* There is only one supported submission locale; choose it invisibly *}
+		{if count($supportedSubmissionLocaleNames) == 1}
+			{foreach from=$supportedSubmissionLocaleNames item=localeName key=locale}
+				{fbvElement type="hidden" id="locale" value=$locale}
+			{/foreach}
+
+		{* There are several submission locales available; allow choice *}
+		{else}
+			{fbvFormSection title="submission.submit.submissionLocale" size=$fbvStyles.size.MEDIUM for="locale"}
+				{fbvElement label="submission.submit.submissionLocaleDescription" required="true" type="select" id="locale" from=$supportedSubmissionLocaleNames selected=$locale translate=false}
+			{/fbvFormSection}
+		{/if}
 
 		{include file="submission/form/section.tpl" readOnly=$formParams.readOnly}
 
