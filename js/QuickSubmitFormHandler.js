@@ -13,10 +13,9 @@
  *
  * @brief Handle the quickSubmit form.
  */
-(function($) {
-
+(function($) { // TODO defstat: According to https://pkp.sfu.ca/wiki/index.php?title=JavaScript_coding_conventions maybe should be added to templates/common/minifiedScripts.tpl. Where is that file?
     /** @type {Object} */
-    $.pkp.plugins.importexport =
+    $.pkp.plugins.importexport = // TODO defstat: Maybe should be added to the lib\pkp\js\classes\Helper.js file along the other declarations. 
         $.pkp.plugins.importexport
         || {};
 
@@ -38,10 +37,6 @@
 			function ($form, options) {
 
 			    this.parent($form, options);
-
-			    //$(':radio, :checkbox', $form).click(
-                //        this.callbackWrapper(this.updatePatternFormElementStatus_));
-			    //ping our handler to set the form's initial state.
 			    this.callbackWrapper(this.updatePatternFormElementStatus_());
 			};
     $.pkp.classes.Helper.inherits(
