@@ -17,7 +17,7 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Select whether to add new submissions to an existing issue or to leave in the editing queue.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">QuickSubmit Plugin</message>
 	<message key="plugins.importexport.quickSubmit.description">One-step submission plugin</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">This plugin allows you to quickly add complete submissions to the editing queue or directly into an issue.</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">This plugin allows you to quickly add complete submissions to the production stage or directly into an issue.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">You must select an issue to add the article to.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Leave unpublished</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Save and Create Another</message>
