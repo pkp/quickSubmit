@@ -62,7 +62,7 @@ class QuickSubmitForm extends Form {
 
 		// Validation checks for this form
 		$supportedSubmissionLocales = $this->context->getSupportedSubmissionLocales();
-		if (!is_array($supportedSubmissionLocales) || count($supportedSubmissionLocales) < 1) 
+		if (!is_array($supportedSubmissionLocales) || count($supportedSubmissionLocales) < 1)
 			$supportedSubmissionLocales = array($this->context->getPrimaryLocale());
 		$this->addCheck(new FormValidatorInSet($this, 'locale', 'required', 'submission.submit.form.localeRequired', $supportedSubmissionLocales));
 	}
@@ -83,6 +83,9 @@ class QuickSubmitForm extends Form {
 		$templateMgr = TemplateManager::getManager($this->request);
 		$templateMgr->assign('abstractsRequired', true);
 
+		//$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
+		//$templateMgr->assign('userRoles', $userRoles);
+
 		$templateMgr->assign(
 			'supportedSubmissionLocaleNames',
 			$this->context->getSupportedSubmissionLocaleNames()
@@ -91,7 +94,7 @@ class QuickSubmitForm extends Form {
 		// Tell the form what fields are enabled (and which of those are required)
 		foreach (array_keys(MetadataGridHandler::getNames()) as $field) {
 			$templateMgr->assign($a = array(
-				$field . 'Enabled' => $this->context->getSetting($field . 'EnabledSubmission'),
+				$field . 'Enabled' => $this->context->getSetting($field . 'EnabledWorkflow'),
 				$field . 'Required' => $this->context->getSetting($field . 'Required')
 			));
 		}
@@ -99,6 +102,23 @@ class QuickSubmitForm extends Form {
 		// manage post request
 		$issueId = $this->getData('issueId');
 
+		// Production
+		$dispatcher = $this->request->getDispatcher();
+		import('lib.pkp.classes.linkAction.request.AjaxModal');
+		$schedulePublicationLinkAction = new LinkAction(
+			'schedulePublication',
+			new AjaxModal(
+				$dispatcher->url(
+					$this->request, ROUTE_COMPONENT, null,
+					'tab.issueEntry.IssueEntryTabHandler',
+					'publicationMetadata', null,
+					array('submissionId' => $this->submissionId, 'stageId' => WORKFLOW_STAGE_ID_PRODUCTION)
+				),
+				__('submission.issueEntry.publicationMetadata')
+			),
+			__('editor.article.schedulePublication')
+		);
+		$templateMgr->assign('schedulePublicationLinkAction', $schedulePublicationLinkAction);
 
 		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');

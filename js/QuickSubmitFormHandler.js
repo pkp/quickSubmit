@@ -54,14 +54,19 @@
 			function () {
 			    $('input[type=radio][name=articleStatus]').change(function () {
 			        if ($(this).is(':checked') && this.value == '0') {
-			            $('#issueId').prop('disabled', 'disabled');
+			        	// $('#issueId').prop('disabled', 'disabled');
+			        	$("#schedulePublicationDiv").hide();
+
 			        }
 			        else if ($(this).is(':checked') && this.value == '1') {
-			            $('#issueId').attr('disabled', false);
+			        	//$('#issueId').attr('disabled', false);
+			        	$("#schedulePublicationDiv").show();
 			        }
 			        else {
-			            $('#issueId').prop('disabled', 'disabled');
-			        }
+			        	//$('#issueId').prop('disabled', 'disabled');
+			        	$("#schedulePublicationDiv").hide();
+			    	}
+			        
 			    });
 
 			    $('input[type=radio][name=articleStatus]').trigger('change');
