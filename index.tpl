@@ -31,8 +31,14 @@
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
 
 		{fbvFormSection list="true"}
+		{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus|compare:false label='plugins.importexport.quickSubmit.unpublished' translate="true"}
+		{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus|compare:true label='plugins.importexport.quickSubmit.published' translate="true"}
+			
+			{*
 			{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus_unchecked label='plugins.importexport.quickSubmit.unpublished' translate="true"}
 			{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus_checked label='plugins.importexport.quickSubmit.published' translate="true"}
+			*}
+			
 
 			{assign var=issueDescription value="editor.publishedIssues"}
 			{fbvElement type="select" id="issueId" label=$issueDescription from=$issueOptions selected=$issueId translate=false disabled=true size=$fbvStyles.size.MEDIUM}

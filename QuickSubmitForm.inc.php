@@ -99,29 +99,8 @@ class QuickSubmitForm extends Form {
 		// manage post request
 		$issueId = $this->getData('issueId');
 
-        $templateMgr->assign('articleStatus_unchecked', 'checked');
-        $templateMgr->assign('articleStatus_checked', '');
-        if (isset($issueId) && $issueId != 0) {
-            $templateMgr->assign('articleStatus_checked', 'checked');
-            $templateMgr->assign('articleStatus_unchecked', '');
-        }
-
-        //if (isset($issueId)) {
-        //    if ($issueId == 1) {
-        //        $templateMgr->assign('articleStatus_checked', '');
-        //        $templateMgr->assign('articleStatus_unchecked', 'checked');
-        //    } else {
-        //        $templateMgr->assign('articleStatus_checked', 'checked');
-        //        $templateMgr->assign('articleStatus_unchecked', '');
-        //    }
-        //} else {
-        //    $templateMgr->assign('articleStatus_unchecked', 'checked');
-        //    $templateMgr->assign('articleStatus_checked', '');
-        //}
-
 
 		// Get section for this context
-
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
 		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($this->context->getId());
 		$templateMgr->assign('sectionOptions', $sectionOptions);
