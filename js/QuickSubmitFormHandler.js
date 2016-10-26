@@ -13,11 +13,7 @@
  *
  * @brief Handle the quickSubmit form.
  */
-(function($) { // TODO defstat: According to https://pkp.sfu.ca/wiki/index.php?title=JavaScript_coding_conventions maybe should be added to templates/common/minifiedScripts.tpl. Where is that file?
-    /** @type {Object} */
-    $.pkp.plugins.importexport = // TODO defstat: Maybe should be added to the lib\pkp\js\classes\Helper.js file along the other declarations. 
-        $.pkp.plugins.importexport
-        || {};
+(function($) { // TODO defstat: Should I add that to registry/minifiedScripts.txt? No other plugin script there.
 
     $.pkp.plugins.importexport.quickSubmit =
         $.pkp.plugins.importexport.quickSubmit
