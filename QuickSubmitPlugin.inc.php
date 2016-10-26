@@ -57,20 +57,20 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		$templateMgr = TemplateManager::getManager();
 		$templateMgr->register_function('plugin_url', array($this, 'smartyPluginUrl'));
 
-		if (count($args) == 1) {
-			if ($args[0] == 'saveSubmit'){
-				$this->saveSubmit($args, $request);
-			} else if ($args[0] == 'cancelSubmit'){
-				$this->cancelSubmit($args, $request);
-			}
-		} else {
-			$this->import('QuickSubmitForm');
-
-			$form = new QuickSubmitForm($this, $request);
-
-            $form->initData();
-			$form->display();
-		}
+		switch (array_shift($args)) {
+            case 'saveSubmit':
+                $this->saveSubmit($args, $request);
+                break;
+            case 'cancelSubmit':
+                $this->cancelSubmit($args, $request);
+                break;
+            default:
+                $this->import('QuickSubmitForm');
+                $form = new QuickSubmitForm($this, $request);
+                $form->initData();
+                $form->display();
+                break;
+        }
 	}
 
 	function cancelSubmit($args, $request) {
