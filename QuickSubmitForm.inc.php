@@ -277,6 +277,26 @@ class QuickSubmitForm extends Form {
             $this->submission->setStatus(STATUS_PUBLISHED);
         }
 
+		// Copy GalleyFiles to Submission Files
+		// Get Galley Files by SubmissionId
+		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
+		$galleyFilesRes = $galleyDao->getBySubmissionId($this->submissionId);
+
+		if (!is_null($galleyFilesRes)) {
+			$galleyFiles = $galleyFilesRes->toAssociativeArray();
+
+			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
+			import('lib.pkp.classes.file.SubmissionFileManager');
+			$submissionFileManager = new SubmissionFileManager($this->context->getId(), $this->submissionId);
+
+			foreach($galleyFiles as $galleyFile) {
+				$newFile = $galleyFile->getFile();
+
+				$revisionNumber = $submissionFileDao->getLatestRevisionNumber($newFile->getFileId());
+				$submissionFileManager->copyFileToFileStage($newFile->getFileId(), $revisionNumber, SUBMISSION_FILE_SUBMISSION, null, true);
+			}
+		}
+
 		$this->submission->setLocale($this->getData('locale'));
         $this->submission->setStageId(WORKFLOW_STAGE_ID_PRODUCTION);
         $this->submission->setDateSubmitted(Core::getCurrentDate());

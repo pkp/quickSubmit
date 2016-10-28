@@ -68,8 +68,8 @@
 			{$additionalContributorsFields}
 		{/fbvFormArea}
 
-		{url|assign:submissionFilesGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.files.submission.SubmissionWizardFilesGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}
-		{load_url_in_div id="submissionFilesGridDiv" url=$submissionFilesGridUrl}
+		{url|assign:representationsGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.articleGalleys.ArticleGalleyGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}
+		{load_url_in_div id="formatsGridContainer"|uniqid url=$representationsGridUrl}
 
 		{capture assign="cancelUrl"}{plugin_url path="cancelSubmit" submissionId="$submissionId"}{/capture}
 

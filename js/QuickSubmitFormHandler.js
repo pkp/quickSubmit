@@ -19,8 +19,6 @@
         $.pkp.plugins.importexport.quickSubmit
         || { js: {} };
 
-
-
     /**
 	 * @constructor
 	 *
