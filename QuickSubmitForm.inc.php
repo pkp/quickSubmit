@@ -36,6 +36,9 @@ class QuickSubmitForm extends Form {
 	/** @var SubmissionMetadataFormImplementation */
 	var $_metadataFormImplem;
 
+	/** @var $publishedSubmission PublishedArticle */
+	var $publishedSubmission;
+
 	/**
 	 * Constructor
 	 * @param $plugin object
@@ -55,10 +58,14 @@ class QuickSubmitForm extends Form {
 			$this->submission = $submissionDao->getById($request->getUserVar('submissionId'), $this->context->getId(), false);
 
 			$this->_metadataFormImplem->addChecks($this->submission);
+
+			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
+			$this->publishedSubmission = $publishedSubmissionDao->getPublishedArticleByArticleId($this->submissionId, $this->context->getId(), false);
 		}
 
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->context->getId())));
+		// $this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->context->getId())));
 
 		// Validation checks for this form
 		$supportedSubmissionLocales = $this->context->getSupportedSubmissionLocales();
@@ -120,21 +127,60 @@ class QuickSubmitForm extends Form {
 		);
 		$templateMgr->assign('schedulePublicationLinkAction', $schedulePublicationLinkAction);
 
+		// Cover image delete link action
+		$coverImage = $this->submission->getCoverImage();
+		if ($coverImage) {
+			import('lib.pkp.classes.linkAction.LinkAction');
+			import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
+			$router = $this->request->getRouter();
+			$deleteCoverImageLinkAction = new LinkAction(
+				'deleteCoverImage',
+				new RemoteActionConfirmationModal(
+					$this->request->getSession(),
+					__('common.confirmDelete'), null,
+					$router->url(
+						$this->request, null, null, 'deleteCoverImage', null, array(
+							'coverImage' => $coverImage,
+							'submissionId' => $this->submission->getId(),
+							// This action can be performed during any stage,
+							// but we have to provide a stage id to make calls
+							// to IssueEntryTabHandler
+							'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,
+						)
+					),
+					'modal_delete'
+				),
+				__('common.delete'),
+				null
+			);
+			$templateMgr->assign('deleteCoverImageLinkAction', $deleteCoverImageLinkAction);
+		}
+
 		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
 		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($this->context->getId());
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
 		// Get published Issues
+		$templateMgr->assign('hasIssues', true);
+
 		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$issuesIterator = $issueDao->getPublishedIssues($this->context->getId());
+		$issuesIterator = $issueDao->getIssues($this->context->getId());
 		$issues = $issuesIterator->toArray();
-		foreach ($issues as $issue) {
-			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
+		if (count($issues) == 0) {
+			$templateMgr->assign('hasIssues', false);
 		}
-		$issueOptions[0] = __('plugins.importexport.common.filter.issue');
-		ksort($issueOptions);
-		$templateMgr->assign('issueOptions', $issueOptions);
+
+		// Get published Issues
+		//$issueDao = DAORegistry::getDAO('IssueDAO');
+		//$issuesIterator = $issueDao->getPublishedIssues($this->context->getId());
+		//$issues = $issuesIterator->toArray();
+		//foreach ($issues as $issue) {
+		//    $issueOptions[$issue->getId()] = $issue->getIssueIdentification();
+		//}
+		//$issueOptions[0] = __('plugins.importexport.common.filter.issue');
+		//ksort($issueOptions);
+		//$templateMgr->assign('issueOptions', $issueOptions);
 
 		parent::display();
 	}
@@ -147,20 +193,21 @@ class QuickSubmitForm extends Form {
 		if (!parent::validate()) return false;
 
 		// Validate that the section ID is attached to this journal.
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$section = $sectionDao->getById($this->getData('sectionId'), $this->context->getId());
-		if (!$section) return false;
+		//$sectionDao = DAORegistry::getDAO('SectionDAO');
+		//$section = $sectionDao->getById($this->getData('sectionId'), $this->context->getId());
+		//if (!$section) return false;
 
 		// Validate Issue if Published is selected
-		// if articleStatus == 1 => should have issueId
-		if ($this->getData('articleStatus') == 1) {
-			if (!$this->getData('issueId') || $this->getData('issueId') == 0) {
-				$this->addError('issueId', 'author.submit.form.sectionRequired');
-				$this->errorFields['issueId'] = 1;
+        // if articleStatus == 1 => should have issueId
+        if ($this->getData('articleStatus') == 1) {
+            if ($this->publishedSubmission->getIssueId() == 0) {
+				$this->addError('articleStatus', __('author.submit.form.issueRequired'));
+                //$this->addError('errorFieldForIssueId', 'author.submit.form.issueRequired');
+                $this->errorFields['articleStatus'] = 1;
 
-				return false;
-			}
-		}
+                return false;
+            }
+        }
 
 		return true;
 
@@ -204,7 +251,6 @@ class QuickSubmitForm extends Form {
             $submission->setSubmissionProgress(0);
 			$submission->stampStatusModified();
 			$submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
-			//$submission->setCopyrightNotice($this->context->getLocalizedSetting('copyrightNotice'), $this->getData('locale'));
 			$submission->setSectionId(current(array_keys($sectionOptions)));
 
 			// Insert the submission
@@ -214,6 +260,28 @@ class QuickSubmitForm extends Form {
 			$this->_metadataFormImplem->initData($submission);
 
 			$this->submission = $submission;
+
+			// Insert PublishedArticle
+			// Get Issue
+			$issueDao = DAORegistry::getDAO('IssueDAO');
+			$issuesIterator = $issueDao->getIssues($this->context->getId());
+			$issues = $issuesIterator->toArray();
+			if (count($issues) != 0) {
+				// Get First issue
+				$issue = $issues[0];
+
+				// Insert new publishedArticle
+				$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
+				$publishedSubmission = $publishedSubmissionDao->newDataObject();
+				$publishedSubmission->setId($this->submission->getId());
+				$publishedSubmission->setDatePublished(strtotime($issue->getDatePublished()));
+				$publishedSubmission->setSequence(REALLY_BIG_NUMBER);
+				$publishedSubmission->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
+				$publishedSubmission->setIssueId($issue->getId());
+				$publishedSubmissionDao->insertObject($publishedSubmission);
+
+				$this->publishedSubmission = $publishedSubmission;
+			}
 		}
 
 	}
@@ -226,7 +294,7 @@ class QuickSubmitForm extends Form {
 
 		$this->readUserVars(
 			array(
-				'issueId',
+				//'issueId',
 				'sectionId',
 				'submissionId',
 				'articleStatus',
@@ -259,23 +327,14 @@ class QuickSubmitForm extends Form {
 
         // articleStatus == 1 -> Published and to an Issue
         if ($this->getData('articleStatus') == 1) {
-            $publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
-
-            // Get Issue
-            $issueDao = DAORegistry::getDAO('IssueDAO');
-            $issue = $issueDao->getById($this->getData('issueId'));
-
-			$publishedSubmission = $publishedSubmissionDao->newDataObject();
-			$publishedSubmission->setId($this->submission->getId());
-			$publishedSubmission->setDatePublished(strtotime($issue->getDatePublished()));
-			$publishedSubmission->setSequence(REALLY_BIG_NUMBER);
-			$publishedSubmission->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
-			$publishedSubmission->setIssueId($issue->getId());
-			$publishedSubmissionDao->insertObject($publishedSubmission);
-
-
             $this->submission->setStatus(STATUS_PUBLISHED);
-        }
+        } else { // if not published - remove the default PublishedArticle
+			if (!is_null($this->publishedSubmission)) {
+				$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
+				$publishedSubmissionDao->deletePublishedArticleById($this->publishedSubmission->getId());
+			}
+
+		}
 
 		// Copy GalleyFiles to Submission Files
 		// Get Galley Files by SubmissionId

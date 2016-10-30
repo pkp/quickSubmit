@@ -18,7 +18,10 @@
 	$(function() {ldelim}
 		// Attach the form handler.
 		$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
+
+		
 	{rdelim});
+	
 </script>
 
 <div id="quickSubmitPlugin" class="pkp_page_content pkp_pageQuickSubmit"> 
@@ -30,16 +33,18 @@
 		{csrf}
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
 
-		{fbvFormSection list="true"}
-			{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus|compare:false label='plugins.importexport.quickSubmit.unpublished' translate="true"}
-			{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus|compare:true label='plugins.importexport.quickSubmit.published' translate="true"}
+		{if $hasIssues}
+			{fbvFormSection id='articlePublishedRadio' list="true"}
+				{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus|compare:false label='plugins.importexport.quickSubmit.unpublished' translate="true"}
+				{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus|compare:true label='plugins.importexport.quickSubmit.published' translate="true"}
 
-			<div id="schedulePublicationDiv" class="">
-				<ul class="">
-					<li>{include file="linkAction/linkAction.tpl" action=$schedulePublicationLinkAction}</li>
-				</ul>
-			</div>
-		{/fbvFormSection}
+				<div id="schedulePublicationDiv" class="">
+					<ul class="">
+						<li>{include file="linkAction/linkAction.tpl" action=$schedulePublicationLinkAction}</li>
+					</ul>
+				</div>
+			{/fbvFormSection}
+		{/if}
 
 		{* There is only one supported submission locale; choose it invisibly *}
 		{if count($supportedSubmissionLocaleNames) == 1}

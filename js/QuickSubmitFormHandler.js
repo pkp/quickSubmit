@@ -38,6 +38,9 @@
 			$.pkp.controllers.form.FormHandler);
 
 
+
+
+
     /**
 	 * Callback to replace the element's content.
 	 *
