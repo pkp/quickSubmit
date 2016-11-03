@@ -12,17 +12,8 @@
   -->
 
 <locale name="de_DE" full_name="Deutsch (Deutschland)">
-	<message key="plugins.importexport.quickSubmit.addToExisting">Zu einer existierenden Ausgabe hinzufügen:</message>
-	<message key="plugins.importexport.quickSubmit.chooseDestination">Ziel der Einreichung</message>
-	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Wählen Sie aus, ob neue Einreichungen zu einer existierenden Ausgabe hinzugefügt werden sollen oder in der Redaktions-Warteschlange bleiben sollen.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Schnelleinreichungs-Plug-In</message>
 	<message key="plugins.importexport.quickSubmit.description">Ein-Schritt-Einreichungs-Plug-In</message>
-	<message key="plugins.importexport.quickSubmit.issueRequired">Sie müssen eine Ausgabe auswählen, der der Artikel hinzugefügt werden soll.</message>
-	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Unveröffentlicht lassen</message>
-	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Speichern und weitere anlegen</message>
-	<message key="plugins.importexport.quickSubmit.submissionData">Daten der Einreichung</message>	
-	<message key="plugins.importexport.quickSubmit.submissionDescription">Wählen Sie die Datei aus, die als fertige Fahne für diese Einreichung verwendet werden soll.</message>	
-	<message key="plugins.importexport.quickSubmit.submissionRequired">Sie müssen für diese Einreichung eine Datei hochladen.</message>	
 	<message key="plugins.importexport.quickSubmit.success">Artikel hinzugefügt</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Anlegen des Artikels war erfolgreich.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Zum Schnelleinreichungs-Plug-In zurückkehren.</message>

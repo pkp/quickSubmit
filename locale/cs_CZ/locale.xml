@@ -13,17 +13,8 @@
   -->
 
 <locale name="cs_CZ" full_name="Čeština">
-	<message key="plugins.importexport.quickSubmit.addToExisting">Přidat do existujícího čísla:</message>
-	<message key="plugins.importexport.quickSubmit.chooseDestination">Destinace příspěvku</message>
-	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Zvolte, zda přidat nový příspěvek do existujícího čísla nebo ho ponechat ve frontě k editování.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Plugin Rychlé podání (QuickSubmit)</message>
 	<message key="plugins.importexport.quickSubmit.description">Plugin odeslání v jednom kroku</message>
-	<message key="plugins.importexport.quickSubmit.issueRequired">Musíte zvolit číslo, do kterého má být článek přidán.</message>
-	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Ponechat nepublikovaný</message>
-	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Uložit a vytvořit další</message>
-	<message key="plugins.importexport.quickSubmit.submissionData">Data příspěvku</message>	
-	<message key="plugins.importexport.quickSubmit.submissionDescription">Zvolte soubor, který se má použít jako finální soubor sazebnice pro tento příspěvek.</message>	
-	<message key="plugins.importexport.quickSubmit.submissionRequired">Musíte nahrát soubor pro tento příspěvek.</message>	
 	<message key="plugins.importexport.quickSubmit.success">Článek přidán</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Vytvoření článku bylo úspěšné.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Vrátit se do pluginu QuickSubmit.</message>

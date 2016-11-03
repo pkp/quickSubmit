@@ -13,17 +13,8 @@
   -->
 
 <locale name="tr_TR" full_name="Türkçe">
-	<message key="plugins.importexport.quickSubmit.addToExisting">Mevcut bir sayı ekleyin:</message>
-	<message key="plugins.importexport.quickSubmit.chooseDestination">Gönderi Hedefi</message>
-	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Mevcut bir sayıya veya düzeltme sırasına yeni bir gönderi eklemek için seçiniz.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Hızlı Gönderi Eklentisi</message>
 	<message key="plugins.importexport.quickSubmit.description">Tek Adımda Gönderi Eklentisi</message>
-	<message key="plugins.importexport.quickSubmit.issueRequired">Makale eklemek için bir sayı seçmelisiniz.</message>
-	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Yayımlanmamışları Bırak</message>
-	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Kaydet ve Yeni Bir Tane Oluştur</message>
-	<message key="plugins.importexport.quickSubmit.submissionData">Gönderi Verisi</message>	
-	<message key="plugins.importexport.quickSubmit.submissionDescription">Bu gönderi için dizinden kullanılabilir son sürüm dosya  seçiniz.</message>	
-	<message key="plugins.importexport.quickSubmit.submissionRequired">Bu gönderi için bir dosya yüklemelisiniz.</message>	
 	<message key="plugins.importexport.quickSubmit.success">Makale Kaydedildi</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Makale başarılı bir şekilde oluşturuldu.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Hızlı Gönderi Eklentisine geri dön.</message>
