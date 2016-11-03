@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">آیا میخواخید ساب میشن جدید را به یک شماره مجله موجود اضافه کنید یا آنرا در نوبت انتشار قرار دهید.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">پلاگین ساب میت سریع</message>
 	<message key="plugins.importexport.quickSubmit.description">پلاگین ساب میشن تک مرحله ای</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">با این پلاگین میتوانید یک ساب میشن کامل را بسرعت به یک شماره موجود مجله اضافه کنید و یا آنرا در نوبت انتشار قرار دهید.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">میبایست یک شماره مجله برای افزدن به آن انتخاب کنید.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">منتشر نشود</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">ذخیره و ایحاد نویسنده</message>

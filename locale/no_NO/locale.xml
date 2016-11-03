@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Velg om den nye innleveringen skal inn i et eksisterende nummer, eller om den skal legges i kø for redaksjonell behandling.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">QuickSubmit programutvidelse</message>
 	<message key="plugins.importexport.quickSubmit.description">Ett-stegs innlevering</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Denne programutvidelsen gjør det mulig å raskt legge komplette innleveringer til redaksjonell behandling eller rett i et nummer.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Du må velge et nummer å legge artikkelen til i.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">La være upublisert</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Lagre og lag en ny</message>

@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Pilih apakah akan menambah penyerahan baru untuk isu yang sudah ada atau biarkan dalam antrian edit.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Plugin QuickSubmit</message>
 	<message key="plugins.importexport.quickSubmit.description">Satu langkah Plugin Penyerahan</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Plugin ini mengizinkan Anda untuk menambah penyerahan secara cepat kedalam antrian edit atau secara langsung kedalam terbitan.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Anda harus memilih isu untuk menambah artikel.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Biarkan Tidak Diterbitkan</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Simpan dan Buat yang Lain</message>

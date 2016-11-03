@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Escolha se deseja incluir novas submissões a uma edição já existente ou deixar na fila de edição.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Submissão rápida</message>
 	<message key="plugins.importexport.quickSubmit.description">Plugin de submissão em 1 passo</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Este plugin permite incluir rapidamente submissões completas na fila de edição ou diretamente a uma edição existente.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Escolha uma edição na qual incluir o artigo.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Deixar não publicado</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Salvar e criar outra</message>

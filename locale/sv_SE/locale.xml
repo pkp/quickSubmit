@@ -17,7 +17,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Välj huruvida bidraget ska knytas till ett befintligt nummer eller lämnas opublicerat.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">QuickSubmit-pluginet</message>
 	<message key="plugins.importexport.quickSubmit.description">Plugin för enstegs-inmatning.</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Med det här pluginet kan du snabbt lägga in hela bidrag i systemet och antingen knyta dem till ett befintligt nummer eller lämna dem opublicerade för framtida hantering.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Du måste välja ett nummer att knyta bidraget till.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Lämna opublicerat.</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Spara och skapa nytt</message>

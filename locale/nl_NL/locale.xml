@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Bepaal of nieuwe inzendingen aan een bestaand nummer worden toegevoegd of in de redactiewachtrij blijven.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Snel-inzenden plugin</message>
 	<message key="plugins.importexport.quickSubmit.description">Plugin voor inzenden in één stap</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Deze plugin maak het mogelijk om inzendingen aan de redactiewachtrij toe te voegen of direct in een nummer op te nemen.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">U moet een nummer kiezen om het artikel aan toe te voegen.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Ongepubliceerd laten</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Opslaan en nog een aanmaken</message>

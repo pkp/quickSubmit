@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">选择是将新稿件添加到已存在期刊还是编辑队列。</message>
 	<message key="plugins.importexport.quickSubmit.displayName">快速投稿插件</message>
 	<message key="plugins.importexport.quickSubmit.description">一步提交插件</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">该插件允许你快速的添加完整的稿件到编辑队列或者定向到期刊。</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">你必须为添加的文章选择一本期刊。</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Leave unpublished</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">保存并继续</message>

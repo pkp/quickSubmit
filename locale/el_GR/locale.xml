@@ -28,6 +28,6 @@
 	<message key="plugins.importexport.quickSubmit.success">Το άρθρο προστέθηκε</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Η δημιουργία του άρθρου ήταν επιτυχής.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Επιστροφή στο πρόσθετο QuickSubmit.</message>
-  <message key="plugins.importexport.quickSubmit.cancel">Ακύρωση δημιουργίας</message>
-  <message key="plugins.importexport.quickSubmit.cancelDescription">Η δημιουργία του άρθρου ακυρώθηκε.</message>
+	<message key="plugins.importexport.quickSubmit.cancel">Ακύρωση δημιουργίας</message>
+	<message key="plugins.importexport.quickSubmit.cancelDescription">Η δημιουργία του άρθρου ακυρώθηκε.</message>
 </locale>

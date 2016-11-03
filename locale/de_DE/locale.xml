@@ -17,7 +17,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Wählen Sie aus, ob neue Einreichungen zu einer existierenden Ausgabe hinzugefügt werden sollen oder in der Redaktions-Warteschlange bleiben sollen.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Schnelleinreichungs-Plug-In</message>
 	<message key="plugins.importexport.quickSubmit.description">Ein-Schritt-Einreichungs-Plug-In</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Dieses Plug-In ermöglicht es Ihnen, schnell komplette Einreichungen zur Redaktions-Warteschlange oder direkt zu einer Ausgabe hinzuzufügen.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Sie müssen eine Ausgabe auswählen, der der Artikel hinzugefügt werden soll.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Unveröffentlicht lassen</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Speichern und weitere anlegen</message>

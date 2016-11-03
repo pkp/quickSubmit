@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Выберите, хотите ли вы добавить новые материалы к существующему выпуску или оставить их в очереди на редактирование.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Плагин «Быстрая отправка»</message>
 	<message key="plugins.importexport.quickSubmit.description">Плагин отправки в один шаг</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Этот плагин позволяет вам быстро добавлять готовые материалы в очередь на редактирование или напрямую в выпуск.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Вы должны выбрать выпуск, к которому вы хотите добавить статью.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Оставить неопубликованным</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Сохранить и создать другой</message>

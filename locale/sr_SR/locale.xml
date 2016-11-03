@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Odredite da li predaja rada ide u postojeći broj ili u uredništvo.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Dodatak za brzu predaju radova</message>
 	<message key="plugins.importexport.quickSubmit.description">Dodatak za predaju radova u jednom koraku</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Ovaj dodatak omogućuje da brzo predate rad u uredništvo ili direktno u časopis.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Morate da odaberete broj da biste dodali članak u njega.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Ostavi neobjavljeno</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Sačuvaj i napravi novi</message>

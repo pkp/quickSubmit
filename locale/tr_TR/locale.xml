@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Mevcut bir sayıya veya düzeltme sırasına yeni bir gönderi eklemek için seçiniz.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Hızlı Gönderi Eklentisi</message>
 	<message key="plugins.importexport.quickSubmit.description">Tek Adımda Gönderi Eklentisi</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Bu eklenti düzeltme kuyuruğuna veya bir sayı içine hızlı gönderiler yapmanızı sağlar.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Makale eklemek için bir sayı seçmelisiniz.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Yayımlanmamışları Bırak</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Kaydet ve Yeni Bir Tane Oluştur</message>

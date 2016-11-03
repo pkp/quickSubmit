@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">既存の巻に新規に追加するか編集待ち状態にするか選択してください。</message>
 	<message key="plugins.importexport.quickSubmit.displayName">クイック投稿プラグイン</message>
 	<message key="plugins.importexport.quickSubmit.description">ワンステップ投稿プラグイン</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">編集待ちか巻号に直接投稿論文を追加することができます。</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">論文を追加する巻号を選択しなければなりません。</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">未公開のままにする</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">保存して継続</message>

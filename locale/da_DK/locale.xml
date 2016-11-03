@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Vælg om nye indsendelser skal føjes til eksisterende numre eller om de skal indsættes i redigeringskøen.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">QuickSubmit Plugin</message>
 	<message key="plugins.importexport.quickSubmit.description">Ettrins-manuskriptindleverings-plugin</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Med dette plugin kan du hurtigt tilføje færdiggjorte indlæg til den redaktionelle kø eller direkte til et givent nummer.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Vælg det nummer artiklen skal tilføjes.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Angiv som ikke publiceret</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Gem og opret ny</message>

@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Choisir soit d'ajouter les nouvelles soumissions à un numéro existant, soit de les laisser en révision.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Plugiciel QuickSubmit</message>
 	<message key="plugins.importexport.quickSubmit.description">Plugiciel de soumission en une étape</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Ce plugiciel permet d'ajouter rapidement des soumissions complètes en révision ou directement dans un numéro.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Vous devez sélectionner le numéro où l'article doit être ajouté.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Laisser non publié</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Enregistrer et en créer un autre</message>

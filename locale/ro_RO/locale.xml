@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Selectează dacă adaugi noi propuneri unui număr existent sau le lași în lista de editare.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Modulul TrimiteRapid</message>
 	<message key="plugins.importexport.quickSubmit.description">Modul de trimitere dintr-un singur pas</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Acest modul îți permite să pui repede propunerea în lista de editare sau să o adaugi direct unui număr.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Trebuie selectat un număr la care să adaugi articolul</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">Lasă-l nepublicat</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Salvează-l și creează altul</message>

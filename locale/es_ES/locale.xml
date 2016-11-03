@@ -18,7 +18,6 @@
 	<message key="plugins.importexport.quickSubmit.chooseDestinationDescription">Seleccione si desea añadir nuevos envíos a un número existente o si prefiere colocarlos en la cola de edición.</message>
 	<message key="plugins.importexport.quickSubmit.displayName">Módulo QuickSubmit</message>
 	<message key="plugins.importexport.quickSubmit.description">Módulo para el envío en un solo paso</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Este módulo permite añadir rápidamente envíos completos a la cola de edición o directamente a un número.</message>
 	<message key="plugins.importexport.quickSubmit.issueRequired">Seleccione un número en el que añadir el artículo.</message>
 	<message key="plugins.importexport.quickSubmit.leaveUnpublished">No publicar de momento</message>
 	<message key="plugins.importexport.quickSubmit.saveAndCreateAnother">Guardar y crear uno nuevo</message>
