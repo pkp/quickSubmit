@@ -64,6 +64,9 @@ class QuickSubmitPlugin extends ImportExportPlugin {
             case 'cancelSubmit':
                 $this->cancelSubmit($args, $request);
                 break;
+			case 'uploadImage':
+				$this->uploadImage($args, $request);
+                break;
             default:
                 $this->import('QuickSubmitForm');
                 $form = new QuickSubmitForm($this, $request);
@@ -90,6 +93,25 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
         $path = array('plugin', $this->getName());
         $request->redirect(null, null, null, $path, null, null);
+	}
+
+	function uploadImage($args, $request) {
+		$router = $request->getRouter();
+		$context = $request->getContext();
+		$user = $request->getUser();
+
+		import('lib.pkp.classes.file.TemporaryFileManager');
+		$temporaryFileManager = new TemporaryFileManager();
+		$temporaryFile = $temporaryFileManager->handleUpload('uploadedFile', $user->getId());
+		if ($temporaryFile) {
+			$json = new JSONMessage(true);
+			$json->setAdditionalAttributes(array(
+				'temporaryFileId' => $temporaryFile->getId()
+			));
+			return $json;
+		} else {
+			return new JSONMessage(false, __('common.uploadFailed'));
+		}
 	}
 
 	/**

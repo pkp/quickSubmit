@@ -19,13 +19,64 @@
 		// Attach the form handler.
 		$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
 
-		
+		$('#uploadImageForm').pkpHandler(
+		//$('#quickSubmitForm').pkpHandler(
+			'$.pkp.controllers.form.FileUploadFormHandler',
+			{ldelim}
+				$uploader: $('#coverImageUploader'),
+				$preview: $('#coverImagePreview'),
+				uploaderOptions: {ldelim}
+					uploadUrl: {plugin_url|json_encode path="uploadImage" escape=false},
+					baseUrl: {$baseUrl|json_encode},
+					filters: {ldelim}
+						mime_types : [
+							{ldelim} title : "Image files", extensions : "jpg,jpeg,png" {rdelim}
+						]
+					{rdelim},
+					multipart_params: {ldelim}
+						submissionId: {$submissionId|escape},
+						{if $stageId}stageId: {$stageId|escape},{/if}
+					{rdelim}
+				{rdelim}
+			{rdelim}
+		);
 	{rdelim});
 	
 </script>
 
 <div id="quickSubmitPlugin" class="pkp_page_content pkp_pageQuickSubmit"> 
 	<p>{translate key="plugins.importexport.quickSubmit.descriptionLong"}</p>
+
+	<form class="pkp_form" id="uploadImageForm" method="post">
+		{fbvFormArea id="coverImage" title="editor.issues.coverPage"}
+			{fbvFormSection}
+				{include file="controllers/fileUploadContainer.tpl" id="coverImageUploader"}
+				<input type="hidden" name="temporaryFileId" id="temporaryFileId" value="" />
+			{/fbvFormSection}
+			{fbvFormSection id="coverImagePreview"}
+				{if $coverImage != ''}
+					<div class="pkp_form_file_view pkp_form_image_view">
+						<div class="img">
+							<img src="{$publicFilesDir}/{$coverImage|escape:"url"}{'?'|uniqid}" {if $coverImageAlt !== ''} alt="{$coverImageAlt|escape}"{/if}>
+						</div>
+
+						<div class="data">
+							<span class="title">
+								{translate key="common.altText"}
+							</span>
+							<span class="value">
+								{fbvElement type="text" id="coverImageAltText" label="common.altTextInstructions" value=$coverImageAltText}
+							</span>
+
+							<div id="{$deleteCoverImageLinkAction->getId()}" class="actions">
+								{include file="linkAction/linkAction.tpl" action=$deleteCoverImageLinkAction contextId="issueForm"}
+							</div>
+						</div>
+					</div>
+				{/if}
+			{/fbvFormSection}
+		{/fbvFormArea}
+	</form> 
 
 	<form class="pkp_form" id="quickSubmitForm" method="post" action="{plugin_url path="saveSubmit"}">
 		{if $submissionId}<input type="hidden" name="submissionId" value="{$submissionId|escape}"/>{/if}
