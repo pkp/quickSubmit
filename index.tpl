@@ -17,7 +17,7 @@
 <script>
 	$(function() {ldelim}
 		// Attach the form handler.
-		$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
+		//$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
 
 		$('#uploadImageForm').pkpHandler(
 		//$('#quickSubmitForm').pkpHandler(
@@ -26,7 +26,7 @@
 				$uploader: $('#coverImageUploader'),
 				$preview: $('#coverImagePreview'),
 				uploaderOptions: {ldelim}
-					uploadUrl: {plugin_url|json_encode path="uploadImage" escape=false},
+					uploadUrl: {plugin_url|json_encode path="uploadCoverImage" escape=false},
 					baseUrl: {$baseUrl|json_encode},
 					filters: {ldelim}
 						mime_types : [
@@ -35,11 +35,13 @@
 					{rdelim},
 					multipart_params: {ldelim}
 						submissionId: {$submissionId|escape},
-						{if $stageId}stageId: {$stageId|escape},{/if}
+						stageId: {$stageId},
 					{rdelim}
 				{rdelim}
 			{rdelim}
 		);
+
+		$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
 	{rdelim});
 	
 </script>
@@ -77,7 +79,6 @@
 			{/fbvFormSection}
 		{/fbvFormArea}
 	</form> 
-
 	<form class="pkp_form" id="quickSubmitForm" method="post" action="{plugin_url path="saveSubmit"}">
 		{if $submissionId}
 			<input type="hidden" name="submissionId" value="{$submissionId|escape}"/>

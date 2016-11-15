@@ -33,6 +33,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 		$success = parent::register($category, $path);
 		$this->addLocaleData();
+
 		return $success;
 	}
 
@@ -64,9 +65,9 @@ class QuickSubmitPlugin extends ImportExportPlugin {
             case 'cancelSubmit':
                 $this->cancelSubmit($args, $request);
                 break;
-			case 'uploadImage':
-				$this->uploadImage($args, $request);
-                break;
+			case 'uploadCoverImage':
+				return $this->uploadImage($args, $request);
+                //break;
             default:
                 $this->import('QuickSubmitForm');
                 $form = new QuickSubmitForm($this, $request);
