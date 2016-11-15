@@ -64,6 +64,7 @@ class QuickSubmitForm extends Form {
 		}
 
 		$this->addCheck(new FormValidatorPost($this));
+		$this->addCheck(new FormValidatorCSRF($this));
 		$this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->context->getId())));
 		// $this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->context->getId())));
 
@@ -107,7 +108,7 @@ class QuickSubmitForm extends Form {
 		}
 
 		// manage post request
-		$issueId = $this->getData('issueId');
+		//$issueId = $this->getData('issueId');
 
 		// Production
 		$dispatcher = $this->request->getDispatcher();
@@ -171,6 +172,17 @@ class QuickSubmitForm extends Form {
 			$templateMgr->assign('hasIssues', false);
 		}
 
+		// Get Issues
+		$templateMgr->assign('issueOptions', $this->getIssueOptions($this->context));
+
+		// Get Published Article if exists
+		//$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
+		//$publishedArticle = $publishedArticleDao->getPublishedArticleByArticleId($this->submission->getId(), null, false);
+
+		//$templateMgr->assign('publishedArticle', $publishedArticle);
+
+
+
 		// Get published Issues
 		//$issueDao = DAORegistry::getDAO('IssueDAO');
 		//$issuesIterator = $issueDao->getPublishedIssues($this->context->getId());
@@ -181,6 +193,8 @@ class QuickSubmitForm extends Form {
 		//$issueOptions[0] = __('plugins.importexport.common.filter.issue');
 		//ksort($issueOptions);
 		//$templateMgr->assign('issueOptions', $issueOptions);
+
+		$templateMgr->assign('submission', $this->submission);
 
 		parent::display();
 	}
@@ -200,10 +214,9 @@ class QuickSubmitForm extends Form {
 		// Validate Issue if Published is selected
         // if articleStatus == 1 => should have issueId
         if ($this->getData('articleStatus') == 1) {
-            if ($this->publishedSubmission->getIssueId() == 0) {
-				$this->addError('articleStatus', __('author.submit.form.issueRequired'));
-                //$this->addError('errorFieldForIssueId', 'author.submit.form.issueRequired');
-                $this->errorFields['articleStatus'] = 1;
+            if ($this->getData('issueId') <= 0) {
+				$this->addError('issueId', __('plugins.importexport.quickSubmit.selectIssue'));
+                $this->errorFields['issueId'] = 1;
 
                 return false;
             }
@@ -248,7 +261,7 @@ class QuickSubmitForm extends Form {
 			$submission = $submissionDao->newDataObject();
 			$submission->setContextId($this->context->getId());
             $submission->setStatus(STATUS_QUEUED);
-            $submission->setSubmissionProgress(0);
+            $submission->setSubmissionProgress(1);
 			$submission->stampStatusModified();
 			$submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
 			$submission->setSectionId(current(array_keys($sectionOptions)));
@@ -263,25 +276,25 @@ class QuickSubmitForm extends Form {
 
 			// Insert PublishedArticle
 			// Get Issue
-			$issueDao = DAORegistry::getDAO('IssueDAO');
-			$issuesIterator = $issueDao->getIssues($this->context->getId());
-			$issues = $issuesIterator->toArray();
-			if (count($issues) != 0) {
-				// Get First issue
-				$issue = $issues[0];
+			//$issueDao = DAORegistry::getDAO('IssueDAO');
+			//$issuesIterator = $issueDao->getIssues($this->context->getId());
+			//$issues = $issuesIterator->toArray();
+			//if (count($issues) != 0) {
+			//    // Get First issue
+			//    $issue = $issues[0];
 
-				// Insert new publishedArticle
-				$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
-				$publishedSubmission = $publishedSubmissionDao->newDataObject();
-				$publishedSubmission->setId($this->submission->getId());
-				$publishedSubmission->setDatePublished(strtotime($issue->getDatePublished()));
-				$publishedSubmission->setSequence(REALLY_BIG_NUMBER);
-				$publishedSubmission->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
-				$publishedSubmission->setIssueId($issue->getId());
-				$publishedSubmissionDao->insertObject($publishedSubmission);
+			//    // Insert new publishedArticle
+			//    $publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
+			//    $publishedSubmission = $publishedSubmissionDao->newDataObject();
+			//    $publishedSubmission->setId($this->submission->getId());
+			//    $publishedSubmission->setDatePublished(strtotime($issue->getDatePublished()));
+			//    $publishedSubmission->setSequence(REALLY_BIG_NUMBER);
+			//    $publishedSubmission->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
+			//    $publishedSubmission->setIssueId($issue->getId());
+			//    $publishedSubmissionDao->insertObject($publishedSubmission);
 
-				$this->publishedSubmission = $publishedSubmission;
-			}
+			//    $this->publishedSubmission = $publishedSubmission;
+			//}
 		}
 
 	}
@@ -294,7 +307,12 @@ class QuickSubmitForm extends Form {
 
 		$this->readUserVars(
 			array(
-				//'issueId',
+				'issueId',
+				'pages',
+				'datePublished',
+				'licenseURL',
+				'copyrightHolder',
+				'copyrightYear',
 				'sectionId',
 				'submissionId',
 				'articleStatus',
@@ -328,13 +346,25 @@ class QuickSubmitForm extends Form {
         // articleStatus == 1 -> Published and to an Issue
         if ($this->getData('articleStatus') == 1) {
             $this->submission->setStatus(STATUS_PUBLISHED);
-        } else { // if not published - remove the default PublishedArticle
-			if (!is_null($this->publishedSubmission)) {
-				$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
-				$publishedSubmissionDao->deletePublishedArticleById($this->publishedSubmission->getId());
-			}
+			$this->submission->setCopyrightYear($this->getData('copyrightYear'));
+			$this->submission->setCopyrightHolder($this->getData('copyrightHolder'), null);
+			$this->submission->setLicenseURL($this->getData('licenseURL'));
+			$this->submission->setPages($this->getData('pages'));
 
-		}
+			// Insert new publishedArticle
+			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
+			$publishedSubmission = $publishedSubmissionDao->newDataObject();
+			$publishedSubmission->setId($this->submission->getId());
+			$publishedSubmission->setDatePublished($this->getData('datePublished'));
+			$publishedSubmission->setSequence(REALLY_BIG_NUMBER);
+			$publishedSubmission->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
+			$publishedSubmission->setIssueId($this->getData('issueId'));
+			$publishedSubmissionDao->insertObject($publishedSubmission);
+
+			$this->publishedSubmission = $publishedSubmission;
+        }
+
+
 
 		// Copy GalleyFiles to Submission Files
 		// Get Galley Files by SubmissionId
@@ -359,6 +389,7 @@ class QuickSubmitForm extends Form {
 		$this->submission->setLocale($this->getData('locale'));
         $this->submission->setStageId(WORKFLOW_STAGE_ID_PRODUCTION);
         $this->submission->setDateSubmitted(Core::getCurrentDate());
+		$this->submission->setSubmissionProgress(0);
 
 		$submissionDao = Application::getSubmissionDAO();
         $submissionDao->updateObject($this->submission);
@@ -372,6 +403,44 @@ class QuickSubmitForm extends Form {
         //$articleSearchIndex = new ArticleSearchIndex();
         //$articleSearchIndex->articleMetadataChanged($submission);
         //$articleSearchIndex->articleChangesFinished();
+	}
+
+	/**
+	 * builds the issue options pulldown for published and unpublished issues
+	 * @param $journal Journal
+	 * @return array Associative list of options for pulldown
+	 */
+	function getIssueOptions($journal) {
+		$issuesPublicationDates = array();
+		$issueOptions = array();
+		$journalId = $journal->getId();
+
+		$issueDao = DAORegistry::getDAO('IssueDAO');
+
+		$issueOptions[-1] =  '------    ' . __('editor.issues.futureIssues') . '    ------';
+		$issueIterator = $issueDao->getUnpublishedIssues($journalId);
+		while ($issue = $issueIterator->next()) {
+			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
+			$issuesPublicationDates[$issue->getId()] = Core::getCurrentDate();
+		}
+		$issueOptions[-2] = '------    ' . __('editor.issues.currentIssue') . '    ------';
+		$issuesIterator = $issueDao->getPublishedIssues($journalId);
+		$issues = $issuesIterator->toArray();
+		if (isset($issues[0]) && $issues[0]->getCurrent()) {
+			$issueOptions[$issues[0]->getId()] = $issues[0]->getIssueIdentification();
+			$issuesPublicationDates[$issues[0]->getId()] = $issues[0]->getDatePublished();
+			array_shift($issues);
+		}
+		$issueOptions[-3] = '------    ' . __('editor.issues.backIssues') . '    ------';
+		foreach ($issues as $issue) {
+			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
+			$issuesPublicationDates[$issue->getId()] = $issue->getDatePublished();
+		}
+
+		$templateMgr = TemplateManager::getManager($this->request);
+		$templateMgr->assign('issuesPublicationDates', json_encode($issuesPublicationDates));
+
+		return $issueOptions;
 	}
 }
 

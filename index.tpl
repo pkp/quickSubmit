@@ -28,30 +28,22 @@
 	<p>{translate key="plugins.importexport.quickSubmit.descriptionLong"}</p>
 
 	<form class="pkp_form" id="quickSubmitForm" method="post" action="{plugin_url path="saveSubmit"}">
-		{if $submissionId}<input type="hidden" name="submissionId" value="{$submissionId|escape}"/>{/if}
+		{if $submissionId}
+			<input type="hidden" name="submissionId" value="{$submissionId|escape}"/>
+		{/if}
+		{if $issuesPublicationDates}
+			{fbvElement type="hidden" id="issuesPublicationDates" value=$issuesPublicationDates}
+		{/if}
 
 		{csrf}
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
-
-		{if $hasIssues}
-			{fbvFormSection id='articlePublishedRadio' list="true"}
-				{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus|compare:false label='plugins.importexport.quickSubmit.unpublished' translate="true"}
-				{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus|compare:true label='plugins.importexport.quickSubmit.published' translate="true"}
-
-				<div id="schedulePublicationDiv" class="">
-					<ul class="">
-						<li>{include file="linkAction/linkAction.tpl" action=$schedulePublicationLinkAction}</li>
-					</ul>
-				</div>
-			{/fbvFormSection}
-		{/if}
 
 		{* There is only one supported submission locale; choose it invisibly *}
 		{if count($supportedSubmissionLocaleNames) == 1}
 			{foreach from=$supportedSubmissionLocaleNames item=localeName key=locale}
 				{fbvElement type="hidden" id="locale" value=$locale}
 			{/foreach}
-
+			
 		{* There are several submission locales available; allow choice *}
 		{else}
 			{fbvFormSection title="submission.submit.submissionLocale" size=$fbvStyles.size.MEDIUM for="locale"}
@@ -75,6 +67,42 @@
 
 		{url|assign:representationsGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.articleGalleys.ArticleGalleyGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}
 		{load_url_in_div id="formatsGridContainer"|uniqid url=$representationsGridUrl}
+
+		{* Publishing article section *}
+		{if $hasIssues}
+			{fbvFormSection id='articlePublishingSection' list="false"}
+				{fbvElement type="radio" id="articleUnpublished" name="articleStatus" value=0 checked=$articleStatus|compare:false label='plugins.importexport.quickSubmit.unpublished' translate="true"}
+				{fbvElement type="radio" id="articlePublished" name="articleStatus" value=1 checked=$articleStatus|compare:true label='plugins.importexport.quickSubmit.published' translate="true"}
+
+				{fbvFormSection id='schedulePublicationDiv' list="false"}
+					{fbvFormArea id="schedulingInformation" title="editor.article.scheduleForPublication"}
+						{fbvFormSection for="schedule"}
+							{fbvElement type="select" required=true id="issueId" from=$issueOptions selected=$issueId translate=false label="editor.article.scheduleForPublication.toBeAssigned"}
+						{/fbvFormSection}
+					{/fbvFormArea}
+
+					{fbvFormArea id="pagesInformation" title="editor.issues.pages"}
+						{fbvFormSection for="customExtras"}
+							{fbvElement type="text" id="pages" label="editor.issues.pages" value=$pages inline=true size=$fbvStyles.size.MEDIUM}
+						{/fbvFormSection}
+					{/fbvFormArea}
+
+					{fbvFormArea id="schedulingInformationDatePublished" title="editor.issues.published"}
+						{fbvFormSection for="publishedDate"}
+							{fbvElement type="text" required=true id="datePublished" value=$datePublished|date_format:$dateFormatShort translate=false label="editor.issues.published" inline=true size=$fbvStyles.size.MEDIUM class="datepicker"}
+						{/fbvFormSection}
+					{/fbvFormArea}
+
+					{fbvFormArea id="permissions" title="submission.permissions"}
+						{fbvElement type="text" id="licenseURL" label="submission.licenseURL" value=$licenseURL}
+						{fbvElement type="text" id="copyrightHolder" label="submission.copyrightHolder" value=$copyrightHolder multilingual=true size=$fbvStyles.size.MEDIUM inline=true}
+						{fbvElement type="text" id="copyrightYear" label="submission.copyrightYear" value=$copyrightYear size=$fbvStyles.size.SMALL inline=true}
+					{/fbvFormArea}
+				{/fbvFormSection}
+
+			{/fbvFormSection}
+		{/if}
+
 
 		{capture assign="cancelUrl"}{plugin_url path="cancelSubmit" submissionId="$submissionId"}{/capture}
 

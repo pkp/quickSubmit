@@ -67,6 +67,21 @@
 			    });
 
 			    $('input[type=radio][name=articleStatus]').trigger('change');
+
+			    $('#issueId').change(function () {
+			    	var array = JSON.parse($('#issuesPublicationDates').val());
+			    	if (!array[$('#issueId').val()]) {
+			    		//$("input[name='datePublished']").val('');
+			    		$("#schedulingInformationDatePublished").hide();
+			    	}
+			    	else {
+			    		$("input[name='datePublished']").datepicker("setDate", array[$('#issueId').val()]);
+			    		$("#ui-datepicker-div").hide();
+			    		$("#schedulingInformationDatePublished").show();
+			    	}
+			    });
+
+			    $('#issueId').trigger('change');
 			};
 
     /** @param {jQuery} $ jQuery closure. */

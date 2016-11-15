@@ -21,4 +21,5 @@
 	<message key="plugins.importexport.quickSubmit.published">Published</message>
 	<message key="plugins.importexport.quickSubmit.unpublished">Unpublished</message>
 	<message key="plugins.importexport.quickSubmit.goToSubmission">Go to Submission</message>
+	<message key="plugins.importexport.quickSubmit.selectIssue">An issue must be selected</message>
 </locale>
