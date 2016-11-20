@@ -47,7 +47,7 @@
 
 <div id="quickSubmitPlugin" class="pkp_page_content pkp_pageQuickSubmit"> 
 	<p>{translate key="plugins.importexport.quickSubmit.descriptionLong"}</p>
-
+	{*
 	<form class="pkp_form" id="uploadImageForm" method="post">
 		{fbvFormArea id="coverImage" title="editor.issues.coverPage"}
 			{fbvFormSection}
@@ -78,6 +78,8 @@
 			{/fbvFormSection}
 		{/fbvFormArea}
 	</form> 
+	*}
+	
 	<form class="pkp_form" id="quickSubmitForm" method="post" action="{plugin_url path="saveSubmit"}">
 		{if $submissionId}
 			<input type="hidden" name="submissionId" value="{$submissionId|escape}"/>
@@ -88,6 +90,18 @@
 
 		{csrf}
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
+
+		{fbvFormSection label="manager.setup.logo" class=$wizardClass}
+			{*
+			<div id="pageHeaderLogoImage">
+				{$imagesViews.pageHeaderLogoImage}
+			</div>
+			*}
+			
+			<div id="{$openCoverImageLinkAction->getId()}" class="pkp_linkActions">
+				{include file="linkAction/linkAction.tpl" action=$openCoverImageLinkAction contextId="appearanceForm"}
+			</div>
+		{/fbvFormSection}
 
 		{* There is only one supported submission locale; choose it invisibly *}
 		{if count($supportedSubmissionLocaleNames) == 1}

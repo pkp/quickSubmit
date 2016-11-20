@@ -39,6 +39,9 @@ class QuickSubmitForm extends Form {
 	/** @var $publishedSubmission PublishedArticle */
 	var $publishedSubmission;
 
+	/** @var $plugin QuickSubmitPlugin */
+	var $plugin;
+
 	/**
 	 * Constructor
 	 * @param $plugin object
@@ -49,6 +52,7 @@ class QuickSubmitForm extends Form {
 
 		$this->request = $request;
 		$this->context = $request->getContext();
+		$this->plugin = $plugin;
 
 		$this->_metadataFormImplem = new SubmissionMetadataFormImplementation($this);
 
@@ -130,6 +134,29 @@ class QuickSubmitForm extends Form {
 
 		// Cover image delete link action
 		$coverImage = $this->submission->getCoverImage();
+
+		import('lib.pkp.classes.linkAction.LinkAction');
+		import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
+		$router = $this->request->getRouter();
+		$openCoverImageLinkAction = new LinkAction(
+				'uploadFile',
+				new AjaxModal(
+					$router->url($this->request, null, null, 'importexport/plugin/QuickSubmitPlugin', 'uploadCoverImage', array('coverImage' => $coverImage,
+							'submissionId' => $this->submission->getId(),
+							// This action can be performed during any stage,
+							// but we have to provide a stage id to make calls
+							// to IssueEntryTabHandler
+							'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,)
+					),
+					__('common.upload'),
+					'modal_add_file'
+				),
+				__('common.upload'),
+				'add'
+			);
+		$templateMgr->assign('openCoverImageLinkAction', $openCoverImageLinkAction);
+
+
 		if ($coverImage) {
 			import('lib.pkp.classes.linkAction.LinkAction');
 			import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
@@ -155,6 +182,8 @@ class QuickSubmitForm extends Form {
 				null
 			);
 			$templateMgr->assign('deleteCoverImageLinkAction', $deleteCoverImageLinkAction);
+
+
 		}
 
 		// Get section for this context

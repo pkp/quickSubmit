@@ -66,7 +66,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
                 $this->cancelSubmit($args, $request);
                 break;
 			case 'uploadCoverImage':
-				return $this->uploadImage($args, $request);
+				return $this->showFileUploadForm($args, $request);
                 //break;
             default:
                 $this->import('QuickSubmitForm');
@@ -94,6 +94,22 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
         $path = array('plugin', $this->getName());
         $request->redirect(null, null, null, $path, null, null);
+	}
+
+	/**
+	 * Show the upload image form.
+	 * @param $request Request
+	 * @param $args array
+	 * @return JSONMessage JSON object
+	 */
+	function showFileUploadForm($args, $request) {
+		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
+		$imageUploadForm = new UploadImageForm();
+
+		//$imageUploadForm = $this->_getFileUploadForm($request);
+		$imageUploadForm->initData($request);
+
+		return new JSONMessage(true, $imageUploadForm->fetch($request));
 	}
 
 	function uploadImage($args, $request) {
