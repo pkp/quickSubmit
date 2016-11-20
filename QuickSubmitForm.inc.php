@@ -45,7 +45,7 @@ class QuickSubmitForm extends Form {
 	 * @param $request object
 	 */
 	function QuickSubmitForm($plugin, $request) {
-		parent::Form($plugin->getTemplatePath() . 'index.tpl');
+		parent::__construct($plugin->getTemplatePath() . 'index.tpl');
 
 		$this->request = $request;
 		$this->context = $request->getContext();
