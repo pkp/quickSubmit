@@ -20,7 +20,6 @@
 		//$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
 
 		$('#uploadImageForm').pkpHandler(
-		//$('#quickSubmitForm').pkpHandler(
 			'$.pkp.controllers.form.FileUploadFormHandler',
 			{ldelim}
 				$uploader: $('#coverImageUploader'),
@@ -34,8 +33,8 @@
 						]
 					{rdelim},
 					multipart_params: {ldelim}
-						submissionId: {$submissionId|escape},
-						stageId: {$stageId},
+						submissionId: {$submissionId|escape}
+						//stageId: {$stageId|escape},
 					{rdelim}
 				{rdelim}
 			{rdelim}
