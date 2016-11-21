@@ -67,7 +67,11 @@ class QuickSubmitPlugin extends ImportExportPlugin {
                 break;
 			case 'uploadCoverImage':
 				return $this->showFileUploadForm($args, $request);
+            case 'uploadImage':
+				return $this->uploadImage($args, $request);
                 //break;
+            case 'saveUploadedImage':
+				return $this->saveUploadedImage($request);
             default:
                 $this->import('QuickSubmitForm');
                 $form = new QuickSubmitForm($this, $request);
@@ -104,31 +108,45 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 */
 	function showFileUploadForm($args, $request) {
 		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
-		$imageUploadForm = new UploadImageForm();
-
-		//$imageUploadForm = $this->_getFileUploadForm($request);
+		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->initData($request);
 
 		return new JSONMessage(true, $imageUploadForm->fetch($request));
 	}
 
 	function uploadImage($args, $request) {
-		$router = $request->getRouter();
-		$context = $request->getContext();
-		$user = $request->getUser();
+        import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
+		$imageUploadForm = new UploadImageForm($this, $request);
+        $imageUploadForm->readInputData();
 
-		import('lib.pkp.classes.file.TemporaryFileManager');
-		$temporaryFileManager = new TemporaryFileManager();
-		$temporaryFile = $temporaryFileManager->handleUpload('uploadedFile', $user->getId());
-		if ($temporaryFile) {
-			$json = new JSONMessage(true);
-			$json->setAdditionalAttributes(array(
-				'temporaryFileId' => $temporaryFile->getId()
-			));
-			return $json;
-		} else {
-			return new JSONMessage(false, __('common.uploadFailed'));
-		}
+        $temporaryFileId = $imageUploadForm->uploadFile($request);
+        if ($temporaryFileId) {
+            $json = new JSONMessage(true);
+            $json->setAdditionalAttributes(array(
+                'temporaryFileId' => $temporaryFileId
+            ));
+            return $json;
+        } else {
+            return new JSONMessage(false, __('common.uploadFailed'));
+        }
+        //$router = $request->getRouter();
+	}
+
+    /**
+     * Save the new image file.
+     * @param $request Request.
+     */
+	function saveUploadedImage($request) {
+		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
+		$imageUploadForm = new UploadImageForm($this, $request);
+        $imageUploadForm->readInputData();
+
+        if ($imageUploadForm->execute($request)) {
+            $json = new JSONMessage(true);
+            return $json;
+        }
+
+        return new JSONMessage(false, __('common.uploadFailed'));
 	}
 
 	/**

@@ -17,29 +17,6 @@
 <script>
 	$(function() {ldelim}
 		// Attach the form handler.
-		//$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
-
-		$('#uploadImageForm').pkpHandler(
-			'$.pkp.controllers.form.FileUploadFormHandler',
-			{ldelim}
-				$uploader: $('#coverImageUploader'),
-				$preview: $('#coverImagePreview'),
-				uploaderOptions: {ldelim}
-					uploadUrl: {plugin_url|json_encode path="uploadCoverImage" escape=false},
-					baseUrl: {$baseUrl|json_encode},
-					filters: {ldelim}
-						mime_types : [
-							{ldelim} title : "Image files", extensions : "jpg,jpeg,png" {rdelim}
-						]
-					{rdelim},
-					multipart_params: {ldelim}
-						submissionId: {$submissionId|escape}
-						//stageId: {$stageId|escape},
-					{rdelim}
-				{rdelim}
-			{rdelim}
-		);
-
 		$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
 	{rdelim});
 	

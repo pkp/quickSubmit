@@ -17,12 +17,38 @@ import('lib.pkp.controllers.tab.settings.form.SettingsFileUploadForm');
 
 class UploadImageForm extends SettingsFileUploadForm {
 
+    /** @var $request object */
+	var $request;
+
+    /** @var $submissionId int */
+	var $submissionId;
+
+    /** @var $submission Submission */
+	var $submission;
+
+    /** @var $plugin QuickSubmitPlugin */
+	var $plugin;
+
+    /** @var $context Journal */
+	var $context;
+
 	/**
 	 * Constructor.
-	 * @param $imageSettingName string
+	 * @param $plugin object
+     * @param $request object
 	 */
-	function __construct() {
-		parent::__construct('controllers/tab/settings/form/newImageFileUploadForm.tpl');
+	function __construct($plugin, $request) {
+		parent::__construct($plugin->getTemplatePath() . 'uploadImageForm.tpl');
+
+        $this->plugin = $plugin;
+        $this->request = $request;
+        $this->context = $request->getContext();
+
+        $this->submissionId = $request->getUserVar('submissionId');
+
+        $submissionDao = Application::getSubmissionDAO();
+        $this->submission = $submissionDao->getById($request->getUserVar('submissionId'), $this->context->getId(), false);
+
 		//$this->setFileSettingName($imageSettingName);
 	}
 
@@ -53,6 +79,10 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @copydoc Form::initData()
 	 */
 	function initData($request) {
+        $templateMgr = TemplateManager::getManager($this->request);
+        $templateMgr->register_function('plugin_url', array($this->plugin, 'smartyPluginUrl'));
+        $templateMgr->assign('submissionId', $this->submissionId);
+
 		$context = $request->getContext();
 		$fileSettingName = $this->getFileSettingName();
 
@@ -82,6 +112,8 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @param $request Request.
 	 */
 	function execute($request) {
+        $submissionDao = Application::getSubmissionDAO();
+
 		$temporaryFile = $this->fetchTemporaryFile($request);
 
 		import('classes.file.PublicFileManager');
@@ -94,29 +126,24 @@ class UploadImageForm extends SettingsFileUploadForm {
 				return false;
 			}
 			$locale = AppLocale::getLocale();
-			$context = $request->getContext();
 
-			$uploadName = $this->getFileSettingName() . '_' . $locale . $extension;
-			if($publicFileManager->copyContextFile($context->getAssocType(), $context->getId(), $temporaryFile->getFilePath(), $uploadName)) {
+            $newFileName = 'article_' . $this->submissionId . '_cover_' . $locale . $publicFileManager->getImageExtension($temporaryFile->getFileType());
+
+			//$uploadName = $this->getFileSettingName() . '_' . $locale . $extension;
+			if($publicFileManager->copyJournalFile($this->context->getId(), $temporaryFile->getFilePath(), $newFileName)) {
+
+                $this->submission->setCoverImage($newFileName, $locale);
 
 				// Get image dimensions
-				$filePath = $publicFileManager->getContextFilesPath($context->getAssocType(), $context->getId());
-				list($width, $height) = getimagesize($filePath . '/' . $uploadName);
+				//$filePath = $publicFileManager->getContextFilesPath($context->getAssocType(), $context->getId());
+				//list($width, $height) = getimagesize($filePath . '/' . $uploadName);
 
-				$value = $context->getSetting($this->getFileSettingName());
 				$imageAltText = $this->getData('imageAltText');
 
-				$value[$locale] = array(
-					'name' => $temporaryFile->getOriginalFileName(),
-					'uploadName' => $uploadName,
-					'width' => $width,
-					'height' => $height,
-					'dateUploaded' => Core::getCurrentDate(),
-					'altText' => $imageAltText[$locale]
-				);
 
-				$settingsDao = $context->getSettingsDAO();
-				$settingsDao->updateSetting($context->getId(), $this->getFileSettingName(), $value, 'object', true);
+                $this->submission->setCoverImageAltText($this->getData('coverImageAltText'), $locale);
+
+                $submissionDao->updateObject($this->submission);
 
 				// Clean up the temporary file.
 				$this->removeTemporaryFile($request);
