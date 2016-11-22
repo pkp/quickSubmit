@@ -48,8 +48,6 @@ class UploadImageForm extends SettingsFileUploadForm {
 
         $submissionDao = Application::getSubmissionDAO();
         $this->submission = $submissionDao->getById($request->getUserVar('submissionId'), $this->context->getId(), false);
-
-		//$this->setFileSettingName($imageSettingName);
 	}
 
 
@@ -83,19 +81,42 @@ class UploadImageForm extends SettingsFileUploadForm {
         $templateMgr->register_function('plugin_url', array($this->plugin, 'smartyPluginUrl'));
         $templateMgr->assign('submissionId', $this->submissionId);
 
-		$context = $request->getContext();
-		$fileSettingName = $this->getFileSettingName();
+		$locale = AppLocale::getLocale();
+        $coverImage = $this->submission->getCoverImage($locale);
 
-		$image = $context->getSetting($fileSettingName);
-		$imageAltText = array();
-
-		$supportedLocales = AppLocale::getSupportedLocales();
-		foreach ($supportedLocales as $key => $locale) {
-			if (!isset($image[$key]['altText'])) continue;
-			$imageAltText[$key] = $image[$key]['altText'];
+        if ($coverImage) {
+			import('lib.pkp.classes.linkAction.LinkAction');
+			import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
+			$router = $this->request->getRouter();
+			$deleteCoverImageLinkAction = new LinkAction(
+				'deleteCoverImage',
+				new RemoteActionConfirmationModal(
+					$this->request->getSession(),
+					__('common.confirmDelete'), null,
+					$router->url(
+						$this->request, null, null, 'importexport/plugin/QuickSubmitPlugin', 'deleteCoverImage', array(
+							'coverImage' => $coverImage,
+							'submissionId' => $this->submission->getId(),
+							// This action can be performed during any stage,
+							// but we have to provide a stage id to make calls
+							// to IssueEntryTabHandler
+							'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,
+						)
+					),
+					'modal_delete'
+				),
+				__('common.delete'),
+				null
+			);
+			$templateMgr->assign('deleteCoverImageLinkAction', $deleteCoverImageLinkAction);
 		}
 
-		$this->setData('imageAltText', $imageAltText);
+		$this->setData('coverImage', $coverImage);
+        $this->setData('imageAltText', $this->submission->getCoverImageAltText($locale));
+
+
+
+		//$this->setData('imageAltText', $imageAltText);
 	}
 
 	/**
@@ -105,6 +126,36 @@ class UploadImageForm extends SettingsFileUploadForm {
 		$this->readUserVars(array('imageAltText'));
 
 		parent::readInputData();
+	}
+
+    /**
+     * An action to delete an article cover image.
+     * @param $args array
+     * @param $request PKPRequest
+     * @return JSONMessage JSON object
+     */
+    function deleteCoverImage($request) {
+		assert(!empty($request->getUserVar('coverImage')) && !empty($request->getUserVar('submissionId')));
+
+		$submissionDao = Application::getSubmissionDAO();
+		$file = $request->getUserVar('coverImage');
+
+		// Remove cover image and alt text from article settings
+		$locale = AppLocale::getLocale();
+		$this->submission->setCoverImage('', $locale);
+		$this->submission->setCoverImageAltText('', $locale);
+
+		$submissionDao->updateObject($this->submission);
+
+		// Remove the file
+		$publicFileManager = new PublicFileManager();
+		if ($publicFileManager->removeJournalFile($this->submission->getJournalId(), $file)) {
+			$json = new JSONMessage(true);
+			$json->setEvent('fileDeleted');
+			return $json;
+		} else {
+			return new JSONMessage(false, __('editor.article.removeCoverImageFileNotFound'));
+		}
 	}
 
 	/**

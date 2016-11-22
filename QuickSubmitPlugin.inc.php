@@ -72,6 +72,8 @@ class QuickSubmitPlugin extends ImportExportPlugin {
                 //break;
             case 'saveUploadedImage':
 				return $this->saveUploadedImage($request);
+            case 'deleteCoverImage':
+                return $this->deleteUploadedImage($request);
             default:
                 $this->import('QuickSubmitForm');
                 $form = new QuickSubmitForm($this, $request);
@@ -82,8 +84,6 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	}
 
 	function cancelSubmit($args, $request) {
-		$templateMgr = TemplateManager::getManager($request);
-
 		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
@@ -129,7 +129,6 @@ class QuickSubmitPlugin extends ImportExportPlugin {
         } else {
             return new JSONMessage(false, __('common.uploadFailed'));
         }
-        //$router = $request->getRouter();
 	}
 
     /**
@@ -147,6 +146,18 @@ class QuickSubmitPlugin extends ImportExportPlugin {
         }
 
         return new JSONMessage(false, __('common.uploadFailed'));
+	}
+
+    /**
+     * Save the new image file.
+     * @param $request Request.
+     */
+	function deleteUploadedImage($request) {
+		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
+		$imageUploadForm = new UploadImageForm($this, $request);
+        $imageUploadForm->readInputData();
+
+        return $imageUploadForm->deleteCoverImage($request);
 	}
 
 	/**
@@ -203,6 +214,14 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 */
 	function executeCLI($scriptName, &$args) {
 		fatalError('Not implemented');
+	}
+
+    /**
+     * Override the builtin to get the correct template path.
+     * @return string
+     */
+	function getTemplatePath() {
+		return parent::getTemplatePath() . 'templates/';
 	}
 }
 

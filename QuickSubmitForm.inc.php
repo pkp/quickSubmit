@@ -156,36 +156,6 @@ class QuickSubmitForm extends Form {
 			);
 		$templateMgr->assign('openCoverImageLinkAction', $openCoverImageLinkAction);
 
-
-		if ($coverImage) {
-			import('lib.pkp.classes.linkAction.LinkAction');
-			import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
-			$router = $this->request->getRouter();
-			$deleteCoverImageLinkAction = new LinkAction(
-				'deleteCoverImage',
-				new RemoteActionConfirmationModal(
-					$this->request->getSession(),
-					__('common.confirmDelete'), null,
-					$router->url(
-						$this->request, null, null, 'deleteCoverImage', null, array(
-							'coverImage' => $coverImage,
-							'submissionId' => $this->submission->getId(),
-							// This action can be performed during any stage,
-							// but we have to provide a stage id to make calls
-							// to IssueEntryTabHandler
-							'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,
-						)
-					),
-					'modal_delete'
-				),
-				__('common.delete'),
-				null
-			);
-			$templateMgr->assign('deleteCoverImageLinkAction', $deleteCoverImageLinkAction);
-
-
-		}
-
 		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
 		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($this->context->getId());
