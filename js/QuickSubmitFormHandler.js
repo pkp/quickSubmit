@@ -35,11 +35,7 @@
 			};
     $.pkp.classes.Helper.inherits(
 			$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler,
-			$.pkp.controllers.form.FormHandler);
-
-
-
-
+			$.pkp.controllers.form.FormHandler); 
 
     /**
 	 * Callback to replace the element's content.

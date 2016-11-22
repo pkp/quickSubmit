@@ -78,11 +78,16 @@ class QuickSubmitPlugin extends ImportExportPlugin {
                 $this->import('QuickSubmitForm');
                 $form = new QuickSubmitForm($this, $request);
                 $form->initData();
-                $form->display();
+                $form->display(false);
                 break;
         }
 	}
 
+    /**
+     * Cancels the submission
+     * @param $request Request
+     * @param $args array
+     */
 	function cancelSubmit($args, $request) {
 		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
@@ -114,6 +119,12 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		return new JSONMessage(true, $imageUploadForm->fetch($request));
 	}
 
+    /**
+     * Upload the image to a temporary file
+     * @param $request Request
+     * @param $args array
+     * @return JSONMessage JSON object
+     */
 	function uploadImage($args, $request) {
         import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
@@ -134,23 +145,20 @@ class QuickSubmitPlugin extends ImportExportPlugin {
     /**
      * Save the new image file.
      * @param $request Request.
+     * @return JSONMessage JSON object
      */
 	function saveUploadedImage($request) {
 		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
         $imageUploadForm->readInputData();
 
-        if ($imageUploadForm->execute($request)) {
-            $json = new JSONMessage(true);
-            return $json;
-        }
-
-        return new JSONMessage(false, __('common.uploadFailed'));
+        return $imageUploadForm->execute($request);
 	}
 
     /**
-     * Save the new image file.
+     * Delete the uploaded image
      * @param $request Request.
+     * @return JSONMessage JSON object
      */
 	function deleteUploadedImage($request) {
 		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
@@ -176,9 +184,10 @@ class QuickSubmitPlugin extends ImportExportPlugin {
             $templateMgr->assign('submissionId', $form->submissionId);
             $templateMgr->assign('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
 
+            //return new JSONMessage(true, $templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl'));
 			$templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
 		} else {
-			$form->display();
+            $form->display();
 		}
 	}
 

@@ -111,27 +111,6 @@ class QuickSubmitForm extends Form {
 			));
 		}
 
-		// manage post request
-		//$issueId = $this->getData('issueId');
-
-		// Production
-		$dispatcher = $this->request->getDispatcher();
-		import('lib.pkp.classes.linkAction.request.AjaxModal');
-		$schedulePublicationLinkAction = new LinkAction(
-			'schedulePublication',
-			new AjaxModal(
-				$dispatcher->url(
-					$this->request, ROUTE_COMPONENT, null,
-					'tab.issueEntry.IssueEntryTabHandler',
-					'publicationMetadata', null,
-					array('submissionId' => $this->submissionId, 'stageId' => WORKFLOW_STAGE_ID_PRODUCTION)
-				),
-				__('submission.issueEntry.publicationMetadata')
-			),
-			__('editor.article.schedulePublication')
-		);
-		$templateMgr->assign('schedulePublicationLinkAction', $schedulePublicationLinkAction);
-
 		// Cover image delete link action
 		$coverImage = $this->submission->getCoverImage();
 
@@ -139,23 +118,22 @@ class QuickSubmitForm extends Form {
 		import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
 		$router = $this->request->getRouter();
 		$openCoverImageLinkAction = new LinkAction(
-				'uploadFile',
-				new AjaxModal(
-					$router->url($this->request, null, null, 'importexport/plugin/QuickSubmitPlugin', 'uploadCoverImage', array('coverImage' => $coverImage,
-							'submissionId' => $this->submission->getId(),
-							// This action can be performed during any stage,
-							// but we have to provide a stage id to make calls
-							// to IssueEntryTabHandler
-							'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,)
-					),
-					__('common.upload'),
-					'modal_add_file'
+			'uploadFile',
+			new AjaxModal(
+				$router->url($this->request, null, null, 'importexport/plugin/QuickSubmitPlugin', 'uploadCoverImage', array('coverImage' => $coverImage,
+						'submissionId' => $this->submission->getId(),
+						// This action can be performed during any stage,
+						// but we have to provide a stage id to make calls
+						// to IssueEntryTabHandler
+						'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,)
 				),
 				__('common.upload'),
-				'add'
-			);
+				'modal_add_file'
+			),
+			__('common.upload'),
+			'add'
+		);
 		$templateMgr->assign('openCoverImageLinkAction', $openCoverImageLinkAction);
-
 		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
 		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($this->context->getId());
@@ -195,7 +173,7 @@ class QuickSubmitForm extends Form {
 
 		$templateMgr->assign('submission', $this->submission);
 
-		parent::display();
+        parent::display();
 	}
 
 	/**
@@ -251,7 +229,7 @@ class QuickSubmitForm extends Form {
 				}
 			}
 
-            // TODO: Manage no Sections exist
+            // Get Sections
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
 			$sectionOptions = $sectionDao->getSectionTitles($this->context->getId());
 
@@ -272,28 +250,6 @@ class QuickSubmitForm extends Form {
 			$this->_metadataFormImplem->initData($submission);
 
 			$this->submission = $submission;
-
-			// Insert PublishedArticle
-			// Get Issue
-			//$issueDao = DAORegistry::getDAO('IssueDAO');
-			//$issuesIterator = $issueDao->getIssues($this->context->getId());
-			//$issues = $issuesIterator->toArray();
-			//if (count($issues) != 0) {
-			//    // Get First issue
-			//    $issue = $issues[0];
-
-			//    // Insert new publishedArticle
-			//    $publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
-			//    $publishedSubmission = $publishedSubmissionDao->newDataObject();
-			//    $publishedSubmission->setId($this->submission->getId());
-			//    $publishedSubmission->setDatePublished(strtotime($issue->getDatePublished()));
-			//    $publishedSubmission->setSequence(REALLY_BIG_NUMBER);
-			//    $publishedSubmission->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
-			//    $publishedSubmission->setIssueId($issue->getId());
-			//    $publishedSubmissionDao->insertObject($publishedSubmission);
-
-			//    $this->publishedSubmission = $publishedSubmission;
-			//}
 		}
 
 	}
@@ -334,8 +290,6 @@ class QuickSubmitForm extends Form {
 	 * Save settings.
 	 */
 	function execute() {
-		$application = PKPApplication::getApplication();
-
 		// Execute submission metadata related operations.
 		$this->_metadataFormImplem->execute($this->submission, $this->request);
 
@@ -402,6 +356,8 @@ class QuickSubmitForm extends Form {
         //$articleSearchIndex = new ArticleSearchIndex();
         //$articleSearchIndex->articleMetadataChanged($submission);
         //$articleSearchIndex->articleChangesFinished();
+
+
 	}
 
 	/**

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @file controllers/tab/settings/appearance/form/NewContextImageFileForm.inc.php
+ * @file plugins.importexport.quicksubmit.classes.form.UploadImageForm.inc.php
  *
  * Copyright (c) 2014-2016 Simon Fraser University Library
  * Copyright (c) 2003-2016 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * @class NewContextImageFileForm
- * @ingroup controllers_tab_settings_appearance_form
+ * @class UploadImageForm
+ * @ingroup plugins_importexport_quicksubmit_classes_form
  *
  * @brief Form for upload an image.
  */
@@ -76,7 +76,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	/**
 	 * @copydoc Form::initData()
 	 */
-	function initData($request) {
+	function initData() {
         $templateMgr = TemplateManager::getManager($this->request);
         $templateMgr->register_function('plugin_url', array($this->plugin, 'smartyPluginUrl'));
         $templateMgr->assign('submissionId', $this->submissionId);
@@ -97,9 +97,6 @@ class UploadImageForm extends SettingsFileUploadForm {
 						$this->request, null, null, 'importexport/plugin/QuickSubmitPlugin', 'deleteCoverImage', array(
 							'coverImage' => $coverImage,
 							'submissionId' => $this->submission->getId(),
-							// This action can be performed during any stage,
-							// but we have to provide a stage id to make calls
-							// to IssueEntryTabHandler
 							'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,
 						)
 					),
@@ -113,10 +110,6 @@ class UploadImageForm extends SettingsFileUploadForm {
 
 		$this->setData('coverImage', $coverImage);
         $this->setData('imageAltText', $this->submission->getCoverImageAltText($locale));
-
-
-
-		//$this->setData('imageAltText', $imageAltText);
 	}
 
 	/**
@@ -130,7 +123,6 @@ class UploadImageForm extends SettingsFileUploadForm {
 
     /**
      * An action to delete an article cover image.
-     * @param $args array
      * @param $request PKPRequest
      * @return JSONMessage JSON object
      */
@@ -159,7 +151,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	}
 
 	/**
-	 * Save the new image file.
+	 * Save file image to Submission
 	 * @param $request Request.
 	 */
 	function execute($request) {
@@ -180,29 +172,24 @@ class UploadImageForm extends SettingsFileUploadForm {
 
             $newFileName = 'article_' . $this->submissionId . '_cover_' . $locale . $publicFileManager->getImageExtension($temporaryFile->getFileType());
 
-			//$uploadName = $this->getFileSettingName() . '_' . $locale . $extension;
 			if($publicFileManager->copyJournalFile($this->context->getId(), $temporaryFile->getFilePath(), $newFileName)) {
 
                 $this->submission->setCoverImage($newFileName, $locale);
 
-				// Get image dimensions
-				//$filePath = $publicFileManager->getContextFilesPath($context->getAssocType(), $context->getId());
-				//list($width, $height) = getimagesize($filePath . '/' . $uploadName);
-
 				$imageAltText = $this->getData('imageAltText');
 
-
-                $this->submission->setCoverImageAltText($this->getData('coverImageAltText'), $locale);
+                $this->submission->setCoverImageAltText($imageAltText, $locale);
 
                 $submissionDao->updateObject($this->submission);
 
 				// Clean up the temporary file.
 				$this->removeTemporaryFile($request);
 
-				return true;
+                return DAO::getDataChangedEvent();
 			}
 		}
-		return false;
+		return new JSONMessage(false, __('common.uploadFailed'));
+
 	}
 }
 
