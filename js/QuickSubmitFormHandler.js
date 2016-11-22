@@ -71,7 +71,7 @@
 			    		$("#schedulingInformationDatePublished").hide();
 			    	}
 			    	else {
-			    		$("input[name='datePublished']").datepicker("setDate", array[$('#issueId').val()]);
+			    	    $("input[name='datePublished']").datepicker("setDate", array[$('#issueId').val()]);
 			    		$("#ui-datepicker-div").hide();
 			    		$("#schedulingInformationDatePublished").show();
 			    	}

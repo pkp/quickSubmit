@@ -115,7 +115,7 @@ class QuickSubmitForm extends Form {
 		$coverImage = $this->submission->getCoverImage();
 
 		import('lib.pkp.classes.linkAction.LinkAction');
-		import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
+        import('lib.pkp.classes.linkAction.request.AjaxModal');
 		$router = $this->request->getRouter();
 		$openCoverImageLinkAction = new LinkAction(
 			'uploadFile',
@@ -275,7 +275,7 @@ class QuickSubmitForm extends Form {
 			)
 		);
 
-		$this->readUserDateVars(array('datePublished'));
+		//$this->readUserDateVars(array('datePublished'));
 	}
 
 	/**
