@@ -70,7 +70,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @copydoc Form::getLocaleFieldNames()
 	 */
 	function getLocaleFieldNames() {
-		return array('imageAltText');
+		return array('imageAltText', 'imageAltText_preview');
 	}
 
 	/**
@@ -156,6 +156,8 @@ class UploadImageForm extends SettingsFileUploadForm {
 		$submissionDao = Application::getSubmissionDAO();
 
 		$temporaryFile = $this->fetchTemporaryFile($request);
+		$locale = AppLocale::getLocale();
+		$coverImage = $this->submission->getCoverImage($locale);
 
 		import('classes.file.PublicFileManager');
 		$publicFileManager = new PublicFileManager();
@@ -185,6 +187,11 @@ class UploadImageForm extends SettingsFileUploadForm {
 
 				return DAO::getDataChangedEvent();
 			}
+		} elseif ($coverImage) {
+			$imageAltText = $this->getData('imageAltText');
+			$this->submission->setCoverImageAltText($imageAltText, $locale);
+			$submissionDao->updateObject($this->submission);
+			return DAO::getDataChangedEvent();
 		}
 		return new JSONMessage(false, __('common.uploadFailed'));
 

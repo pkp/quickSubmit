@@ -112,7 +112,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 * @return JSONMessage JSON object
 	 */
 	function showFileUploadForm($args, $request) {
-		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
+		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->initData($request);
 
@@ -126,7 +126,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 * @return JSONMessage JSON object
 	 */
 	function uploadImage($args, $request) {
-		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
+		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
 
@@ -148,7 +148,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 * @return JSONMessage JSON object
 	 */
 	function saveUploadedImage($request) {
-		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
+		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
 
@@ -161,7 +161,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 * @return JSONMessage JSON object
 	 */
 	function deleteUploadedImage($request) {
-		import('plugins.importexport.quicksubmit.classes.form.UploadImageForm');
+		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
 
