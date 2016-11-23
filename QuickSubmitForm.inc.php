@@ -120,7 +120,7 @@ class QuickSubmitForm extends Form {
 		$openCoverImageLinkAction = new LinkAction(
 			'uploadFile',
 			new AjaxModal(
-				$router->url($this->request, null, null, 'importexport/plugin/QuickSubmitPlugin', 'uploadCoverImage', array('coverImage' => $coverImage,
+				$router->url($this->request, null, null, 'importexport', array('plugin', 'QuickSubmitPlugin', 'uploadCoverImage'), array('coverImage' => $coverImage,
 						'submissionId' => $this->submission->getId(),
 						// This action can be performed during any stage,
 						// but we have to provide a stage id to make calls

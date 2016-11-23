@@ -93,13 +93,11 @@ class UploadImageForm extends SettingsFileUploadForm {
 				new RemoteActionConfirmationModal(
 					$this->request->getSession(),
 					__('common.confirmDelete'), null,
-					$router->url(
-						$this->request, null, null, 'importexport/plugin/QuickSubmitPlugin', 'deleteCoverImage', array(
-							'coverImage' => $coverImage,
-							'submissionId' => $this->submission->getId(),
-							'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,
-						)
-					),
+					$router->url($this->request, null, null, 'importexport', array('plugin', 'QuickSubmitPlugin', 'deleteCoverImage'), array(
+						'coverImage' => $coverImage,
+						'submissionId' => $this->submission->getId(),
+						'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,
+					)),
 					'modal_delete'
 				),
 				__('common.delete'),
