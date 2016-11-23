@@ -70,7 +70,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @copydoc Form::getLocaleFieldNames()
 	 */
 	function getLocaleFieldNames() {
-		return array('imageAltText', 'imageAltText_preview');
+		return array('imageAltText');
 	}
 
 	/**
