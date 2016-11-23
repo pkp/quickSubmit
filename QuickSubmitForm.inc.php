@@ -316,15 +316,11 @@ class QuickSubmitForm extends Form {
 		$submissionDao = Application::getSubmissionDAO();
 		$submissionDao->updateObject($this->submission);
 
-		//// Setup default copyright/license metadata after status is set and authors are attached.
-		//$submission->initializePermissions();
-		//$submissionDao->updateLocaleFields($submission);
-
-		//// Index article.
-		//import('classes.search.ArticleSearchIndex');
-		//$articleSearchIndex = new ArticleSearchIndex();
-		//$articleSearchIndex->articleMetadataChanged($submission);
-		//$articleSearchIndex->articleChangesFinished();
+		// Index article.
+		import('classes.search.ArticleSearchIndex');
+		ArticleSearchIndex::articleMetadataChanged($this->submission);
+		ArticleSearchIndex::submissionFilesChanged($this->submission);
+		ArticleSearchIndex::articleChangesFinished();
 
 
 	}
