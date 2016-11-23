@@ -70,7 +70,6 @@ class QuickSubmitForm extends Form {
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCSRF($this));
 		$this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->context->getId())));
-		// $this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->context->getId())));
 
 		// Validation checks for this form
 		$supportedSubmissionLocales = $this->context->getSupportedSubmissionLocales();
@@ -84,7 +83,6 @@ class QuickSubmitForm extends Form {
 	 * @return array
 	 */
 	function getLocaleFieldNames() {
-		//$result = array_merge(array('title', 'abstract'), $this->_metadataFormImplem->getLocaleFieldNames());
 		return $this->_metadataFormImplem->getLocaleFieldNames();
 	}
 
@@ -94,9 +92,6 @@ class QuickSubmitForm extends Form {
 	function display() {
 		$templateMgr = TemplateManager::getManager($this->request);
 		$templateMgr->assign('abstractsRequired', true);
-
-		//$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
-		//$templateMgr->assign('userRoles', $userRoles);
 
 		$templateMgr->assign(
 			'supportedSubmissionLocaleNames',
@@ -152,25 +147,6 @@ class QuickSubmitForm extends Form {
 		// Get Issues
 		$templateMgr->assign('issueOptions', $this->getIssueOptions($this->context));
 
-		// Get Published Article if exists
-		//$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-		//$publishedArticle = $publishedArticleDao->getPublishedArticleByArticleId($this->submission->getId(), null, false);
-
-		//$templateMgr->assign('publishedArticle', $publishedArticle);
-
-
-
-		// Get published Issues
-		//$issueDao = DAORegistry::getDAO('IssueDAO');
-		//$issuesIterator = $issueDao->getPublishedIssues($this->context->getId());
-		//$issues = $issuesIterator->toArray();
-		//foreach ($issues as $issue) {
-		//    $issueOptions[$issue->getId()] = $issue->getIssueIdentification();
-		//}
-		//$issueOptions[0] = __('plugins.importexport.common.filter.issue');
-		//ksort($issueOptions);
-		//$templateMgr->assign('issueOptions', $issueOptions);
-
 		$templateMgr->assign('submission', $this->submission);
 
 		parent::display();
@@ -182,11 +158,6 @@ class QuickSubmitForm extends Form {
 	 */
 	function validate() {
 		if (!parent::validate()) return false;
-
-		// Validate that the section ID is attached to this journal.
-		//$sectionDao = DAORegistry::getDAO('SectionDAO');
-		//$section = $sectionDao->getById($this->getData('sectionId'), $this->context->getId());
-		//if (!$section) return false;
 
 		// Validate Issue if Published is selected
 		// if articleStatus == 1 => should have issueId
@@ -274,8 +245,6 @@ class QuickSubmitForm extends Form {
 				'locale'
 			)
 		);
-
-		//$this->readUserDateVars(array('datePublished'));
 	}
 
 	/**
@@ -293,7 +262,6 @@ class QuickSubmitForm extends Form {
 		// Execute submission metadata related operations.
 		$this->_metadataFormImplem->execute($this->submission, $this->request);
 
-		// $this->submission->setJournalId($this->context->getId());
 		$this->submission->setSectionId($this->getData('sectionId'));
 
 		// articleStatus == 1 -> Published and to an Issue

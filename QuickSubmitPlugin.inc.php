@@ -69,7 +69,6 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 				return $this->showFileUploadForm($args, $request);
 			case 'uploadImage':
 				return $this->uploadImage($args, $request);
-				//break;
 			case 'saveUploadedImage':
 				return $this->saveUploadedImage($request);
 			case 'deleteCoverImage':
@@ -184,7 +183,6 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 			$templateMgr->assign('submissionId', $form->submissionId);
 			$templateMgr->assign('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
 
-			//return new JSONMessage(true, $templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl'));
 			$templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
 		} else {
 			$form->display();
