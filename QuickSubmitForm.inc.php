@@ -346,20 +346,20 @@ class QuickSubmitForm extends Form {
 		$issueIterator = $issueDao->getUnpublishedIssues($journalId);
 		while ($issue = $issueIterator->next()) {
 			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
-			$issuesPublicationDates[$issue->getId()] = Core::getCurrentDate();
+			$issuesPublicationDates[$issue->getId()] = strtotime(Core::getCurrentDate());
 		}
 		$issueOptions[-2] = '------    ' . __('editor.issues.currentIssue') . '    ------';
 		$issuesIterator = $issueDao->getPublishedIssues($journalId);
 		$issues = $issuesIterator->toArray();
 		if (isset($issues[0]) && $issues[0]->getCurrent()) {
 			$issueOptions[$issues[0]->getId()] = $issues[0]->getIssueIdentification();
-			$issuesPublicationDates[$issues[0]->getId()] = $issues[0]->getDatePublished();
+			$issuesPublicationDates[$issues[0]->getId()] = strtotime($issues[0]->getDatePublished());
 			array_shift($issues);
 		}
 		$issueOptions[-3] = '------    ' . __('editor.issues.backIssues') . '    ------';
 		foreach ($issues as $issue) {
 			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
-			$issuesPublicationDates[$issue->getId()] = $issue->getDatePublished();
+			$issuesPublicationDates[$issue->getId()] = strtotime($issue->getDatePublished());
 		}
 
 		$templateMgr = TemplateManager::getManager($this->request);
