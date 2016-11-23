@@ -115,7 +115,7 @@ class QuickSubmitForm extends Form {
 		$coverImage = $this->submission->getCoverImage();
 
 		import('lib.pkp.classes.linkAction.LinkAction');
-        import('lib.pkp.classes.linkAction.request.AjaxModal');
+		import('lib.pkp.classes.linkAction.request.AjaxModal');
 		$router = $this->request->getRouter();
 		$openCoverImageLinkAction = new LinkAction(
 			'uploadFile',
@@ -173,7 +173,7 @@ class QuickSubmitForm extends Form {
 
 		$templateMgr->assign('submission', $this->submission);
 
-        parent::display();
+		parent::display();
 	}
 
 	/**
@@ -189,15 +189,15 @@ class QuickSubmitForm extends Form {
 		//if (!$section) return false;
 
 		// Validate Issue if Published is selected
-        // if articleStatus == 1 => should have issueId
-        if ($this->getData('articleStatus') == 1) {
-            if ($this->getData('issueId') <= 0) {
+		// if articleStatus == 1 => should have issueId
+		if ($this->getData('articleStatus') == 1) {
+			if ($this->getData('issueId') <= 0) {
 				$this->addError('issueId', __('plugins.importexport.quickSubmit.selectIssue'));
-                $this->errorFields['issueId'] = 1;
+				$this->errorFields['issueId'] = 1;
 
-                return false;
-            }
-        }
+				return false;
+			}
+		}
 
 		return true;
 
@@ -229,16 +229,16 @@ class QuickSubmitForm extends Form {
 				}
 			}
 
-            // Get Sections
+			// Get Sections
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
 			$sectionOptions = $sectionDao->getSectionTitles($this->context->getId());
 
-            // Create and insert a new submission
+			// Create and insert a new submission
 			$submissionDao = Application::getSubmissionDAO();
 			$submission = $submissionDao->newDataObject();
 			$submission->setContextId($this->context->getId());
-            $submission->setStatus(STATUS_QUEUED);
-            $submission->setSubmissionProgress(1);
+			$submission->setStatus(STATUS_QUEUED);
+			$submission->setSubmissionProgress(1);
 			$submission->stampStatusModified();
 			$submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
 			$submission->setSectionId(current(array_keys($sectionOptions)));
@@ -293,12 +293,12 @@ class QuickSubmitForm extends Form {
 		// Execute submission metadata related operations.
 		$this->_metadataFormImplem->execute($this->submission, $this->request);
 
-        // $this->submission->setJournalId($this->context->getId());
-        $this->submission->setSectionId($this->getData('sectionId'));
+		// $this->submission->setJournalId($this->context->getId());
+		$this->submission->setSectionId($this->getData('sectionId'));
 
-        // articleStatus == 1 -> Published and to an Issue
-        if ($this->getData('articleStatus') == 1) {
-            $this->submission->setStatus(STATUS_PUBLISHED);
+		// articleStatus == 1 -> Published and to an Issue
+		if ($this->getData('articleStatus') == 1) {
+			$this->submission->setStatus(STATUS_PUBLISHED);
 			$this->submission->setCopyrightYear($this->getData('copyrightYear'));
 			$this->submission->setCopyrightHolder($this->getData('copyrightHolder'), null);
 			$this->submission->setLicenseURL($this->getData('licenseURL'));
@@ -315,7 +315,7 @@ class QuickSubmitForm extends Form {
 			$publishedSubmissionDao->insertObject($publishedSubmission);
 
 			$this->publishedSubmission = $publishedSubmission;
-        }
+		}
 
 
 
@@ -340,22 +340,22 @@ class QuickSubmitForm extends Form {
 		}
 
 		$this->submission->setLocale($this->getData('locale'));
-        $this->submission->setStageId(WORKFLOW_STAGE_ID_PRODUCTION);
-        $this->submission->setDateSubmitted(Core::getCurrentDate());
+		$this->submission->setStageId(WORKFLOW_STAGE_ID_PRODUCTION);
+		$this->submission->setDateSubmitted(Core::getCurrentDate());
 		$this->submission->setSubmissionProgress(0);
 
 		$submissionDao = Application::getSubmissionDAO();
-        $submissionDao->updateObject($this->submission);
+		$submissionDao->updateObject($this->submission);
 
-        //// Setup default copyright/license metadata after status is set and authors are attached.
-        //$submission->initializePermissions();
-        //$submissionDao->updateLocaleFields($submission);
+		//// Setup default copyright/license metadata after status is set and authors are attached.
+		//$submission->initializePermissions();
+		//$submissionDao->updateLocaleFields($submission);
 
-        //// Index article.
-        //import('classes.search.ArticleSearchIndex');
-        //$articleSearchIndex = new ArticleSearchIndex();
-        //$articleSearchIndex->articleMetadataChanged($submission);
-        //$articleSearchIndex->articleChangesFinished();
+		//// Index article.
+		//import('classes.search.ArticleSearchIndex');
+		//$articleSearchIndex = new ArticleSearchIndex();
+		//$articleSearchIndex->articleMetadataChanged($submission);
+		//$articleSearchIndex->articleChangesFinished();
 
 
 	}

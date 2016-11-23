@@ -17,37 +17,37 @@ import('lib.pkp.controllers.tab.settings.form.SettingsFileUploadForm');
 
 class UploadImageForm extends SettingsFileUploadForm {
 
-    /** @var $request object */
+	/** @var $request object */
 	var $request;
 
-    /** @var $submissionId int */
+	/** @var $submissionId int */
 	var $submissionId;
 
-    /** @var $submission Submission */
+	/** @var $submission Submission */
 	var $submission;
 
-    /** @var $plugin QuickSubmitPlugin */
+	/** @var $plugin QuickSubmitPlugin */
 	var $plugin;
 
-    /** @var $context Journal */
+	/** @var $context Journal */
 	var $context;
 
 	/**
 	 * Constructor.
 	 * @param $plugin object
-     * @param $request object
+	 * @param $request object
 	 */
 	function __construct($plugin, $request) {
 		parent::__construct($plugin->getTemplatePath() . 'uploadImageForm.tpl');
 
-        $this->plugin = $plugin;
-        $this->request = $request;
-        $this->context = $request->getContext();
+		$this->plugin = $plugin;
+		$this->request = $request;
+		$this->context = $request->getContext();
 
-        $this->submissionId = $request->getUserVar('submissionId');
+		$this->submissionId = $request->getUserVar('submissionId');
 
-        $submissionDao = Application::getSubmissionDAO();
-        $this->submission = $submissionDao->getById($request->getUserVar('submissionId'), $this->context->getId(), false);
+		$submissionDao = Application::getSubmissionDAO();
+		$this->submission = $submissionDao->getById($request->getUserVar('submissionId'), $this->context->getId(), false);
 	}
 
 
@@ -77,14 +77,14 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @copydoc Form::initData()
 	 */
 	function initData() {
-        $templateMgr = TemplateManager::getManager($this->request);
-        $templateMgr->register_function('plugin_url', array($this->plugin, 'smartyPluginUrl'));
-        $templateMgr->assign('submissionId', $this->submissionId);
+		$templateMgr = TemplateManager::getManager($this->request);
+		$templateMgr->register_function('plugin_url', array($this->plugin, 'smartyPluginUrl'));
+		$templateMgr->assign('submissionId', $this->submissionId);
 
 		$locale = AppLocale::getLocale();
-        $coverImage = $this->submission->getCoverImage($locale);
+		$coverImage = $this->submission->getCoverImage($locale);
 
-        if ($coverImage) {
+		if ($coverImage) {
 			import('lib.pkp.classes.linkAction.LinkAction');
 			import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
 			$router = $this->request->getRouter();
@@ -109,7 +109,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 		}
 
 		$this->setData('coverImage', $coverImage);
-        $this->setData('imageAltText', $this->submission->getCoverImageAltText($locale));
+		$this->setData('imageAltText', $this->submission->getCoverImageAltText($locale));
 	}
 
 	/**
@@ -121,12 +121,12 @@ class UploadImageForm extends SettingsFileUploadForm {
 		parent::readInputData();
 	}
 
-    /**
-     * An action to delete an article cover image.
-     * @param $request PKPRequest
-     * @return JSONMessage JSON object
-     */
-    function deleteCoverImage($request) {
+	/**
+	 * An action to delete an article cover image.
+	 * @param $request PKPRequest
+	 * @return JSONMessage JSON object
+	 */
+	function deleteCoverImage($request) {
 		assert(!empty($request->getUserVar('coverImage')) && !empty($request->getUserVar('submissionId')));
 
 		$submissionDao = Application::getSubmissionDAO();
@@ -155,7 +155,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @param $request Request.
 	 */
 	function execute($request) {
-        $submissionDao = Application::getSubmissionDAO();
+		$submissionDao = Application::getSubmissionDAO();
 
 		$temporaryFile = $this->fetchTemporaryFile($request);
 
@@ -170,22 +170,22 @@ class UploadImageForm extends SettingsFileUploadForm {
 			}
 			$locale = AppLocale::getLocale();
 
-            $newFileName = 'article_' . $this->submissionId . '_cover_' . $locale . $publicFileManager->getImageExtension($temporaryFile->getFileType());
+			$newFileName = 'article_' . $this->submissionId . '_cover_' . $locale . $publicFileManager->getImageExtension($temporaryFile->getFileType());
 
 			if($publicFileManager->copyJournalFile($this->context->getId(), $temporaryFile->getFilePath(), $newFileName)) {
 
-                $this->submission->setCoverImage($newFileName, $locale);
+				$this->submission->setCoverImage($newFileName, $locale);
 
 				$imageAltText = $this->getData('imageAltText');
 
-                $this->submission->setCoverImageAltText($imageAltText, $locale);
+				$this->submission->setCoverImageAltText($imageAltText, $locale);
 
-                $submissionDao->updateObject($this->submission);
+				$submissionDao->updateObject($this->submission);
 
 				// Clean up the temporary file.
 				$this->removeTemporaryFile($request);
 
-                return DAO::getDataChangedEvent();
+				return DAO::getDataChangedEvent();
 			}
 		}
 		return new JSONMessage(false, __('common.uploadFailed'));
