@@ -107,7 +107,8 @@ class QuickSubmitForm extends Form {
 		}
 
 		// Cover image delete link action
-		$coverImage = $this->submission->getCoverImage();
+		$locale = AppLocale::getLocale();
+		$coverImage = $this->submission->getCoverImage($locale);
 
 		import('lib.pkp.classes.linkAction.LinkAction');
 		import('lib.pkp.classes.linkAction.request.AjaxModal');
