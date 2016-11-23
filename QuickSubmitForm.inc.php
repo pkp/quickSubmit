@@ -316,6 +316,11 @@ class QuickSubmitForm extends Form {
 		$submissionDao = Application::getSubmissionDAO();
 		$submissionDao->updateObject($this->submission);
 
+		if ($this->getData('articleStatus') == 1) {
+			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
+			$publishedSubmissionDao->resequencePublishedArticles($this->submission->getSectionId(), $this->publishedSubmission->getIssueId());
+		}
+
 		// Index article.
 		import('classes.search.ArticleSearchIndex');
 		ArticleSearchIndex::articleMetadataChanged($this->submission);
