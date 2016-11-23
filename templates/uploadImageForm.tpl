@@ -1,5 +1,5 @@
 {**
- * templates/controllers/tab/settings/form/newImageFileUploadForm.tpl
+ * plugins/importexport/quickSubmit/templates/uploadImageForm.tpl
  *
  * Copyright (c) 2014-2016 Simon Fraser University Library
  * Copyright (c) 2003-2016 John Willinsky
