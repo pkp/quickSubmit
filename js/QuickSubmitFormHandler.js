@@ -13,72 +13,70 @@
  *
  * @brief Handle the quickSubmit form.
  */
-(function($) { // TODO defstat: Should I add that to registry/minifiedScripts.txt? No other plugin script there.
+(function ($) {
 
-	$.pkp.plugins.importexport.quickSubmit =
-		$.pkp.plugins.importexport.quickSubmit
-		|| { js: {} };
+    $.pkp.plugins.importexport.quickSubmit =
+			$.pkp.plugins.importexport.quickSubmit ||
+			{ js: {} };
 
-	/**
+
+
+    /**
 	 * @constructor
 	 *
-	 * @extends $.pkp.controllers.form.AjaxFormHandler
+	 * @extends $.pkp.controllers.form.FormHandler
 	 *
 	 * @param {jQueryObject} $form the wrapped HTML form element.
 	 * @param {Object} options form options.
 	 */
-	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler =
+    $.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler =
 			function ($form, options) {
 
-				this.parent($form, options);
-				this.callbackWrapper(this.updatePatternFormElementStatus_());
-			};
-	$.pkp.classes.Helper.inherits(
-			$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler,
-			$.pkp.controllers.form.FormHandler); 
+			    this.parent($form, options);
+			    this.callbackWrapper(this.updateSchedulePublicationDiv_());
 
-	/**
+			};
+    $.pkp.classes.Helper.inherits(
+			$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler,
+			$.pkp.controllers.form.FormHandler);
+
+
+    /**
 	 * Callback to replace the element's content.
 	 *
 	 * @private
 	 */
-	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler.prototype.
-			updatePatternFormElementStatus_ =
-			function () {
-				$('input[type=radio][name=articleStatus]').change(function () {
-					if ($(this).is(':checked') && this.value == '0') {
-						// $('#issueId').prop('disabled', 'disabled');
-						$("#schedulePublicationDiv").hide();
+    $.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler.prototype.
+			updateSchedulePublicationDiv_ = function () {
 
-					}
-					else if ($(this).is(':checked') && this.value == '1') {
-						//$('#issueId').attr('disabled', false);
-						$("#schedulePublicationDiv").show();
-					}
-					else {
-						//$('#issueId').prop('disabled', 'disabled');
-						$("#schedulePublicationDiv").hide();
-					}
-					
-				});
+			    $('input[type=radio][name=articleStatus]').change(function () {
+			        if ($(this).is(':checked') && this.value == '0') {
+			            $('#schedulePublicationDiv').hide();
+			        } else if ($(this).is(':checked') && this.value == '1') {
+			            $('#schedulePublicationDiv').show();
+			        } else {
+			            $('#schedulePublicationDiv').hide();
+			        }
+			    });
 
-				$('input[type=radio][name=articleStatus]').trigger('change');
+			    $('input[type=radio][name=articleStatus]').trigger('change');
 
-				$('#issueId').change(function () {
-					var array = JSON.parse($('#issuesPublicationDates').val());
-					if (!array[$('#issueId').val()]) {
-						//$("input[name='datePublished']").val('');
-						$("#schedulingInformationDatePublished").hide();
-					}
-					else {
-						$("input[name='datePublished']").datepicker("setDate", array[$('#issueId').val()]);
-						$("#ui-datepicker-div").hide();
-						$("#schedulingInformationDatePublished").show();
-					}
-				});
+			    $('#issueId').change(function () {
+			        var val, array;
+			        val = /** @type {string} */ $('#issuesPublicationDates').val();
+			        array = JSON.parse(val);
+			        if (!array[$('#issueId').val()]) {
+			            $('#schedulingInformationDatePublished').hide();
+			        } else {
+			            $('input[name="datePublished"]').
+                                datepicker('setDate', array[$('#issueId').val()]);
+			            $('#ui-datepicker-div').hide();
+			            $('#schedulingInformationDatePublished').show();
+			        }
+			    });
 
-				$('#issueId').trigger('change');
+			    $('#issueId').trigger('change');
 			};
 
-	/** @param {jQuery} $ jQuery closure. */
+    /** @param {jQuery} $ jQuery closure. */
 }(jQuery));
