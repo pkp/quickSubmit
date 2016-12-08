@@ -132,7 +132,7 @@ class QuickSubmitForm extends Form {
 		$templateMgr->assign('openCoverImageLinkAction', $openCoverImageLinkAction);
 		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$sectionOptions = array('0' => '') + $sectionDao->getSectionTitles($this->context->getId());
+		$sectionOptions = array('0' => '') + $sectionDao->getTitles($this->context->getId());
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
 		// Get published Issues
@@ -203,7 +203,7 @@ class QuickSubmitForm extends Form {
 
 			// Get Sections
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
-			$sectionOptions = $sectionDao->getSectionTitles($this->context->getId());
+			$sectionOptions = $sectionDao->getTitles($this->context->getId());
 
 			// Create and insert a new submission
 			$submissionDao = Application::getSubmissionDAO();
@@ -320,6 +320,8 @@ class QuickSubmitForm extends Form {
 			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
 			$publishedSubmissionDao->resequencePublishedArticles($this->submission->getSectionId(), $this->publishedSubmission->getIssueId());
 		}
+
+
 
 		// Index article.
 		import('classes.search.ArticleSearchIndex');
