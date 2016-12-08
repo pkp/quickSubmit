@@ -221,6 +221,29 @@ class QuickSubmitForm extends Form {
 
 			$this->_metadataFormImplem->initData($submission);
 
+
+
+            // Add the user manager group (first that is found) to the stage_assignment for that submission
+            $user = Request::getUser();
+
+            $userGroupAssignmentDao = DAORegistry::getDAO('UserGroupAssignmentDAO');
+            $userGroupDao = DAORegistry::getDAO('UserGroupDAO');
+
+            $userGroupId = null;
+			$managerUserGroupAssignments = $userGroupAssignmentDao->getByUserId($user->getId(), $this->context->getId(), ROLE_ID_MANAGER);
+			if($managerUserGroupAssignments) {
+                while($managerUserGroupAssignment = $managerUserGroupAssignments->next()) {
+                    $managerUserGroup = $userGroupDao->getById($managerUserGroupAssignment->getUserGroupId());
+                    $userGroupId = $managerUserGroup->getId();
+                    break;
+                }
+            }
+
+
+            // Assign the user author to the stage
+			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
+			$stageAssignmentDao->build($this->submissionId, $userGroupId, $user->getId());
+
 			$this->submission = $submission;
 		}
 
@@ -320,8 +343,6 @@ class QuickSubmitForm extends Form {
 			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
 			$publishedSubmissionDao->resequencePublishedArticles($this->submission->getSectionId(), $this->publishedSubmission->getIssueId());
 		}
-
-
 
 		// Index article.
 		import('classes.search.ArticleSearchIndex');
