@@ -1,5 +1,5 @@
 {**
- * plugins/importexport/quickSubmit/index.tpl
+ * plugins/importexport/quickSubmit/templates/index.tpl
  *
  * Copyright (c) 2013-2016 Simon Fraser University Library
  * Copyright (c) 2003-2016 John Willinsky
@@ -18,8 +18,6 @@
 	$(function() {ldelim}
 		// Attach the form handler.
 		$('#quickSubmitForm').pkpHandler('$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler');
-
-		
 	{rdelim});
 	
 </script>
@@ -37,6 +35,12 @@
 
 		{csrf}
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
+
+		{fbvFormSection label="editor.article.coverImage" class=$wizardClass}
+			<div id="{$openCoverImageLinkAction->getId()}" class="pkp_linkActions">
+				{include file="linkAction/linkAction.tpl" action=$openCoverImageLinkAction contextId="quickSubmitForm"}
+			</div>
+		{/fbvFormSection}
 
 		{* There is only one supported submission locale; choose it invisibly *}
 		{if count($supportedSubmissionLocaleNames) == 1}

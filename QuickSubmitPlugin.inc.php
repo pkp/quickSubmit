@@ -33,6 +33,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 		$success = parent::register($category, $path);
 		$this->addLocaleData();
+
 		return $success;
 	}
 
@@ -58,38 +59,112 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		$templateMgr->register_function('plugin_url', array($this, 'smartyPluginUrl'));
 
 		switch (array_shift($args)) {
-            case 'saveSubmit':
-                $this->saveSubmit($args, $request);
-                break;
-            case 'cancelSubmit':
-                $this->cancelSubmit($args, $request);
-                break;
-            default:
-                $this->import('QuickSubmitForm');
-                $form = new QuickSubmitForm($this, $request);
-                $form->initData();
-                $form->display();
-                break;
-        }
+			case 'saveSubmit':
+				$this->saveSubmit($args, $request);
+				break;
+			case 'cancelSubmit':
+				$this->cancelSubmit($args, $request);
+				break;
+			case 'uploadCoverImage':
+				return $this->showFileUploadForm($args, $request);
+			case 'uploadImage':
+				return $this->uploadImage($args, $request);
+			case 'saveUploadedImage':
+				return $this->saveUploadedImage($request);
+			case 'deleteCoverImage':
+				return $this->deleteUploadedImage($request);
+			default:
+				$this->import('QuickSubmitForm');
+				$form = new QuickSubmitForm($this, $request);
+				$form->initData();
+				$form->display(false);
+				break;
+		}
 	}
 
+	/**
+	 * Cancels the submission
+	 * @param $request Request
+	 * @param $args array
+	 */
 	function cancelSubmit($args, $request) {
-		$templateMgr = TemplateManager::getManager($request);
-
 		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
 
 		$form->cancel();
 
-        // Submission removal notification.
-        $notificationContent = __('notification.removedSubmission');
-        $currentUser = $request->getUser();
-        $notificationMgr = new NotificationManager();
-        $notificationMgr->createTrivialNotification($currentUser->getId(), NOTIFICATION_TYPE_SUCCESS, array('contents' => $notificationContent));
+		// Submission removal notification.
+		$notificationContent = __('notification.removedSubmission');
+		$currentUser = $request->getUser();
+		$notificationMgr = new NotificationManager();
+		$notificationMgr->createTrivialNotification($currentUser->getId(), NOTIFICATION_TYPE_SUCCESS, array('contents' => $notificationContent));
 
-        $path = array('plugin', $this->getName());
-        $request->redirect(null, null, null, $path, null, null);
+		$path = array('plugin', $this->getName());
+		$request->redirect(null, null, null, $path, null, null);
+	}
+
+	/**
+	 * Show the upload image form.
+	 * @param $request Request
+	 * @param $args array
+	 * @return JSONMessage JSON object
+	 */
+	function showFileUploadForm($args, $request) {
+		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
+		$imageUploadForm = new UploadImageForm($this, $request);
+		$imageUploadForm->initData($request);
+
+		return new JSONMessage(true, $imageUploadForm->fetch($request));
+	}
+
+	/**
+	 * Upload the image to a temporary file
+	 * @param $request Request
+	 * @param $args array
+	 * @return JSONMessage JSON object
+	 */
+	function uploadImage($args, $request) {
+		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
+		$imageUploadForm = new UploadImageForm($this, $request);
+		$imageUploadForm->readInputData();
+
+		$temporaryFileId = $imageUploadForm->uploadFile($request);
+		if ($temporaryFileId) {
+			$json = new JSONMessage(true);
+			$json->setAdditionalAttributes(array(
+				'temporaryFileId' => $temporaryFileId
+			));
+			return $json;
+		} else {
+			return new JSONMessage(false, __('common.uploadFailed'));
+		}
+	}
+
+	/**
+	 * Save the new image file.
+	 * @param $request Request.
+	 * @return JSONMessage JSON object
+	 */
+	function saveUploadedImage($request) {
+		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
+		$imageUploadForm = new UploadImageForm($this, $request);
+		$imageUploadForm->readInputData();
+
+		return $imageUploadForm->execute($request);
+	}
+
+	/**
+	 * Delete the uploaded image
+	 * @param $request Request.
+	 * @return JSONMessage JSON object
+	 */
+	function deleteUploadedImage($request) {
+		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
+		$imageUploadForm = new UploadImageForm($this, $request);
+		$imageUploadForm->readInputData();
+
+		return $imageUploadForm->deleteCoverImage($request);
 	}
 
 	/**
@@ -105,8 +180,8 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 		if($form->validate()){
 			$form->execute();
-            $templateMgr->assign('submissionId', $form->submissionId);
-            $templateMgr->assign('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
+			$templateMgr->assign('submissionId', $form->submissionId);
+			$templateMgr->assign('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
 
 			$templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
 		} else {
@@ -146,6 +221,14 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 */
 	function executeCLI($scriptName, &$args) {
 		fatalError('Not implemented');
+	}
+
+	/**
+	 * Override the builtin to get the correct template path.
+	 * @return string
+	 */
+	function getTemplatePath() {
+		return parent::getTemplatePath() . 'templates/';
 	}
 }
 

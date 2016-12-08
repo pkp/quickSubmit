@@ -1,5 +1,5 @@
 {**
- * plugins/importexport/quickSubmit/submitSuccess.tpl
+ * plugins/importexport/quickSubmit/templates/submitSuccess.tpl
  *
  * Copyright (c) 2013-2016 Simon Fraser University Library
  * Copyright (c) 2003-2016 John Willinsky
