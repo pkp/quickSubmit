@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @defgroup plugins_importexport_quickSubmit_js
  */
 /**
