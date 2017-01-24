@@ -125,7 +125,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @return JSONMessage JSON object
 	 */
 	function deleteCoverImage($request) {
-		assert(!empty($request->getUserVar('coverImage')) && !empty($request->getUserVar('submissionId')));
+		assert($request->getUserVar('coverImage') != '' && $request->getUserVar('submissionId') != '');
 
 		$submissionDao = Application::getSubmissionDAO();
 		$file = $request->getUserVar('coverImage');
