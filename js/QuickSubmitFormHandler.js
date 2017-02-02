@@ -4,8 +4,8 @@
 /**
  * @file plugins/importexport/quickSubmit/js/QuickSubmitFormHandler.js
  *
- * Copyright (c) 2014-2016 Simon Fraser University Library
- * Copyright (c) 2000-2016 John Willinsky
+ * Copyright (c) 2014-2017 Simon Fraser University Library
+ * Copyright (c) 2000-2017 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class QuickSubmitFormHandler.js
@@ -15,13 +15,13 @@
  */
 (function ($) {
 
-    $.pkp.plugins.importexport.quickSubmit =
+	$.pkp.plugins.importexport.quickSubmit =
 			$.pkp.plugins.importexport.quickSubmit ||
 			{ js: {} };
 
 
 
-    /**
+	/**
 	 * @constructor
 	 *
 	 * @extends $.pkp.controllers.form.FormHandler
@@ -29,54 +29,54 @@
 	 * @param {jQueryObject} $form the wrapped HTML form element.
 	 * @param {Object} options form options.
 	 */
-    $.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler =
+	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler =
 			function ($form, options) {
 
-			    this.parent($form, options);
-			    this.callbackWrapper(this.updateSchedulePublicationDiv_());
+		this.parent($form, options);
+		this.callbackWrapper(this.updateSchedulePublicationDiv_());
 
-			};
-    $.pkp.classes.Helper.inherits(
+	};
+	$.pkp.classes.Helper.inherits(
 			$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler,
 			$.pkp.controllers.form.FormHandler);
 
 
-    /**
+	/**
 	 * Callback to replace the element's content.
 	 *
 	 * @private
 	 */
-    $.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler.prototype.
+	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler.prototype.
 			updateSchedulePublicationDiv_ = function () {
 
-			    $('input[type=radio][name=articleStatus]').change(function () {
-			        if ($(this).is(':checked') && this.value == '0') {
-			            $('#schedulePublicationDiv').hide();
-			        } else if ($(this).is(':checked') && this.value == '1') {
-			            $('#schedulePublicationDiv').show();
-			        } else {
-			            $('#schedulePublicationDiv').hide();
-			        }
-			    });
+		$('input[type=radio][name=articleStatus]').change(function () {
+			if ($(this).is(':checked') && this.value == '0') {
+				$('#schedulePublicationDiv').hide();
+			} else if ($(this).is(':checked') && this.value == '1') {
+				$('#schedulePublicationDiv').show();
+			} else {
+				$('#schedulePublicationDiv').hide();
+			}
+		});
 
-			    $('input[type=radio][name=articleStatus]').trigger('change');
+		$('input[type=radio][name=articleStatus]').trigger('change');
 
-			    $('#issueId').change(function () {
-			        var val, array;
-			        val = /** @type {string} */ $('#issuesPublicationDates').val();
-			        array = JSON.parse(val);
-			        if (!array[$('#issueId').val()]) {
-			            $('#schedulingInformationDatePublished').hide();
-			        } else {
-			            $('input[name="datePublished"]').
-                                datepicker('setDate', array[$('#issueId').val()]);
-			            $('#ui-datepicker-div').hide();
-			            $('#schedulingInformationDatePublished').show();
-			        }
-			    });
+		$('#issueId').change(function () {
+			var val, array;
+			val = /** @type {string} */ $('#issuesPublicationDates').val();
+			array = JSON.parse(val);
+			if (!array[$('#issueId').val()]) {
+				$('#schedulingInformationDatePublished').hide();
+			} else {
+				$('input[name="datePublished"]').
+						datepicker('setDate', array[$('#issueId').val()]);
+				$('#ui-datepicker-div').hide();
+				$('#schedulingInformationDatePublished').show();
+			}
+		});
 
-			    $('#issueId').trigger('change');
-			};
+		$('#issueId').trigger('change');
+	};
 
-    /** @param {jQuery} $ jQuery closure. */
+	/** @param {jQuery} $ jQuery closure. */
 }(jQuery));

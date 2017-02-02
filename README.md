@@ -1,9 +1,7 @@
 # QuickSubmit Plugin
 
 - OJS QuickSubmit Plugin
-- Version: 2.0.0
-- Last update: January 2017
-
+- Version: 1.0.2
 
 About
 -----
@@ -17,7 +15,7 @@ accompanying OJS file docs/COPYING for the complete terms of this license.
 
 System Requirements
 -------------------
-OJS 3.0.1 or greater.
+OJS 3.0.2 or greater.
 PHP 5.6 or greater.
 
 Note

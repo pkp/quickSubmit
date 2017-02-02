@@ -4,8 +4,8 @@
 <!--
   * plugins/importexport/quickSubmit/version.xml
   *
-  * Copyright (c) 2013-2016 Simon Fraser University Library
-  * Copyright (c) 2003-2016 John Willinsky
+  * Copyright (c) 2013-2017 Simon Fraser University Library
+  * Copyright (c) 2003-2017 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Plugin version information.
@@ -13,6 +13,6 @@
 <version>
 	<application>quickSubmit</application>
 	<type>plugins.importexport</type>
-	<release>1.0.0.0</release>
-	<date>2016-10-15</date>
+	<release>1.0.1.0</release>
+	<date>2017-02-01</date>
 </version>
