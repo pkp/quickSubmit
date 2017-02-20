@@ -16,7 +16,7 @@ accompanying OJS file docs/COPYING for the complete terms of this license.
 System Requirements
 -------------------
 OJS 3.0.2 or greater.
-PHP 5.6 or greater.
+PHP 5.4 or greater.
 
 Note
 ----
