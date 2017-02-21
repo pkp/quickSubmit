@@ -325,9 +325,10 @@ class QuickSubmitForm extends Form {
 
 			foreach($galleyFiles as $galleyFile) {
 				$newFile = $galleyFile->getFile();
-
-				$revisionNumber = $submissionFileDao->getLatestRevisionNumber($newFile->getFileId());
-				$submissionFileManager->copyFileToFileStage($newFile->getFileId(), $revisionNumber, SUBMISSION_FILE_SUBMISSION, null, true);
+				if ($newFile) {
+					$revisionNumber = $submissionFileDao->getLatestRevisionNumber($newFile->getFileId());
+					$submissionFileManager->copyFileToFileStage($newFile->getFileId(), $revisionNumber, SUBMISSION_FILE_SUBMISSION, null, true);
+				}
 			}
 		}
 
