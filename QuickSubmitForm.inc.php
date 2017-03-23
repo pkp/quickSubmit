@@ -64,7 +64,7 @@ class QuickSubmitForm extends Form {
 			$this->_metadataFormImplem->addChecks($this->submission);
 
 			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
-			$this->publishedSubmission = $publishedSubmissionDao->getPublishedArticleByArticleId($this->submissionId, $this->context->getId(), false);
+			$this->publishedSubmission = $publishedSubmissionDao->getByArticleId($this->submissionId, $this->context->getId(), false);
 		}
 
 		$this->addCheck(new FormValidatorPost($this));
