@@ -343,6 +343,17 @@ class QuickSubmitForm extends Form {
 		if ($this->getData('articleStatus') == 1) {
 			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
 			$publishedSubmissionDao->resequencePublishedArticles($this->submission->getSectionId(), $this->publishedSubmission->getIssueId());
+
+			// If we're using custom section ordering, and if this is the first
+			// article published in a section, make sure we enter a custom ordering
+			// for it. (Default at the end of the list.)
+			$sectionDao = DAORegistry::getDAO('SectionDAO');
+			if ($sectionDao->customSectionOrderingExists($this->publishedSubmission->getIssueId())) {
+				if ($sectionDao->getCustomSectionOrder($this->publishedSubmission->getIssueId(), $this->submission->getSectionId()) === null) {
+					$sectionDao->insertCustomSectionOrder($this->publishedSubmission->getIssueId(), $this->submission->getSectionId(), REALLY_BIG_NUMBER);
+					$sectionDao->resequenceCustomSectionOrders($this->publishedSubmission->getIssueId());
+				}
+			}
 		}
 
 		// Index article.
