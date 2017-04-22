@@ -46,6 +46,7 @@ class QuickSubmitForm extends Form {
 	 * Constructor
 	 * @param $plugin object
 	 * @param $request object
+	 * @param $locale string The default locale of the form
 	 */
 	function __construct($plugin, $request, $locale=null) {
 		parent::__construct($plugin->getTemplatePath() . 'index.tpl');
