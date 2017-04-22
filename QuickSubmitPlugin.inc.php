@@ -60,7 +60,11 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 		switch (array_shift($args)) {
 			case 'saveSubmit':
-				$this->saveSubmit($args, $request);
+				if ($request->getUserVar('submitFromLocalChange') == '1') {
+					$this->relocalizeForm($args, $request);
+				} else {
+					$this->saveSubmit($args, $request);
+				}
 				break;
 			case 'cancelSubmit':
 				$this->cancelSubmit($args, $request);
@@ -75,7 +79,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 				return $this->deleteUploadedImage($request);
 			default:
 				$this->import('QuickSubmitForm');
-				$form = new QuickSubmitForm($this, $request);
+				$form = new QuickSubmitForm($this, $request, $request->getUserVar('locale'));
 				$form->initData();
 				$form->display(false);
 				break;
@@ -89,7 +93,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 */
 	function cancelSubmit($args, $request) {
 		$this->import('QuickSubmitForm');
-		$form = new QuickSubmitForm($this, $request);
+		$form = new QuickSubmitForm($this, $request, $request->getUserVar('locale'));
 		$form->readInputData();
 
 		$form->cancel();
@@ -175,7 +179,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$this->import('QuickSubmitForm');
-		$form = new QuickSubmitForm($this, $request);
+		$form = new QuickSubmitForm($this, $request, $request->getUserVar('locale'));
 		$form->readInputData();
 
 		if($form->validate()){
@@ -187,6 +191,22 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		} else {
 			$form->display();
 		}
+	}
+
+	/**
+	 * Relocalises the form
+	 * @param $args array
+	 */
+	function relocalizeForm($args, $request) {
+		$templateMgr = TemplateManager::getManager($request);
+
+		$this->import('QuickSubmitForm');
+		$form = new QuickSubmitForm($this, $request, $request->getUserVar('locale'));
+		$form->readInputData();
+
+
+		$form->display();
+
 	}
 
 	/**

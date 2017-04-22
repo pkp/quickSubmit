@@ -47,7 +47,7 @@ class QuickSubmitForm extends Form {
 	 * @param $plugin object
 	 * @param $request object
 	 */
-	function QuickSubmitForm($plugin, $request) {
+	function __construct($plugin, $request, $locale=null) {
 		parent::__construct($plugin->getTemplatePath() . 'index.tpl');
 
 		$this->request = $request;
@@ -56,10 +56,20 @@ class QuickSubmitForm extends Form {
 
 		$this->_metadataFormImplem = new SubmissionMetadataFormImplementation($this);
 
+		if ($locale && ($locale != AppLocale::getLocale())) {
+			$this->defaultLocale = $locale;
+		} else {
+			$this->defaultLocale = AppLocale::getLocale();
+		}
+
+		$this->setDefaultFormLocale($this->defaultLocale);
+
 		if ($request->getUserVar('submissionId')) {
 			$this->submissionId  = $request->getUserVar('submissionId');
 			$submissionDao = Application::getSubmissionDAO();
 			$this->submission = $submissionDao->getById($request->getUserVar('submissionId'), $this->context->getId(), false);
+			$this->submission->setLocale($this->defaultLocale);
+			$submissionDao->updateObject($this->submission);
 
 			$this->_metadataFormImplem->addChecks($this->submission);
 
@@ -149,6 +159,8 @@ class QuickSubmitForm extends Form {
 		$templateMgr->assign('issueOptions', $this->getIssueOptions($this->context));
 
 		$templateMgr->assign('submission', $this->submission);
+
+		$templateMgr->assign('locale', $this->defaultLocale);
 
 		parent::display();
 	}
