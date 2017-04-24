@@ -79,7 +79,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 				return $this->deleteUploadedImage($request);
 			default:
 				$this->import('QuickSubmitForm');
-				$form = new QuickSubmitForm($this, $request, $request->getUserVar('locale'));
+				$form = new QuickSubmitForm($this, $request);
 				$form->initData();
 				$form->display(false);
 				break;
@@ -93,7 +93,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 */
 	function cancelSubmit($args, $request) {
 		$this->import('QuickSubmitForm');
-		$form = new QuickSubmitForm($this, $request, $request->getUserVar('locale'));
+		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
 
 		$form->cancel();
@@ -179,7 +179,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$this->import('QuickSubmitForm');
-		$form = new QuickSubmitForm($this, $request, $request->getUserVar('locale'));
+		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
 
 		if($form->validate()){
@@ -201,7 +201,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$this->import('QuickSubmitForm');
-		$form = new QuickSubmitForm($this, $request, $request->getUserVar('locale'));
+		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
 
 

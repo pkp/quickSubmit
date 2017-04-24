@@ -48,7 +48,7 @@ class QuickSubmitForm extends Form {
 	 * @param $request object
 	 * @param $locale string The default locale of the form
 	 */
-	function __construct($plugin, $request, $locale=null) {
+	function __construct($plugin, $request) {
 		parent::__construct($plugin->getTemplatePath() . 'index.tpl');
 
 		$this->request = $request;
@@ -57,13 +57,11 @@ class QuickSubmitForm extends Form {
 
 		$this->_metadataFormImplem = new SubmissionMetadataFormImplementation($this);
 
-		if ($locale && ($locale != AppLocale::getLocale())) {
-			$this->defaultLocale = $locale;
-		} else {
-			$this->defaultLocale = AppLocale::getLocale();
-		}
 
-		$this->setDefaultFormLocale($this->defaultLocale);
+		$locale = $request->getUserVar('locale');
+		if ($locale && ($locale != AppLocale::getLocale())) {
+			$this->setDefaultFormLocale($locale);
+		}
 
 		if ($request->getUserVar('submissionId')) {
 			$this->submissionId  = $request->getUserVar('submissionId');
