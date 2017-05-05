@@ -60,7 +60,11 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 		switch (array_shift($args)) {
 			case 'saveSubmit':
-				$this->saveSubmit($args, $request);
+				if ($request->getUserVar('submitFromLocalChange') == '1') {
+					$this->relocalizeForm($args, $request);
+				} else {
+					$this->saveSubmit($args, $request);
+				}
 				break;
 			case 'cancelSubmit':
 				$this->cancelSubmit($args, $request);
@@ -187,6 +191,22 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		} else {
 			$form->display();
 		}
+	}
+
+	/**
+	 * Relocalises the form
+	 * @param $args array
+	 */
+	function relocalizeForm($args, $request) {
+		$templateMgr = TemplateManager::getManager($request);
+
+		$this->import('QuickSubmitForm');
+		$form = new QuickSubmitForm($this, $request);
+		$form->readInputData();
+
+
+		$form->display();
+
 	}
 
 	/**

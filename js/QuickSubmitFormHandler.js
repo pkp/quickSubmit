@@ -29,11 +29,23 @@
 	 * @param {jQueryObject} $form the wrapped HTML form element.
 	 * @param {Object} options form options.
 	 */
-	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler =
-			function ($form, options) {
-
+	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler = function ($form, options) {
 		this.parent($form, options);
 		this.callbackWrapper(this.updateSchedulePublicationDiv_());
+
+		$('#locale').change(function () {
+			// Trick the form not to validate missing data before submitting
+			$('input,textarea,select').filter('[required]').each(function () {
+				$(this).removeAttr('required');
+				$(this).removeClass('required');
+			});
+
+			// This submit is for relocalisation of the form
+			$('#submitFromLocalChange').val('1');
+
+			// Submit the form
+			$('#quickSubmitForm').submit();
+		});
 
 	};
 	$.pkp.classes.Helper.inherits(
