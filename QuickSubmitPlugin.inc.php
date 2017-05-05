@@ -19,10 +19,7 @@ import('lib.pkp.classes.plugins.ImportExportPlugin');
 class QuickSubmitPlugin extends ImportExportPlugin {
 
 	/**
-	 * Called as a plugin is registered to the registry
-	 * @param $category String Name of category plugin was registered to
-	 * @return boolean True iff plugin initialized successfully; if false,
-	 * 	the plugin will not be registered.
+	 * @copydoc Plugin::register()
 	 */
 	function register($category, $path) {
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON,
@@ -38,22 +35,29 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	}
 
 	/**
-	 * Get the name of this plugin. The name must be unique within
-	 * its category.
-	 * @return String name of plugin
+	 * @copydoc Plugin::getName()
 	 */
 	function getName() {
 		return 'QuickSubmitPlugin';
 	}
 
+	/**
+	 * @copydoc Plugin::getDisplayName()
+	 */
 	function getDisplayName() {
 		return __('plugins.importexport.quickSubmit.displayName');
 	}
 
+	/**
+	 * @copydoc Plugin::getDescription()
+	 */
 	function getDescription() {
 		return __('plugins.importexport.quickSubmit.description');
 	}
 
+	/**
+	 * @copydoc ImportExportPlugin::display()
+	 */
 	function display($args, $request) {
 		$templateMgr = TemplateManager::getManager();
 		$templateMgr->register_function('plugin_url', array($this, 'smartyPluginUrl'));
@@ -88,8 +92,8 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 	/**
 	 * Cancels the submission
-	 * @param $request Request
 	 * @param $args array
+	 * @param $request Request
 	 */
 	function cancelSubmit($args, $request) {
 		$this->import('QuickSubmitForm');
@@ -110,22 +114,21 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 	/**
 	 * Show the upload image form.
-	 * @param $request Request
 	 * @param $args array
+	 * @param $request Request
 	 * @return JSONMessage JSON object
 	 */
 	function showFileUploadForm($args, $request) {
 		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->initData($request);
-
 		return new JSONMessage(true, $imageUploadForm->fetch($request));
 	}
 
 	/**
 	 * Upload the image to a temporary file
-	 * @param $request Request
 	 * @param $args array
+	 * @param $request Request
 	 * @return JSONMessage JSON object
 	 */
 	function uploadImage($args, $request) {
@@ -154,7 +157,6 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
-
 		return $imageUploadForm->execute($request);
 	}
 
@@ -167,26 +169,23 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
-
 		return $imageUploadForm->deleteCoverImage($request);
 	}
 
 	/**
 	 * Save the submitted form
 	 * @param $args array
+	 * @param $request Request.
 	 */
 	function saveSubmit($args, $request) {
 		$templateMgr = TemplateManager::getManager($request);
-
 		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
-
 		if($form->validate()){
 			$form->execute();
 			$templateMgr->assign('submissionId', $form->submissionId);
 			$templateMgr->assign('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
-
 			$templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
 		} else {
 			$form->display();
@@ -196,17 +195,14 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	/**
 	 * Relocalises the form
 	 * @param $args array
+	 * @param $request Request.
 	 */
 	function relocalizeForm($args, $request) {
 		$templateMgr = TemplateManager::getManager($request);
-
 		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
-
-
 		$form->display();
-
 	}
 
 	/**
@@ -244,11 +240,10 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	}
 
 	/**
-	 * Override the builtin to get the correct template path.
-	 * @return string
+	 * @copydoc Plugin::getTemplatePath()
 	 */
-	function getTemplatePath() {
-		return parent::getTemplatePath() . 'templates/';
+	function getTemplatePath($inCore = false) {
+		return parent::getTemplatePath($inCore = false) . 'templates/';
 	}
 }
 

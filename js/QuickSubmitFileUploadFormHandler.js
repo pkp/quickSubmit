@@ -13,8 +13,9 @@
  *
  * @brief QuickSubmit File upload form handler.
  */
-(function ($) {
+(function($) {
 
+	/** @type {Object} */
 	$.pkp.plugins.importexport.quickSubmit =
 			$.pkp.plugins.importexport.quickSubmit ||
 			{ js: {} };
@@ -36,7 +37,7 @@
 	 *  }} options Form validation options.
 	 */
 	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFileUploadFormHandler =
-			function ($form, options) {
+			function($form, options) {
 
 		this.parent($form, options);
 		this.$extraAltText_ = options.$extraAltText;
@@ -64,7 +65,7 @@
 	 * @param {{response: string}} ret The serialized JSON response.
 	 */
 	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFileUploadFormHandler.
-			prototype.handleUploadResponse = function (caller, pluploader, file, ret) {
+			prototype.handleUploadResponse = function(caller, pluploader, file, ret) {
 
 		// Handle the server's JSON response.
 		var jsonData = /** @type {boolean|{uploadedFile: Object,
@@ -78,7 +79,7 @@
 			// Hide preview if one exists
 			if (this.$preview) {
 				this.$preview.empty();
-				$('[id^="imageAltText"]').each(function () {
+				$('[id^="imageAltText"]').each(function() {
 					$(this).val('');
 				});
 				this.$extraAltText_.show();
@@ -101,11 +102,11 @@
 	 * Fires when the file has been removed
 	 */
 	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFileUploadFormHandler.
-			prototype.fileDeleted = function () {
+			prototype.fileDeleted = function() {
 
 		if (this.$preview) {
 			this.$preview.empty();
-			$('[id^="imageAltText"]').each(function () {
+			$('[id^="imageAltText"]').each(function() {
 				$(this).val('');
 			});
 			this.$extraAltText_.show();
