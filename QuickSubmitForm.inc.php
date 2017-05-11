@@ -56,7 +56,6 @@ class QuickSubmitForm extends Form {
 
 		$this->_metadataFormImplem = new SubmissionMetadataFormImplementation($this);
 
-
 		$locale = $request->getUserVar('locale');
 		if ($locale && ($locale != AppLocale::getLocale())) {
 			$this->setDefaultFormLocale($locale);
@@ -66,13 +65,10 @@ class QuickSubmitForm extends Form {
 			$this->submissionId  = $request->getUserVar('submissionId');
 			$submissionDao = Application::getSubmissionDAO();
 			$this->submission = $submissionDao->getById($request->getUserVar('submissionId'), $this->context->getId(), false);
-			$this->submission->setLocale($this->defaultLocale);
+			$this->submission->setLocale($this->getDefaultFormLocale());
 			$submissionDao->updateObject($this->submission);
 
 			$this->_metadataFormImplem->addChecks($this->submission);
-
-			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
-			$this->publishedSubmission = $publishedSubmissionDao->getByArticleId($this->submissionId, $this->context->getId(), false);
 		}
 
 		$this->addCheck(new FormValidatorPost($this));
@@ -192,24 +188,7 @@ class QuickSubmitForm extends Form {
 		$this->_data = array();
 
 		if (!isset($this->submissionId)){
-			$supportedSubmissionLocales = $this->context->getSupportedSubmissionLocales();
-
-			// Try these locales in order until we find one that's
-			// supported to use as a default.
-			$tryLocales = array(
-				$this->getFormLocale(), // Current form locale
-				AppLocale::getLocale(), // Current UI locale
-				$this->context->getPrimaryLocale(), // Context locale
-				$supportedSubmissionLocales[array_shift(array_keys($supportedSubmissionLocales))] // Fallback: first one on the list
-			);
-
-			foreach ($tryLocales as $locale) {
-				if (in_array($locale, $supportedSubmissionLocales)) {
-					// Found a default to use
-					$this->_data['locale'] = $locale;
-					break;
-				}
-			}
+			$this->_data['locale'] = $this->getDefaultFormLocale();
 
 			// Get Sections
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
@@ -224,14 +203,13 @@ class QuickSubmitForm extends Form {
 			$submission->stampStatusModified();
 			$submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
 			$submission->setSectionId(current(array_keys($sectionOptions)));
+			$submission->setLocale($this->getDefaultFormLocale());
 
 			// Insert the submission
 			$this->submissionId = $submissionDao->insertObject($submission);
 			$this->setData('submissionId', $this->submissionId);
 
 			$this->_metadataFormImplem->initData($submission);
-
-
 
             // Add the user manager group (first that is found) to the stage_assignment for that submission
             $user = Request::getUser();
@@ -248,7 +226,6 @@ class QuickSubmitForm extends Form {
                     break;
                 }
             }
-
 
             // Assign the user author to the stage
 			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
@@ -319,8 +296,6 @@ class QuickSubmitForm extends Form {
 			$this->publishedSubmission = $publishedSubmission;
 		}
 
-
-
 		// Copy GalleyFiles to Submission Files
 		// Get Galley Files by SubmissionId
 		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
@@ -371,7 +346,6 @@ class QuickSubmitForm extends Form {
 		ArticleSearchIndex::articleMetadataChanged($this->submission);
 		ArticleSearchIndex::submissionFilesChanged($this->submission);
 		ArticleSearchIndex::articleChangesFinished();
-
 
 	}
 
