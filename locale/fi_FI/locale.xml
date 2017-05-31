@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
+
+<!--
+  * plugins/importexport/quickSubmit/locale/fi_FI/locale.xml
+  *
+  * Copyright (c) 2013-2017 Simon Fraser University Library
+  * Copyright (c) 2003-2017 John Willinsky
+  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  *
+  * Localization strings
+  -->
+
+<locale name="fi_FI" full_name="Suomi">
+	<message key="plugins.importexport.quickSubmit.displayName">Pikajulkaisulisäosa</message>
+	<message key="plugins.importexport.quickSubmit.description">Lisäosan artikkeleiden nopeaan julkaisuun.</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">Tällä lisäosalla voit lisätä nopeasti artikkeleita tuotantovaiheeseen tai suoraan julkaistavaan numeroon.</message>
+	<message key="plugins.importexport.quickSubmit.success">Artikkeli lisätty</message>
+	<message key="plugins.importexport.quickSubmit.successDescription">Artikkeli luotiin onnistuneesti.</message>
+	<message key="plugins.importexport.quickSubmit.successReturn">Palaa takaisin pikajulkaisulisäosaan.</message>
+	<message key="plugins.importexport.quickSubmit.published">Julkaistu</message>
+	<message key="plugins.importexport.quickSubmit.unpublished">Julkaisematon</message>
+	<message key="plugins.importexport.quickSubmit.goToSubmission">Siirry käsikirjoitukseen</message>
+	<message key="plugins.importexport.quickSubmit.selectIssue">Lehden numero pitää valita.</message>
+</locale>
