@@ -8,14 +8,15 @@
   * Copyright (c) 2003-2017 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
-  * Localization strings for the pt_PT locale.
-  *
-  -->
-
 <locale name="pt_PT" full_name="Português (Portugal)">
 	<message key="plugins.importexport.quickSubmit.displayName">Plugin de Submissão Rápida</message>
 	<message key="plugins.importexport.quickSubmit.description">Plugin de submissão em 1 passo</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">Este plugin permite enviar rapidamente submissões para o passo de produção ou diretamente para um número já publicado.</message>
 	<message key="plugins.importexport.quickSubmit.success">Artigo incluído</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Artigo criado com sucesso.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Voltar ao Plugin de Submissão Rápida.</message>
+	<message key="plugins.importexport.quickSubmit.published">Publicado</message>
+	<message key="plugins.importexport.quickSubmit.unpublished">Não publicado</message>
+	<message key="plugins.importexport.quickSubmit.goToSubmission">Ir para Submissões</message>
+	<message key="plugins.importexport.quickSubmit.selectIssue">Indique um número para associar ao trabalho</message>
 </locale>
