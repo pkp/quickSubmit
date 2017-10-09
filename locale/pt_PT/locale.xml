@@ -8,6 +8,9 @@
   * Copyright (c) 2003-2017 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
+  * Localization strings for the pt_PT locale.
+  *
+  -->
 <locale name="pt_PT" full_name="Português (Portugal)">
 	<message key="plugins.importexport.quickSubmit.displayName">Plugin de Submissão Rápida</message>
 	<message key="plugins.importexport.quickSubmit.description">Plugin de submissão em 1 passo</message>
