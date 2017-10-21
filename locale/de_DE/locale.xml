@@ -12,9 +12,14 @@
   -->
 
 <locale name="de_DE" full_name="Deutsch (Deutschland)">
-	<message key="plugins.importexport.quickSubmit.displayName">Schnelleinreichungs-Plug-In</message>
-	<message key="plugins.importexport.quickSubmit.description">Ein-Schritt-Einreichungs-Plug-In</message>
+	<message key="plugins.importexport.quickSubmit.displayName">Schnelleinreichungs-Plugin</message>
+	<message key="plugins.importexport.quickSubmit.description">Ein-Schritt-Einreichungs-Plugin</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">Dieses Plugin emöglicht Ihnen, komplette Einreichungen schnell direkt in die Herstellungsphase oder direkt in eine Ausgabe zu importieren.</message>
 	<message key="plugins.importexport.quickSubmit.success">Artikel hinzugefügt</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Anlegen des Artikels war erfolgreich.</message>
-	<message key="plugins.importexport.quickSubmit.successReturn">Zum Schnelleinreichungs-Plug-In zurückkehren.</message>
+	<message key="plugins.importexport.quickSubmit.successReturn">Zum Schnelleinreichungs-Plugin zurückkehren.</message>
+	<message key="plugins.importexport.quickSubmit.published">Veröffentlicht</message>
+	<message key="plugins.importexport.quickSubmit.unpublished">Unveröffentlicht</message>
+	<message key="plugins.importexport.quickSubmit.goToSubmission">Zur Einreichung gehen</message>
+	<message key="plugins.importexport.quickSubmit.selectIssue">Sie müssen eine Ausgabe auswählen</message>
 </locale>
