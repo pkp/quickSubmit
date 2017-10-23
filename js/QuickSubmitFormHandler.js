@@ -34,7 +34,7 @@
 			function($form, options) {
 
 		this.parent($form, options);
-		this.callbackWrapper(this.updateSchedulePublicationDiv_);
+		this.callbackWrapper(this.updateSchedulePublicationDiv_());
 
 		$('#locale').change(function() {
 			// Trick the form not to validate missing data before submitting
