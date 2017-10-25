@@ -246,5 +246,3 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		return parent::getTemplatePath($inCore = false) . 'templates/';
 	}
 }
-
-?>
