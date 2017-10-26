@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
+
 <!--
   * plugins/importexport/quickSubmit/locale/es_ES/locale.xml
   *
@@ -7,15 +8,18 @@
   * Copyright (c) 2003-2017 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
-  * Credits: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Spanish_(es_ES)
-  *
   * Localization strings
   -->
 
 <locale name="es_ES" full_name="Español (España)">
 	<message key="plugins.importexport.quickSubmit.displayName">Módulo QuickSubmit</message>
 	<message key="plugins.importexport.quickSubmit.description">Módulo para el envío en un solo paso</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">Este complemento le permite agregar rápidamente propuestas completas a la etapa de producción o directamente a un número.</message>
 	<message key="plugins.importexport.quickSubmit.success">Se añadió el artículo</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Se creó el artículo con éxito.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Volver al módulo QuickSubmit.</message>
+	<message key="plugins.importexport.quickSubmit.published">Publicado</message>
+	<message key="plugins.importexport.quickSubmit.unpublished">No Publicado</message>
+	<message key="plugins.importexport.quickSubmit.goToSubmission">Ir a Propuestas</message>
+	<message key="plugins.importexport.quickSubmit.selectIssue">Se debe seleccionar un número</message>
 </locale>
