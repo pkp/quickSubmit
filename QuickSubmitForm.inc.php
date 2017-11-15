@@ -161,8 +161,8 @@ class QuickSubmitForm extends Form {
 			$sectionId = $this->getData('sectionId');
 		}
 		$section = $sectionDao->getById($sectionId);
-		$wordNo = $section->getAbstractWordCount();
-		$templateMgr->assign('wordNo', $wordNo);
+		$wordCount = $section->getAbstractWordCount();
+		$templateMgr->assign('wordCount', $wordCount);
 		$templateMgr->assign('abstractsRequired', !$section->getAbstractsNotRequired());
 
 		parent::display();

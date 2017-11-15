@@ -44,7 +44,7 @@
 			});
 
 			// This submit is for relocalisation of the form
-			$('#reloadFrom').val('1');
+			$('#reloadForm').val('1');
 
 			// Submit the form
 			$('#quickSubmitForm').submit();

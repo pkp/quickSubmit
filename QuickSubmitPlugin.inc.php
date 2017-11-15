@@ -64,7 +64,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 		switch (array_shift($args)) {
 			case 'saveSubmit':
-				if ($request->getUserVar('reloadFrom') == '1') {
+				if ($request->getUserVar('reloadForm') == '1') {
 					$this->reloadForm($args, $request);
 				} else {
 					$this->saveSubmit($args, $request);
