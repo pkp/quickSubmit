@@ -26,7 +26,7 @@
 	<p>{translate key="plugins.importexport.quickSubmit.descriptionLong"}</p>
 
 	<form class="pkp_form" id="quickSubmitForm" method="post" action="{plugin_url path="saveSubmit"}">
-		<input type="hidden" name="submitFromLocalChange" id="submitFromLocalChange" value="0" />
+		<input type="hidden" name="reloadFrom" id="reloadFrom" value="0" />
 
 		{if $submissionId}
 		    <input type="hidden" name="submissionId" value="{$submissionId|escape}" />

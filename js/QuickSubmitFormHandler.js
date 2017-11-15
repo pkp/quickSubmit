@@ -36,7 +36,7 @@
 		this.parent($form, options);
 		this.callbackWrapper(this.updateSchedulePublicationDiv_());
 
-		$('#locale').change(function() {
+		$('#locale, #sectionId').change(function() {
 			// Trick the form not to validate missing data before submitting
 			$('input,textarea,select').filter('[required]').each(function() {
 				$(this).removeAttr('required');
@@ -44,7 +44,7 @@
 			});
 
 			// This submit is for relocalisation of the form
-			$('#submitFromLocalChange').val('1');
+			$('#reloadFrom').val('1');
 
 			// Submit the form
 			$('#quickSubmitForm').submit();

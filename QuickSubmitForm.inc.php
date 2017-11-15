@@ -95,7 +95,6 @@ class QuickSubmitForm extends Form {
 	 */
 	function display() {
 		$templateMgr = TemplateManager::getManager($this->request);
-		$templateMgr->assign('abstractsRequired', true);
 
 		$templateMgr->assign(
 			'supportedSubmissionLocaleNames',
@@ -155,6 +154,16 @@ class QuickSubmitForm extends Form {
 		$templateMgr->assign('submission', $this->submission);
 
 		$templateMgr->assign('locale', $this->getDefaultFormLocale());
+
+		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		$sectionId = $this->submission->getSectionId();
+		if ($this->getData('sectionId') > 0) {
+			$sectionId = $this->getData('sectionId');
+		}
+		$section = $sectionDao->getById($sectionId);
+		$wordNo = $section->getAbstractWordCount();
+		$templateMgr->assign('wordNo', $wordNo);
+		$templateMgr->assign('abstractsRequired', !$section->getAbstractsNotRequired());
 
 		parent::display();
 	}
@@ -233,7 +242,6 @@ class QuickSubmitForm extends Form {
 
 			$this->submission = $submission;
 		}
-
 	}
 
 	/**
