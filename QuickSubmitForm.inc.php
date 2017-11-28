@@ -322,6 +322,8 @@ class QuickSubmitForm extends Form {
 		$this->submission->setDateSubmitted(Core::getCurrentDate());
 		$this->submission->setSubmissionProgress(0);
 
+		parent::execute($this->submission);
+
 		$submissionDao = Application::getSubmissionDAO();
 		$submissionDao->updateObject($this->submission);
 
