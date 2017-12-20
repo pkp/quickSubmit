@@ -95,7 +95,6 @@ class QuickSubmitForm extends Form {
 	 */
 	function display() {
 		$templateMgr = TemplateManager::getManager($this->request);
-		$templateMgr->assign('abstractsRequired', true);
 
 		$templateMgr->assign(
 			'supportedSubmissionLocaleNames',
@@ -155,7 +154,17 @@ class QuickSubmitForm extends Form {
 		$templateMgr->assign('submission', $this->submission);
 
 		$templateMgr->assign('locale', $this->getDefaultFormLocale());
-		
+
+		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		$sectionId = $this->submission->getSectionId();
+		if ($this->getData('sectionId') > 0) {
+			$sectionId = $this->getData('sectionId');
+		}
+		$section = $sectionDao->getById($sectionId);
+		$wordCount = $section->getAbstractWordCount();
+		$templateMgr->assign('wordCount', $wordCount);
+		$templateMgr->assign('abstractsRequired', !$section->getAbstractsNotRequired());
+
 		// Display public identifiers form if enabled for articles
 		$assignPubIds = false;
 		$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true);		
@@ -168,7 +177,7 @@ class QuickSubmitForm extends Form {
 		if ($assignPubIds) {
 			$templateMgr->assign('pubIdPlugins', $pubIdPlugins);
 			$templateMgr->assign('pubIds', true);
-		}
+		}		
 
 		parent::display();
 	}
@@ -247,7 +256,6 @@ class QuickSubmitForm extends Form {
 
 			$this->submission = $submission;
 		}
-
 	}
 
 	/**
@@ -336,6 +344,8 @@ class QuickSubmitForm extends Form {
 		$this->submission->setDateSubmitted(Core::getCurrentDate());
 		$this->submission->setSubmissionProgress(0);
 
+		parent::execute($this->submission);
+
 		$submissionDao = Application::getSubmissionDAO();
 		$submissionDao->updateObject($this->submission);
 
@@ -355,14 +365,14 @@ class QuickSubmitForm extends Form {
 			}
 		}
 
-		/* Update article pub ids. */
+		/* Update article pubids. */
 		import('controllers.tab.pubIds.form.PublicIdentifiersForm');
 		$submission = $this->submission;
 		$form = new PublicIdentifiersForm($submission);
 		$form->readInputData();
 		if ($form->validate($this->request)) {
 			$form->execute($this->request);
-		}
+		}		
 
 		// Index article.
 		import('classes.search.ArticleSearchIndex');
@@ -409,13 +419,4 @@ class QuickSubmitForm extends Form {
 
 		return $issueOptions;
 	}
-
-	/**
-	 * Get the template for the assign public identifiers form.
-	 * @return string
-	 */
-	function getAssignPublicIdentifiersFormTemplate() {
-		return 'controllers/grid/pubIds/form/assignPublicIdentifiersForm.tpl';
-	}
-	
 }
