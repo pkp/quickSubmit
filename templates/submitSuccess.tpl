@@ -13,7 +13,7 @@
 {include file="common/header.tpl"}
 {/strip}
 
-{url|assign:submissionUrl router=$smarty.const.ROUTE_PAGE page="workflow" op="access" stageId=$stageId submissionId=$submissionId contextId="submission" escape=false}
+{capture assign="submissionUrl"}{url router=$smarty.const.ROUTE_PAGE page="workflow" op="access" stageId=$stageId submissionId=$submissionId contextId="submission" escape=false}{/capture}
 
 <div class="pkp_page_content pkp_successQuickSubmit">
 	<p>
