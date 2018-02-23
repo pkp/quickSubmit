@@ -4,8 +4,8 @@
 <!--
   * plugins/importexport/quickSubmit/locale/pt_PT/locale.xml
   *
-  * Copyright (c) 2013-2016 Simon Fraser University Library
-  * Copyright (c) 2003-2016 John Willinsky
+  * Copyright (c) 2013-2017 Simon Fraser University Library
+  * Copyright (c) 2003-2017 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the pt_PT locale.
@@ -18,4 +18,9 @@
 	<message key="plugins.importexport.quickSubmit.success">Artigo incluído</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Artigo criado com sucesso.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Voltar ao Plugin de Submissão Rápida.</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">Este puglin permite adicionar rapidamente submissões completas diretamente para a etapa de produção ou para um número.</message>
+	<message key="plugins.importexport.quickSubmit.published">Publicado</message>
+	<message key="plugins.importexport.quickSubmit.unpublished">Não publicado</message>
+	<message key="plugins.importexport.quickSubmit.goToSubmission">Ir para Submissão</message>
+	<message key="plugins.importexport.quickSubmit.selectIssue">Deve selecionar um número</message>
 </locale>
