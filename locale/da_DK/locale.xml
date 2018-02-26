@@ -4,7 +4,7 @@
 <!--
   * plugins/importexport/quickSubmit/locale/da_DK/locale.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
+  * Copyright (c) 2013-2018 Simon Fraser University Library
   * Copyright (c) 2003-2018 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
@@ -13,9 +13,14 @@
   -->
 
 <locale name="da_DK" full_name="Dansk">
-	<message key="plugins.importexport.quickSubmit.displayName">QuickSubmit Plugin</message>
+	<message key="plugins.importexport.quickSubmit.displayName">QuickSubmit Plug-in</message>
 	<message key="plugins.importexport.quickSubmit.description">Ettrins-manuskriptindleverings-plugin</message>
 	<message key="plugins.importexport.quickSubmit.success">Artikel tilføjet</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Oprettelse af artikel gennemført.</message>
-	<message key="plugins.importexport.quickSubmit.successReturn">Vend tilbage til QuickSubmit plugin.</message>
+	<message key="plugins.importexport.quickSubmit.successReturn">Vend tilbage til QuickSubmit plug-in.</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">Denne plug-in gør det muligt hurtigt at overføre publiceringsklare indsendelser til produktionstrinnet eller direkte til et nummer.</message>
+	<message key="plugins.importexport.quickSubmit.published">Publiceret</message>
+	<message key="plugins.importexport.quickSubmit.unpublished">Ikke publiceret</message>
+	<message key="plugins.importexport.quickSubmit.goToSubmission">Gå til Indsendelse</message>
+	<message key="plugins.importexport.quickSubmit.selectIssue">Du skal vælge et nummer</message>
 </locale>
