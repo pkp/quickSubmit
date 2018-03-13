@@ -38,7 +38,7 @@
 		{csrf}
 		{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
 
-		{fbvFormSection label="editor.article.coverImage" class=$wizardClass}
+		{fbvFormSection label="editor.issues.coverPage" class=$wizardClass}
 			<div id="{$openCoverImageLinkAction->getId()}" class="pkp_linkActions">
 				{include file="linkAction/linkAction.tpl" action=$openCoverImageLinkAction contextId="quickSubmitForm"}
 			</div>

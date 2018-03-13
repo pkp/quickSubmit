@@ -39,7 +39,7 @@
 	<input type="hidden" name="submissionId" value="{$submissionId|escape}" />
 
 	{* Cover Image *}
-	{fbvFormArea id="coverImage" title="editor.article.coverImage"}
+	{fbvFormArea id="coverImage" title="editor.issues.coverPage"}
 		{fbvFormSection}
 			{include file="controllers/fileUploadContainer.tpl" id="coverImageUploader"}
 			<input type="hidden" name="temporaryFileId" id="temporaryFileId" value="" />
