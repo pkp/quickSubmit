@@ -14,7 +14,7 @@
 <locale name="sv_SE" full_name="Svenska">
 	<message key="plugins.importexport.quickSubmit.displayName">QuickSubmit-pluginet</message>
 	<message key="plugins.importexport.quickSubmit.description">Plugin för enstegsinmatning.</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">Det här pluginet låter dig snabbt registrerade färdiga bidrag till produktionssteget eller direkt till ett nummer.</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">Det här pluginet låter dig snabbt registrera färdiga bidrag till produktionssteget eller direkt till ett nummer.</message>
 	<message key="plugins.importexport.quickSubmit.success">Artikeln har lagts till</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Artikeln skapades utan problem.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Gå tillbaka QuickSubmit-pluginet.</message>
