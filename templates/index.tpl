@@ -74,6 +74,14 @@
 		{capture assign="representationsGridUrl"}{url router=$smarty.const.ROUTE_COMPONENT component="grid.articleGalleys.ArticleGalleyGridHandler" op="fetchGrid" submissionId=$submissionId escape=false}{/capture}
 		{load_url_in_div id="formatsGridContainer"|uniqid url=$representationsGridUrl}
 
+		{if $pubIds}
+			{foreach from=$pubIdPlugins item=pubIdPlugin}
+				{assign var=pubIdAssignFile value=$pubIdPlugin->getPubIdAssignFile()}
+				{assign var=canBeAssigned value=$pubIdPlugin->canBeAssigned($submission)}
+				{include file="$pubIdAssignFile" pubIdPlugin=$pubIdPlugin pubObject=$submission canBeAssigned=$canBeAssigned}
+			{/foreach}
+		{/if}
+
 		{* Publishing article section *}
 		{if $hasIssues}
 			{fbvFormSection id='articlePublishingSection' list="false"}
