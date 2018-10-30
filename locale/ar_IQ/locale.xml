@@ -27,4 +27,8 @@
 	<message key="plugins.importexport.quickSubmit.success">تمت إضافة المقالة</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">نجحت عملية إنشاء المقالة.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">العودة إلى إضافة QuickSubmit.</message>
+	<message key="plugins.importexport.quickSubmit.published">منشور</message>
+	<message key="plugins.importexport.quickSubmit.unpublished">غير منشور</message>
+	<message key="plugins.importexport.quickSubmit.goToSubmission">الذهاب إلى طلب التقديم</message>
+	<message key="plugins.importexport.quickSubmit.selectIssue">لا بد من اختيار العدد</message>
 </locale>
