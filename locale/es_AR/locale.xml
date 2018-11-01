@@ -2,7 +2,7 @@
 <!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
 
 <!--
-  * locale.xml
+  * plugins/importexport/quickSubmit/locale/es_AR/locale.xml
   *
   * Copyright (c) 2013-2018 Simon Fraser University
   * Copyright (c) 2003-2018 John Willinsky
@@ -13,9 +13,14 @@
   -->
 
 <locale name="es_AR" full_name="Español (Argentina)">
-	<message key="plugins.importexport.quickSubmit.displayName">Plugin QuickSubmit</message>
-	<message key="plugins.importexport.quickSubmit.description">Plugin de envío en un paso</message>
-	<message key="plugins.importexport.quickSubmit.success">Artículo Añadido</message>
-	<message key="plugins.importexport.quickSubmit.successDescription">La creación del Artículo ha terminado con éxito.</message>
-	<message key="plugins.importexport.quickSubmit.successReturn">Volver al plugin QuickSubmit.</message>
+	<message key="plugins.importexport.quickSubmit.displayName">Módulo QuickSubmit</message>
+	<message key="plugins.importexport.quickSubmit.description">Módulo para el envío en un solo paso</message>
+        <message key="plugins.importexport.quickSubmit.descriptionLong">Este módulo permite enviar rápidamente envíos a la etapa de producción o directamente a un número determinado.</message>
+	<message key="plugins.importexport.quickSubmit.success">Se añadió el artículo</message>
+	<message key="plugins.importexport.quickSubmit.successDescription">Se creó el artículo con éxito.</message>
+	<message key="plugins.importexport.quickSubmit.successReturn">Volver al módulo QuickSubmit.</message>
+        <message key="plugins.importexport.quickSubmit.published">Publicado</message>
+        <message key="plugins.importexport.quickSubmit.unpublished">No publicado</message>
+        <message key="plugins.importexport.quickSubmit.goToSubmission">Ir a Envíos</message>
+        <message key="plugins.importexport.quickSubmit.selectIssue">Debe escoger un número.</message>
 </locale>
