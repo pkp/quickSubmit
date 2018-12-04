@@ -11,7 +11,7 @@ to pass through the whole submission process.
 License
 -------
 This plugin is licensed under the GNU General Public License v2. See the
-accompanying OJS file docs/COPYING for the complete terms of this license.
+accompanying OJS file `docs/COPYING` for the complete terms of this license.
 
 System Requirements
 -------------------
@@ -36,6 +36,6 @@ Version History
 
 ## Install:
 
- * Copy the release source into the PKP product's plugins/importexport folder.
+ * Copy the release source into the PKP product's `plugins/importexport` folder.
  * Run `tools/upgrade.php upgrade` to allow the system to recognize the new plugin, if OJS doesn't do that automatically
- * Go to Administration -> Tools -> Import/Export -> QuickSubmit Plugin
+ * Go to `Administration` -> `Tools` -> `Import`/`Export` -> `QuickSubmit Plugin`
