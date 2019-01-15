@@ -108,8 +108,8 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		$notificationMgr = new NotificationManager();
 		$notificationMgr->createTrivialNotification($currentUser->getId(), NOTIFICATION_TYPE_SUCCESS, array('contents' => $notificationContent));
 
-		$path = array('plugin', $this->getName());
-		$request->redirect(null, null, null, $path, null, null);
+		$templateMgr = TemplateManager::getManager($request);
+		$templateMgr->display($this->getTemplatePath() . 'submitCancel.tpl');
 	}
 
 	/**
