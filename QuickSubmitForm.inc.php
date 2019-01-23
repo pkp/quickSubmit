@@ -102,8 +102,8 @@ class QuickSubmitForm extends Form {
 
 		// Tell the form what fields are enabled (and which of those are required)
 		foreach (Application::getMetadataFields() as $field) {
-			$templateMgr->assign($a = array(
-				$field . 'Enabled' => in_array($this->context->getData($fielda), array(METADATA_ENABLE, METADATA_REQUEST, METADATA_REQUIRE)),
+			$templateMgr->assign(array(
+				$field . 'Enabled' => in_array($this->context->getData($field), array(METADATA_ENABLE, METADATA_REQUEST, METADATA_REQUIRE)),
 				$field . 'Required' => $this->context->getData($field) === METADATA_REQUIRE,
 			));
 		}
