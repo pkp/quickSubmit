@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/quickSubmit/classes/form/UploadImageForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class UploadImageForm
@@ -38,7 +38,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @param $request object
 	 */
 	function __construct($plugin, $request) {
-		parent::__construct($plugin->getTemplatePath() . 'uploadImageForm.tpl');
+		parent::__construct($plugin->getTemplateResource('uploadImageForm.tpl'));
 
 		$this->plugin = $plugin;
 		$this->request = $request;
@@ -78,7 +78,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 */
 	function initData() {
 		$templateMgr = TemplateManager::getManager($this->request);
-		$templateMgr->register_function('plugin_url', array($this->plugin, 'smartyPluginUrl'));
+		$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'smartyPluginUrl'));
 		$templateMgr->assign('submissionId', $this->submissionId);
 
 		$locale = AppLocale::getLocale();

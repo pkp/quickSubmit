@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/quickSubmit/QuickSubmitPlugin.inc.php
  *
- * Copyright (c) 2013-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2013-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class QuickSubmitPlugin
@@ -60,7 +60,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 */
 	function display($args, $request) {
 		$templateMgr = TemplateManager::getManager();
-		$templateMgr->register_function('plugin_url', array($this, 'smartyPluginUrl'));
+		$templateMgr->registerFunction('plugin_url', array($this->plugin, 'smartyPluginUrl'));
 
 		switch (array_shift($args)) {
 			case 'saveSubmit':
@@ -186,7 +186,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 			$form->execute();
 			$templateMgr->assign('submissionId', $form->submissionId);
 			$templateMgr->assign('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
-			$templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
+			$templateMgr->display($this->getTemplateResource('submitSuccess.tpl'));
 		} else {
 			$form->display();
 		}

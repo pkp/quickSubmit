@@ -1,8 +1,8 @@
 {**
  * plugins/importexport/quickSubmit/templates/index.tpl
  *
- * Copyright (c) 2013-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2013-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * Template for one-page submission form
@@ -95,7 +95,7 @@
 
 					{fbvFormArea id="schedulingInformationDatePublished" title="editor.issues.published"}
 						{fbvFormSection for="publishedDate"}
-							{fbvElement type="text" required=true id="datePublished" value=$datePublished|date_format:$dateFormatShort translate=false label="editor.issues.published" inline=true size=$fbvStyles.size.MEDIUM class="datepicker"}
+							{fbvElement type="text" required=true id="datePublished" value=$datePublished translate=false label="editor.issues.published" inline=true size=$fbvStyles.size.MEDIUM class="datepicker"}
 						{/fbvFormSection}
 					{/fbvFormArea}
 
