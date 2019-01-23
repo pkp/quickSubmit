@@ -15,9 +15,6 @@
 
 
 import('lib.pkp.classes.form.Form');
-
-// This class contains a static method to describe metadata field settings
-import('lib.pkp.controllers.grid.settings.metadata.MetadataGridHandler');
 import('classes.submission.SubmissionMetadataFormImplementation');
 
 class QuickSubmitForm extends Form {
@@ -104,10 +101,10 @@ class QuickSubmitForm extends Form {
 		);
 
 		// Tell the form what fields are enabled (and which of those are required)
-		foreach (array_keys(MetadataGridHandler::getNames()) as $field) {
+		foreach (Application::getMetadataFields() as $field) {
 			$templateMgr->assign($a = array(
-				$field . 'Enabled' => $this->context->getSetting($field . 'EnabledWorkflow'),
-				$field . 'Required' => $this->context->getSetting($field . 'Required')
+				$field . 'Enabled' => in_array($this->context->getData($fielda), array(METADATA_ENABLE, METADATA_REQUEST, METADATA_REQUIRE)),
+				$field . 'Required' => $this->context->getData($field) === METADATA_REQUIRE,
 			));
 		}
 
@@ -137,7 +134,7 @@ class QuickSubmitForm extends Form {
 		$templateMgr->assign('openCoverImageLinkAction', $openCoverImageLinkAction);
 		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$sectionOptions = array('0' => '') + $sectionDao->getTitles($this->context->getId());
+		$sectionOptions = array('0' => '') + $sectionDao->getTitlesByContextId($this->context->getId());
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
 		// Get published Issues
@@ -203,7 +200,7 @@ class QuickSubmitForm extends Form {
 
 			// Get Sections
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
-			$sectionOptions = $sectionDao->getTitles($this->context->getId());
+			$sectionOptions = $sectionDao->getTitlesByContextId($this->context->getId());
 
 			// Create and insert a new submission
 			$submissionDao = Application::getSubmissionDAO();

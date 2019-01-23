@@ -60,7 +60,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 */
 	function display($args, $request) {
 		$templateMgr = TemplateManager::getManager();
-		$templateMgr->registerFunction('plugin_url', array($this->plugin, 'smartyPluginUrl'));
+		$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'smartyPluginUrl'));
 
 		switch (array_shift($args)) {
 			case 'saveSubmit':
@@ -237,12 +237,5 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 */
 	function executeCLI($scriptName, &$args) {
 		fatalError('Not implemented');
-	}
-
-	/**
-	 * @copydoc Plugin::getTemplatePath()
-	 */
-	function getTemplatePath($inCore = false) {
-		return parent::getTemplatePath($inCore = false) . 'templates/';
 	}
 }
