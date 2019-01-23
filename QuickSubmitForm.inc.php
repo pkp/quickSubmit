@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/quickSubmit/QuickSubmitForm.inc.php
  *
- * Copyright (c) 2013-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2013-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class QuickSubmitForm
@@ -137,7 +137,7 @@ class QuickSubmitForm extends Form {
 		$templateMgr->assign('openCoverImageLinkAction', $openCoverImageLinkAction);
 		// Get section for this context
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
-		$sectionOptions = array('0' => '') + $sectionDao->getTitles($this->context->getId());
+		$sectionOptions = array('0' => '') + $sectionDao->getTitlesByContextId($this->context->getId());
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
 		// Get published Issues
@@ -203,7 +203,7 @@ class QuickSubmitForm extends Form {
 
 			// Get Sections
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
-			$sectionOptions = $sectionDao->getTitles($this->context->getId());
+			$sectionOptions = $sectionDao->getTitlesByContextId($this->context->getId());
 
 			// Create and insert a new submission
 			$submissionDao = Application::getSubmissionDAO();
