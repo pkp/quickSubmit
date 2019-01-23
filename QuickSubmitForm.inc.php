@@ -80,6 +80,8 @@ class QuickSubmitForm extends Form {
 		if (!is_array($supportedSubmissionLocales) || count($supportedSubmissionLocales) < 1)
 			$supportedSubmissionLocales = array($this->context->getPrimaryLocale());
 		$this->addCheck(new FormValidatorInSet($this, 'locale', 'required', 'submission.submit.form.localeRequired', $supportedSubmissionLocales));
+
+		$this->addCheck(new FormValidatorURL($this, 'licenseURL', 'optional', 'form.url.invalid'));
 	}
 
 	/**
