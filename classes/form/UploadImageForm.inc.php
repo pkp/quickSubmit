@@ -38,7 +38,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @param $request object
 	 */
 	function __construct($plugin, $request) {
-		parent::__construct($plugin->getTemplatePath() . 'uploadImageForm.tpl');
+		parent::__construct($plugin->getTemplateResource('uploadImageForm.tpl'));
 
 		$this->plugin = $plugin;
 		$this->request = $request;

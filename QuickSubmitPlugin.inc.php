@@ -186,7 +186,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 			$form->execute();
 			$templateMgr->assign('submissionId', $form->submissionId);
 			$templateMgr->assign('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
-			$templateMgr->display($this->getTemplatePath() . 'submitSuccess.tpl');
+			$templateMgr->display($this->getTemplateResource('submitSuccess.tpl'));
 		} else {
 			$form->display();
 		}
@@ -237,12 +237,5 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 */
 	function executeCLI($scriptName, &$args) {
 		fatalError('Not implemented');
-	}
-
-	/**
-	 * @copydoc Plugin::getTemplatePath()
-	 */
-	function getTemplatePath($inCore = false) {
-		return parent::getTemplatePath($inCore = false) . 'templates/';
 	}
 }
