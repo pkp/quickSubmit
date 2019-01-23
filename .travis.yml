@@ -16,8 +16,6 @@ php:
 env:
   - APPLICATION=ojs BRANCH=master TEST=mysql
   - APPLICATION=ojs BRANCH=master TEST=pgsql
-  - APPLICATION=omp BRANCH=master TEST=mysql
-  - APPLICATION=omp BRANCH=master TEST=pgsql
 
 install:
   # Prepare OJS/OMP environment
@@ -31,8 +29,6 @@ install:
   - lib/pkp/tools/travis/start-xvfb.sh
   - lib/pkp/tools/travis/start-selenium.sh
   - lib/pkp/tools/travis/prepare-webserver.sh
-  # Make sure we're using the current checkout of this repo rather than the built-in OJS/OMP version
-  - rm -rf ~/${APPLICATION}/plugins/importExport/quickSubmit
   - ln -s ${TRAVIS_BUILD_DIR} ~/${APPLICATION}/plugins/importexport/quickSubmit
   # Install OJS/OMP & prep data environment
   - lib/pkp/lib/vendor/phpunit/phpunit/phpunit --configuration lib/pkp/tests/phpunit-env1.xml tests/data/10-InstallationTest.php
