@@ -78,7 +78,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 */
 	function initData() {
 		$templateMgr = TemplateManager::getManager($this->request);
-		$templateMgr->register_function('plugin_url', array($this->plugin, 'smartyPluginUrl'));
+		$templateMgr->registerPlugin('function', 'plugin_url', array($this->plugin, 'smartyPluginUrl'));
 		$templateMgr->assign('submissionId', $this->submissionId);
 
 		$locale = AppLocale::getLocale();
