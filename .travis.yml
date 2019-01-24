@@ -36,4 +36,4 @@ install:
   - lib/pkp/lib/vendor/phpunit/phpunit/phpunit --configuration lib/pkp/tests/phpunit-env1.xml tests/data/59-LogOutTest.php
   - lib/pkp/tools/travis/dump-database.sh
 script:
-  - lib/pkp/lib/vendor/phpunit/phpunit/phpunit --debug -v --configuration lib/pkp/tests/phpunit-env2.xml plugins/generic/quickSubmit/tests/functional/QuickSubmitFunctionalTest.php
+  - lib/pkp/lib/vendor/phpunit/phpunit/phpunit --debug -v --configuration lib/pkp/tests/phpunit-env2.xml plugins/importexport/quickSubmit/tests/functional/QuickSubmitFunctionalTest.php
