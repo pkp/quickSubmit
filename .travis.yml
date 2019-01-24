@@ -14,8 +14,8 @@ php:
   - 7.1
   - 7.2
 env:
-  - APPLICATION=ojs BRANCH=master TEST=mysql
-  - APPLICATION=ojs BRANCH=master TEST=pgsql
+  - APPLICATION=ojs BRANCH=stable-3_1_2 TEST=mysql
+  - APPLICATION=ojs BRANCH=stable-3_1_2 TEST=pgsql
 
 install:
   # Prepare OJS/OMP environment
