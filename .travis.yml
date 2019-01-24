@@ -26,7 +26,7 @@ install:
   - lib/pkp/tools/travis/install-composer-dependencies.sh
   - npm install && npm run build
   # Prepare server environment
-  - lib/pkp/tools/travis/start-xvfb.sh
+  - source lib/pkp/tools/travis/start-xvfb.sh
   - lib/pkp/tools/travis/start-selenium.sh
   - lib/pkp/tools/travis/prepare-webserver.sh
   - ln -s ${TRAVIS_BUILD_DIR} ~/${APPLICATION}/plugins/importexport/quickSubmit
