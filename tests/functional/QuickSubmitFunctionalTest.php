@@ -33,6 +33,30 @@ class QuickSubmitFunctionalTest extends WebTestCase {
 		$this->click($selector);
 		$this->waitForElementPresent($selector='link=QuickSubmit Plugin');
 		$this->click($selector);
+		$this->waitForElementPresent('css=[id=sectionId]');
+		$this->select('id=sectionId', 'label=' . $this->escapeJS('Articles'));
+		sleep(10); // HACK: The form resubmits on section selection. Wait.
+		$this->waitJQuery();
+
+		$this->waitForElementPresent($selector='css=[id^=title-]');
+		$this->type($selector, 'QuickSubmit Test Submission');
+		$this->typeTinyMCE('abstract', 'This is a QuickSubmit test submission.');
+
+		// Add an author
+		$this->click('css=[id^=component-grid-users-author-authorgrid-addAuthor-button-]');
+		$this->waitForElementPresent($selector='css=[id^=givenName-]');
+		$this->type($selector, 'Quincy');
+		$this->type('css=[id^=familyName-]', 'Submitter');
+		$this->select('id=country', 'Canada');
+		$this->type('css=[id^=email-]', 'qsubmitter@mailinator.com');
+		$this->type('css=[id^=affiliation-]', 'Queens University');
+		$this->click('//label[contains(.,\'Author\')]');
+		$this->click('//form[@id=\'editAuthor\']//button[text()=\'Save\']');
+		$this->waitForElementPresent('//div[contains(text(), \'Author added.\')]');
+
+		// Complete the submission
+		$this->click('//form[@id=\'quickSubmitForm\']//button[text()=\'Save\']');
+		$this->waitForElementPresent('link=Go to Submission');
 		$this->logOut();
 	}
 }
