@@ -24,7 +24,7 @@ install:
   - git submodule update --init --recursive
   - source lib/pkp/tools/travis/prepare-tests.sh
   - lib/pkp/tools/travis/install-composer-dependencies.sh
-  - npm install && npm run build
+  - npm i g -npm && npm install && npm run build
   # Prepare server environment
   - source lib/pkp/tools/travis/start-xvfb.sh
   - lib/pkp/tools/travis/start-selenium.sh
