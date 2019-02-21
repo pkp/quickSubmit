@@ -109,7 +109,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		$notificationMgr->createTrivialNotification($currentUser->getId(), NOTIFICATION_TYPE_SUCCESS, array('contents' => $notificationContent));
 
 		$templateMgr = TemplateManager::getManager($request);
-		$templateMgr->display($this->getTemplatePath() . 'submitCancel.tpl');
+		$templateMgr->display($this->getTemplateResource('submitCancel.tpl'));
 	}
 
 	/**
