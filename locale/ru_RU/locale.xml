@@ -18,6 +18,8 @@
 	<message key="plugins.importexport.quickSubmit.success">Статья добавлена</message>
 	<message key="plugins.importexport.quickSubmit.successDescription">Статья была успешно создана.</message>
 	<message key="plugins.importexport.quickSubmit.successReturn">Вернуться к модулю «Быстрая отправка».</message>
+	<message key="plugins.importexport.quickSubmit.cancel">Отправка отменена</message>
+	<message key="plugins.importexport.quickSubmit.cancelDescription">Отправка была отменена.</message>
 	<message key="plugins.importexport.quickSubmit.published">Опубликована</message>
 	<message key="plugins.importexport.quickSubmit.unpublished">Отменена публикация</message>
 	<message key="plugins.importexport.quickSubmit.goToSubmission">Перейти к материалу</message>
