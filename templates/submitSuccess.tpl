@@ -25,7 +25,7 @@
 		</a>
 	</p>
 	<p> 
-		<a href="{ $submissionUrl }">
+		<a href="{url router=$smarty.const.ROUTE_PAGE page="workflow" op="access" path=$submissionId escape=false}">
 			{translate key="plugins.importexport.quickSubmit.goToSubmission"}
 		</a>
 	</p>
