@@ -399,3 +399,4 @@ class QuickSubmitForm extends Form {
 		return $issueOptions;
 	}
 }
+

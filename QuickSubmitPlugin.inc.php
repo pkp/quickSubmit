@@ -239,3 +239,4 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		fatalError('Not implemented');
 	}
 }
+
