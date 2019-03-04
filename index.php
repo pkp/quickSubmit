@@ -20,4 +20,3 @@ require_once('QuickSubmitPlugin.inc.php');
 
 return new QuickSubmitPlugin();
 
-?>
