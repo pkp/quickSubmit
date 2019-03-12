@@ -21,14 +21,14 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	/**
 	 * @copydoc Plugin::register()
 	 */
-	function register($category, $path) {
+	function register($category, $path, $mainContextId = NULL) {
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON,
 			LOCALE_COMPONENT_APP_SUBMISSION,
 			LOCALE_COMPONENT_APP_AUTHOR,
 			LOCALE_COMPONENT_APP_EDITOR,
 			LOCALE_COMPONENT_PKP_SUBMISSION);
 
-		$success = parent::register($category, $path);
+		$success = parent::register($category, $path, $mainContextId);
 		$this->addLocaleData();
 
 		return $success;
@@ -208,7 +208,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	/**
 	 * Extend the {url ...} for smarty to support this plugin.
 	 */
-	function smartyPluginUrl($params, &$smarty) {
+	function smartyPluginUrl($params, $smarty) {
 		$path = array('plugin',$this->getName());
 		if (is_array($params['path'])) {
 			$params['path'] = array_merge($path, $params['path']);
