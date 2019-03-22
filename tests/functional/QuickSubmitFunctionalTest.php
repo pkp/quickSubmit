@@ -14,6 +14,10 @@
 
 import('lib.pkp.tests.WebTestCase');
 
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\Interactions\WebDriverActions;
+use Facebook\WebDriver\WebDriverExpectedCondition;
+
 class QuickSubmitFunctionalTest extends WebTestCase {
 	/**
 	 * @copydoc WebTestCase::getAffectedTables
@@ -29,14 +33,14 @@ class QuickSubmitFunctionalTest extends WebTestCase {
 		$this->open(self::$baseUrl);
 
 		$this->logIn('admin', 'admin');
-		$this->waitForElementPresent($selector='link=Import/Export');
-		$this->click($selector);
-		$this->waitForElementPresent($selector='link=QuickSubmit Plugin');
-		$this->click($selector);
+		$actions = new WebDriverActions(self::$driver);
+		$actions->moveToElement($this->waitForElementPresent('//ul[@id="navigationPrimary"]//a[text()="Tools"]'))
+			->click($this->waitForElementPresent('//ul[@id="navigationPrimary"]//a[text()="Import/Export"]'))
+			->perform();
+		$this->click($selector='link=QuickSubmit Plugin');
 		$this->waitForElementPresent('css=[id=sectionId]');
 		$this->select('id=sectionId', 'label=' . $this->escapeJS('Articles'));
 		sleep(10); // HACK: The form resubmits on section selection. Wait.
-		$this->waitJQuery();
 
 		$this->waitForElementPresent($selector='css=[id^=title-]');
 		$this->type($selector, 'QuickSubmit Test Submission');
@@ -47,7 +51,7 @@ class QuickSubmitFunctionalTest extends WebTestCase {
 		$this->waitForElementPresent($selector='css=[id^=givenName-]');
 		$this->type($selector, 'Quincy');
 		$this->type('css=[id^=familyName-]', 'Submitter');
-		$this->select('id=country', 'Canada');
+		$this->select('id=country', 'label=Canada');
 		$this->type('css=[id^=email-]', 'qsubmitter@mailinator.com');
 		$this->type('css=[id^=affiliation-]', 'Queens University');
 		$this->click('//label[contains(.,\'Author\')]');
