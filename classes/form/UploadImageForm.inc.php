@@ -57,9 +57,9 @@ class UploadImageForm extends SettingsFileUploadForm {
 	/**
 	 * @copydoc SettingsFileUploadForm::fetch()
 	 */
-	function fetch($request) {
-		$params = array('fileType' => 'image');
-		return parent::fetch($request, $params);
+	function fetch($request, $template = null, $display = false, $params = array()) {
+		$params['fileType'] ='image';
+		return parent::fetch($request, $template, $display, $params);
 	}
 
 
@@ -78,7 +78,6 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 */
 	function initData() {
 		$templateMgr = TemplateManager::getManager($this->request);
-		$templateMgr->registerPlugin('function', 'plugin_url', array($this->plugin, 'smartyPluginUrl'));
 		$templateMgr->assign('submissionId', $this->submissionId);
 
 		$locale = AppLocale::getLocale();
