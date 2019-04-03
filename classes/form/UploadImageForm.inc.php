@@ -138,7 +138,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 
 		// Remove the file
 		$publicFileManager = new PublicFileManager();
-		if ($publicFileManager->removeJournalFile($this->submission->getJournalId(), $file)) {
+		if ($publicFileManager->removeContextFile($this->submission->getJournalId(), $file)) {
 			$json = new JSONMessage(true);
 			$json->setEvent('fileDeleted');
 			return $json;
@@ -171,7 +171,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 
 			$newFileName = 'article_' . $this->submissionId . '_cover_' . $locale . $publicFileManager->getImageExtension($temporaryFile->getFileType());
 
-			if($publicFileManager->copyJournalFile($this->context->getId(), $temporaryFile->getFilePath(), $newFileName)) {
+			if($publicFileManager->copyContextFile($this->context->getId(), $temporaryFile->getFilePath(), $newFileName)) {
 
 				$this->submission->setCoverImage($newFileName, $locale);
 

@@ -220,7 +220,7 @@ class QuickSubmitForm extends Form {
 			$this->_metadataFormImplem->initData($submission);
 
 			// Add the user manager group (first that is found) to the stage_assignment for that submission
-			$user = Request::getUser();
+			$user = $this->_request->getUser();
 
 			$userGroupAssignmentDao = DAORegistry::getDAO('UserGroupAssignmentDAO');
 			$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
