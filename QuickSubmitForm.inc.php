@@ -351,10 +351,10 @@ class QuickSubmitForm extends Form {
 		}
 
 		// Index article.
-		import('classes.search.ArticleSearchIndex');
-		ArticleSearchIndex::articleMetadataChanged($this->submission);
-		ArticleSearchIndex::submissionFilesChanged($this->submission);
-		ArticleSearchIndex::articleChangesFinished();
+		$articleSearchIndex = Application::getSubmissionSearchIndex();
+		$articleSearchIndex->submissionMetadataChanged($this->submission);
+		$articleSearchIndex->submissionFilesChanged($this->submission);
+		$articleSearchIndex->submissionChangesFinished();
 
 	}
 
