@@ -21,7 +21,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	/**
 	 * @copydoc Plugin::register()
 	 */
-	function register($category, $path, $mainContextId = NULL) {
+	public function register($category, $path, $mainContextId = NULL) {
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON,
 			LOCALE_COMPONENT_APP_SUBMISSION,
 			LOCALE_COMPONENT_APP_AUTHOR,
@@ -37,65 +37,64 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	/**
 	 * @copydoc Plugin::getName()
 	 */
-	function getName() {
+	public function getName() {
 		return 'QuickSubmitPlugin';
 	}
 
 	/**
 	 * @copydoc Plugin::getDisplayName()
 	 */
-	function getDisplayName() {
+	public function getDisplayName() {
 		return __('plugins.importexport.quickSubmit.displayName');
 	}
 
 	/**
 	 * @copydoc Plugin::getDescription()
 	 */
-	function getDescription() {
+	public function getDescription() {
 		return __('plugins.importexport.quickSubmit.description');
 	}
 
 	/**
 	 * @copydoc ImportExportPlugin::display()
 	 */
-	function display($args, $request) {
+	public function display($args, $request) {
 		$templateMgr = TemplateManager::getManager();
 		$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'smartyPluginUrl'));
 
 		switch (array_shift($args)) {
 			case 'saveSubmit':
 				if ($request->getUserVar('reloadForm') == '1') {
-					$this->reloadForm($args, $request);
+					$this->_reloadForm($request);
 				} else {
-					$this->saveSubmit($args, $request);
+					$this->_saveSubmit($request);
 				}
 				break;
 			case 'cancelSubmit':
-				$this->cancelSubmit($args, $request);
+				$this->_cancelSubmit($request);
 				break;
 			case 'uploadCoverImage':
-				return $this->showFileUploadForm($args, $request);
+				return $this->_showFileUploadForm($request);
 			case 'uploadImage':
-				return $this->uploadImage($args, $request);
+				return $this->_uploadImage($request);
 			case 'saveUploadedImage':
-				return $this->saveUploadedImage($request);
+				return $this->_saveUploadedImage($request);
 			case 'deleteCoverImage':
-				return $this->deleteUploadedImage($request);
+				return $this->_deleteUploadedImage($request);
 			default:
 				$this->import('QuickSubmitForm');
 				$form = new QuickSubmitForm($this, $request);
 				$form->initData();
-				$form->display(false);
+				$form->display($request);
 				break;
 		}
 	}
 
 	/**
 	 * Cancels the submission
-	 * @param $args array
 	 * @param $request Request
 	 */
-	function cancelSubmit($args, $request) {
+	protected function _cancelSubmit($request) {
 		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
@@ -114,11 +113,10 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 	/**
 	 * Show the upload image form.
-	 * @param $args array
 	 * @param $request Request
 	 * @return JSONMessage JSON object
 	 */
-	function showFileUploadForm($args, $request) {
+	protected function _showFileUploadForm($request) {
 		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->initData($request);
@@ -127,11 +125,10 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 	/**
 	 * Upload the image to a temporary file
-	 * @param $args array
 	 * @param $request Request
 	 * @return JSONMessage JSON object
 	 */
-	function uploadImage($args, $request) {
+	protected function _uploadImage($request) {
 		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
@@ -153,7 +150,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 * @param $request Request.
 	 * @return JSONMessage JSON object
 	 */
-	function saveUploadedImage($request) {
+	protected function _saveUploadedImage($request) {
 		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
@@ -165,7 +162,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	 * @param $request Request.
 	 * @return JSONMessage JSON object
 	 */
-	function deleteUploadedImage($request) {
+	protected function _deleteUploadedImage($request) {
 		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
 		$imageUploadForm = new UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
@@ -174,35 +171,35 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 
 	/**
 	 * Save the submitted form
-	 * @param $args array
 	 * @param $request Request.
 	 */
-	function saveSubmit($args, $request) {
+	protected function _saveSubmit($request) {
 		$templateMgr = TemplateManager::getManager($request);
 		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
 		if($form->validate()){
 			$form->execute();
-			$templateMgr->assign('submissionId', $form->submissionId);
-			$templateMgr->assign('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
+			$templateMgr->assign(array(
+				'submissionId' => $form->getSubmission()->getId(),
+				'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,
+			));
 			$templateMgr->display($this->getTemplateResource('submitSuccess.tpl'));
 		} else {
-			$form->display();
+			$form->display($request);
 		}
 	}
 
 	/**
 	 * Reloads the form
-	 * @param $args array
 	 * @param $request Request.
 	 */
-	function reloadForm($args, $request) {
+	protected function _reloadForm($request) {
 		$templateMgr = TemplateManager::getManager($request);
 		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
-		$form->display();
+		$form->display($request);
 	}
 
 	/**
@@ -228,14 +225,14 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 	/**
 	 * @copydoc PKPImportExportPlugin::usage
 	 */
-	function usage($scriptName) {
+	public function usage($scriptName) {
 		fatalError('Not implemented');
 	}
 
 	/**
 	 * @copydoc PKPImportExportPlugin::executeCLI()
 	 */
-	function executeCLI($scriptName, &$args) {
+	public function executeCLI($scriptName, &$args) {
 		fatalError('Not implemented');
 	}
 }
