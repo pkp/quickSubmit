@@ -2,6 +2,7 @@
 # .travis.yml - PKP Plugins Integration
 
 language: php
+dist: trusty
 
 addons:
   firefox: "45.9.0esr"
