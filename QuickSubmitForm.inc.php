@@ -279,7 +279,7 @@ class QuickSubmitForm extends Form {
 	/**
 	 * Save settings.
 	 */
-	function execute() {
+	function execute(...$functionParams) {
 		// Execute submission metadata related operations.
 		$this->_metadataFormImplem->execute($this->_submission, $this->_request);
 
@@ -332,7 +332,7 @@ class QuickSubmitForm extends Form {
 		$this->_submission->setDateSubmitted(Core::getCurrentDate());
 		$this->_submission->setSubmissionProgress(0);
 
-		parent::execute($this->_submission);
+		parent::execute($this->_submission, ...$functionParams);
 
 		$submissionDao = Application::getSubmissionDAO();
 		$submissionDao->updateObject($this->_submission);
