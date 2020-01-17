@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-01-17T18:13:59+00:00\n"
+"PO-Revision-Date: 2020-01-17T18:13:59+00:00\n"
+"Language: \n"
+
+msgid "plugins.importexport.quickSubmit.displayName"
+msgstr "Modulul TrimiteRapid"
+
+msgid "plugins.importexport.quickSubmit.description"
+msgstr "Modul de trimitere dintr-un singur pas"
+
+msgid "plugins.importexport.quickSubmit.success"
+msgstr "Articol adăugat"
+
+msgid "plugins.importexport.quickSubmit.successDescription"
+msgstr "Articol creat cu succes."
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "Întoarce-te la modulul TrimiteRapid."

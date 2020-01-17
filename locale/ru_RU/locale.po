@@ -1,0 +1,48 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-01-17T18:13:59+00:00\n"
+"PO-Revision-Date: 2020-01-17T18:13:59+00:00\n"
+"Language: \n"
+
+msgid "plugins.importexport.quickSubmit.displayName"
+msgstr "Модуль «Быстрая отправка»"
+
+msgid "plugins.importexport.quickSubmit.description"
+msgstr "Модуль отправки материала в один шаг"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr "Позволяет вам быстро добавлять готовые материалы на этап публикации или напрямую в выпуск."
+
+msgid "plugins.importexport.quickSubmit.success"
+msgstr "Статья добавлена"
+
+msgid "plugins.importexport.quickSubmit.successDescription"
+msgstr "Статья была успешно создана."
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "Вернуться к модулю «Быстрая отправка»."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Отправка отменена"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "Отправка была отменена."
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Опубликована"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Отменена публикация"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Перейти к материалу"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Выпуск должен быть выбран"

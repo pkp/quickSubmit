@@ -1,0 +1,75 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-01-17T18:13:55+00:00\n"
+"PO-Revision-Date: 2020-01-17T18:13:55+00:00\n"
+"Language: \n"
+
+msgid "plugins.importexport.quickSubmit.addToExisting"
+msgstr "الإضافة إلى عدد موجود في المجلة:"
+
+msgid "plugins.importexport.quickSubmit.chooseDestination"
+msgstr "وجهة التقديم"
+
+msgid "plugins.importexport.quickSubmit.chooseDestinationDescription"
+msgstr "تخير بين إضافة طلبات نشر جديدة إلى عدد موجود، أو تركها في طابور التحرير."
+
+msgid "plugins.importexport.quickSubmit.displayName"
+msgstr "إضافة QuickSubmit"
+
+msgid "plugins.importexport.quickSubmit.description"
+msgstr "إضافة التقديم بخطوة واحدة"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr "هذه الإضافة تتيح لك إضافة طلبات تقديم كاملة بشكل سريع إلى طابور التحرير أو مباشرة إلى أحد أعداد المجلة."
+
+msgid "plugins.importexport.quickSubmit.issueRequired"
+msgstr "عليك إختيار العدد الذي تريد إضافة المقالة إليه."
+
+msgid "plugins.importexport.quickSubmit.leaveUnpublished"
+msgstr "أتركه غير منشور"
+
+msgid "plugins.importexport.quickSubmit.saveAndCreateAnother"
+msgstr "إحفظ وأنشئ واحداً آخر"
+
+msgid "plugins.importexport.quickSubmit.submissionData"
+msgstr "بيانات التقديم"
+
+msgid "plugins.importexport.quickSubmit.submissionDescription"
+msgstr "إختر الملف الذي تريد استعماله بمثابة اللوح الطباعي النهائي لهذا التقديم."
+
+msgid "plugins.importexport.quickSubmit.submissionRequired"
+msgstr "عليك رفع ملف ما لهذا التقديم."
+
+msgid "plugins.importexport.quickSubmit.success"
+msgstr "تمت إضافة المقالة"
+
+msgid "plugins.importexport.quickSubmit.successDescription"
+msgstr "نجحت عملية إنشاء المقالة."
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "العودة إلى إضافة QuickSubmit."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "طلب التقديم أُلغي"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "تم إلغاء طلب التقديم."
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "منشور"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "غير منشور"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "الذهاب إلى طلب التقديم"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "لا بد من اختيار العدد"
