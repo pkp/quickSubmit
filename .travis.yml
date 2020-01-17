@@ -2,10 +2,8 @@
 # .travis.yml - PKP Plugins Integration
 
 language: php
-dist: trusty
 
 addons:
-  firefox: "45.9.0esr"
   apt:
     update: true
 
@@ -13,6 +11,8 @@ sudo: required
 
 php:
   - 7.2
+  - 7.3
+  - 7.4
 env:
   - APPLICATION=ojs BRANCH=master TEST=mysql
   - APPLICATION=ojs BRANCH=master TEST=pgsql
@@ -23,16 +23,13 @@ install:
   - cd ~/${APPLICATION}
   - git submodule update --init --recursive
   - source lib/pkp/tools/travis/prepare-tests.sh
+  - lib/pkp/tools/travis/prepare-webserver.sh
+  # Build/install dependencies
   - lib/pkp/tools/travis/install-composer-dependencies.sh
   - npm i g -npm && npm install && npm run build
-  # Prepare server environment
-  - source lib/pkp/tools/travis/start-xvfb.sh
-  - lib/pkp/tools/travis/start-selenium.sh
-  - lib/pkp/tools/travis/prepare-webserver.sh
+  # Make sure we're using the current checkout of this repo rather than the built-in OJS/OMP version
   - ln -s ${TRAVIS_BUILD_DIR} ~/${APPLICATION}/plugins/importexport/quickSubmit
   # Install OJS/OMP & prep data environment
-  - lib/pkp/lib/vendor/phpunit/phpunit/phpunit --configuration lib/pkp/tests/phpunit-env1.xml tests/data/10-InstallationTest.php
-  - lib/pkp/lib/vendor/phpunit/phpunit/phpunit --configuration lib/pkp/tests/phpunit-env1.xml tests/data/20-CreateContextTest.php
-  - lib/pkp/tools/travis/dump-database.sh
+  - $(npm bin)/cypress run --spec "cypress/tests/data/10-Installation.spec.js,cypress/tests/data/20-CreateContext.spec.js"
 script:
-  - lib/pkp/lib/vendor/phpunit/phpunit/phpunit --debug -v --configuration lib/pkp/tests/phpunit-env2.xml plugins/importexport/quickSubmit/tests/functional/QuickSubmitFunctionalTest.php
+  - $(npm bin)/cypress run --config integrationFolder=plugins/importexport/quickSubmit/cypress/tests
