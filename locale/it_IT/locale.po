@@ -2,14 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2020-01-17T18:13:58+00:00\n"
+"PO-Revision-Date: 2020-01-20 16:34+0000\n"
+"Last-Translator: Lucia Steele <lucia.steele@aboutscience.eu>\n"
+"Language-Team: Italian <http://translate.pkp.sfu.ca/projects/plugins/"
+"quickSubmit/it/>\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-01-17T18:13:58+00:00\n"
-"PO-Revision-Date: 2020-01-17T18:13:58+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "plugins.importexport.quickSubmit.displayName"
 msgstr "QuickSubmit"
@@ -18,10 +21,33 @@ msgid "plugins.importexport.quickSubmit.description"
 msgstr "Caricamento rapido di articoli"
 
 msgid "plugins.importexport.quickSubmit.success"
-msgstr "Articolo aggiunto."
+msgstr "Articolo aggiunto"
 
 msgid "plugins.importexport.quickSubmit.successDescription"
 msgstr "La creazione dell'articolo è completa."
 
 msgid "plugins.importexport.quickSubmit.successReturn"
 msgstr "Ritorna al plugin QuickSubmit."
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Selezionare un fascicolo"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Vai all'articolo"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Non più pubblicato"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Pubblicato"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "Questo articolo è stato eliminato."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Articolo eliminato"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr ""
+"Questo plugin consente di aggiungere articoli in fase di produzione o "
+"direttamente ad un fascicolo."
