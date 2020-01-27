@@ -31,5 +31,10 @@ install:
   - ln -s ${TRAVIS_BUILD_DIR} ~/${APPLICATION}/plugins/importexport/quickSubmit
   # Install OJS/OMP & prep data environment
   - $(npm bin)/cypress run --spec "cypress/tests/data/10-Installation.spec.js,cypress/tests/data/20-CreateContext.spec.js"
+
 script:
   - $(npm bin)/cypress run --config integrationFolder=plugins/importexport/quickSubmit/cypress/tests
+
+after_failure:
+  - sudo apt-get install sharutils
+  - tar cz cypress/screenshots | uuencode /dev/stdout
