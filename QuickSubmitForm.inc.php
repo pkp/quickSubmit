@@ -31,9 +31,6 @@ class QuickSubmitForm extends Form {
 	/** @var SubmissionMetadataFormImplementation */
 	protected $_metadataFormImplem;
 
-	/** @var PublishedArticle */
-	protected $_publishedSubmission;
-
 	/**
 	 * Constructor
 	 * @param $plugin object
@@ -54,7 +51,8 @@ class QuickSubmitForm extends Form {
 
 		if ($submissionId = $request->getUserVar('submissionId')) {
 			$submissionDao = Application::getSubmissionDAO();
-			$this->_submission = $submissionDao->getById($submissionId, $this->_context->getId(), false);
+			$this->_submission = $submissionDao->getById($submissionId);
+			if ($this->_submission->getContextId() != $this->_context->getId()) throw new Exeption('Submission not in context!');
 			$this->_submission->setLocale($this->getDefaultFormLocale());
 			$submissionDao->updateObject($this->_submission);
 
@@ -273,7 +271,9 @@ class QuickSubmitForm extends Form {
 	 */
 	function cancel() {
 		$submissionDao = Application::getSubmissionDAO();
-		$submissionDao->deleteById($this->getData('submissionId'));
+		$submission = $submissionDao->getById($this->getData('submissionId'));
+		if ($this->_submission->getContextId() != $this->_context->getId()) throw new Exeption('Submission not in context!');
+		if ($submission) $submissionDao->deleteById($submission->getId());
 	}
 
 	/**
@@ -284,27 +284,6 @@ class QuickSubmitForm extends Form {
 		$this->_metadataFormImplem->execute($this->_submission, $this->_request);
 
 		$this->_submission->setSectionId($this->getData('sectionId'));
-
-		// articleStatus == 1 -> Published and to an Issue
-		if ($this->getData('articleStatus') == 1) {
-			$this->_submission->setStatus(STATUS_PUBLISHED);
-			$this->_submission->setCopyrightYear($this->getData('copyrightYear'));
-			$this->_submission->setCopyrightHolder($this->getData('copyrightHolder'), null);
-			$this->_submission->setLicenseURL($this->getData('licenseURL'));
-			$this->_submission->setPages($this->getData('pages'));
-
-			// Insert new publishedArticle
-			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
-			$publishedSubmission = $publishedSubmissionDao->newDataObject();
-			$publishedSubmission->setId($this->_submission->getId());
-			$publishedSubmission->setDatePublished($this->getData('datePublished'));
-			$publishedSubmission->setSequence(REALLY_BIG_NUMBER);
-			$publishedSubmission->setAccessStatus(ARTICLE_ACCESS_ISSUE_DEFAULT);
-			$publishedSubmission->setIssueId($this->getData('issueId'));
-			$publishedSubmissionDao->insertObject($publishedSubmission);
-
-			$this->_publishedSubmission = $publishedSubmission;
-		}
 
 		// Copy GalleyFiles to Submission Files
 		// Get Galley Files by SubmissionId
@@ -335,9 +314,24 @@ class QuickSubmitForm extends Form {
 		parent::execute($this->_submission, ...$functionParams);
 
 		$submissionDao = Application::getSubmissionDAO();
+		if ($this->getData('articleStatus') == 1) $this->_submission->setStatus(STATUS_PUBLISHED);
 		$submissionDao->updateObject($this->_submission);
+		$this->_submission = $submissionDao->getById($this->_submission->getId());
 
 		if ($this->getData('articleStatus') == 1) {
+			$publication = $this->_submission->getCurrentPublication();
+			$publication->setData('copyrightYear', $this->getData('copyrightYear'));
+			$publication->setData('copyrightHolder', $this->getData('copyrightHolder'), null);
+			$publication->setData('licenseURL', $this->getData('licenseURL'));
+			$publication->setData('pages', $this->getData('pages'));
+			$publication->setData('datePublished', $this->getData('datePublished'));
+			$publication->setData('accessStatus', ARTICLE_ACCESS_ISSUE_DEFAULT);
+			$publication->setData('issueId', $this->getData('issueId'));
+			$publicationDao = DAORegistry::getDAO('PublicationDAO');
+			$publicationDao->updateObject($publication);
+
+			/* FIXME: pkp/pkp-lib#5438
+			$publication = $this->_submission->getCurrentPublication();
 			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
 			$publishedSubmissionDao->resequencePublishedArticles($this->_submission->getSectionId(), $this->_publishedSubmission->getIssueId());
 
@@ -351,6 +345,7 @@ class QuickSubmitForm extends Form {
 					$sectionDao->resequenceCustomSectionOrders($this->_publishedSubmission->getIssueId());
 				}
 			}
+			 */
 		}
 
 		// Index article.
