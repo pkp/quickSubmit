@@ -13,10 +13,16 @@
   -->
 
 <locale name="pl_PL" full_name="Język Polski">
-	<message key="plugins.importexport.quickSubmit.displayName">QuickSubmit Plugin</message>
-	<message key="plugins.importexport.quickSubmit.description">One-step submission plugin</message>
-	<message key="plugins.importexport.quickSubmit.descriptionLong">This plugin allows you to quickly add complete submissions to the production stage or directly into an issue.</message>
-	<message key="plugins.importexport.quickSubmit.success">Article Added</message>
-	<message key="plugins.importexport.quickSubmit.successDescription">Article creation was successful.</message>
-	<message key="plugins.importexport.quickSubmit.successReturn">Return to QuickSubmit plugin.</message>
+	<message key="plugins.importexport.quickSubmit.displayName">Wtyczka szybkiego przesyłania</message>
+	<message key="plugins.importexport.quickSubmit.description">Wtyczka do szybkiego przesyłania tekstu</message>
+	<message key="plugins.importexport.quickSubmit.descriptionLong">Wtyczka pozwala na szybkie i kompletne dodanie tekstu na etap realizacji lub bezpośrednio do numeru czasopisma.</message>
+	<message key="plugins.importexport.quickSubmit.success">Artykuł dodano</message>
+	<message key="plugins.importexport.quickSubmit.successDescription">Utworzenie artykułu zakończone sukcesem.</message>
+	<message key="plugins.importexport.quickSubmit.successReturn">Powrót do wtyczki szybkiego przesyłania.</message>
+	<message key="plugins.importexport.quickSubmit.cancel">Zgłoszenie anulowane</message>
+	<message key="plugins.importexport.quickSubmit.cancelDescription">Zgłoszenie zostało anulowane</message>
+	<message key="plugins.importexport.quickSubmit.published">Opublikowane</message>
+	<message key="plugins.importexport.quickSubmit.unpublished">Nieopublikowane</message>
+	<message key="plugins.importexport.quickSubmit.goToSubmission">Idź do zgłoszenia</message>
+	<message key="plugins.importexport.quickSubmit.selectIssue">Należy wybrać numer czasopisma</message>
 </locale>
