@@ -7,24 +7,42 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-01-17T18:13:58+00:00\n"
-"PO-Revision-Date: 2020-01-17T18:13:58+00:00\n"
+"POT-Creation-Date: 2020-01-30T18:03:13+00:00\n"
+"PO-Revision-Date: 2020-01-30T18:03:13+00:00\n"
 "Language: \n"
 
 msgid "plugins.importexport.quickSubmit.displayName"
-msgstr "QuickSubmit Plugin"
+msgstr "Wtyczka szybkiego przesyłania"
 
 msgid "plugins.importexport.quickSubmit.description"
-msgstr "One-step submission plugin"
+msgstr "Wtyczka do szybkiego przesyłania tekstu"
 
 msgid "plugins.importexport.quickSubmit.descriptionLong"
-msgstr "This plugin allows you to quickly add complete submissions to the production stage or directly into an issue."
+msgstr "Wtyczka pozwala na szybkie i kompletne dodanie tekstu na etap realizacji lub bezpośrednio do numeru czasopisma."
 
 msgid "plugins.importexport.quickSubmit.success"
-msgstr "Article Added"
+msgstr "Artykuł dodano"
 
 msgid "plugins.importexport.quickSubmit.successDescription"
-msgstr "Article creation was successful."
+msgstr "Utworzenie artykułu zakończone sukcesem."
 
 msgid "plugins.importexport.quickSubmit.successReturn"
-msgstr "Return to QuickSubmit plugin."
+msgstr "Powrót do wtyczki szybkiego przesyłania."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Zgłoszenie anulowane"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "Zgłoszenie zostało anulowane"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Opublikowane"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Nieopublikowane"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Idź do zgłoszenia"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Należy wybrać numer czasopisma"
