@@ -2,26 +2,53 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2020-01-17T18:13:57+00:00\n"
+"PO-Revision-Date: 2020-02-01 17:35+0000\n"
+"Last-Translator: Marie-Hélène Vézina [UdeMontréal] <marie-"
+"helene.vezina@umontreal.ca>\n"
+"Language-Team: French (Canada) <http://translate.pkp.sfu.ca/projects/plugins/"
+"quickSubmit/fr_CA/>\n"
+"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-01-17T18:13:57+00:00\n"
-"PO-Revision-Date: 2020-01-17T18:13:57+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "plugins.importexport.quickSubmit.displayName"
-msgstr "Plugiciel QuickSubmit"
+msgstr "Plugiciel de soumission expresse « QuickSubmit »"
 
 msgid "plugins.importexport.quickSubmit.description"
-msgstr "Plugiciel de soumission en une étape"
+msgstr "Plugiciel de soumission en une seule étape"
 
 msgid "plugins.importexport.quickSubmit.success"
 msgstr "Article ajouté"
 
 msgid "plugins.importexport.quickSubmit.successDescription"
-msgstr "Création de l'article avec succès."
+msgstr "L'article a bien été créé."
 
 msgid "plugins.importexport.quickSubmit.successReturn"
 msgstr "Retourner au plugiciel QuickSubmit."
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Un numéro doit être sélectionné"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Aller à la soumission"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Dépublié-e"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Publié-e"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "La soumission a été annulée."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Soumission annulée"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr ""
+"Ce plugiciel vous permet d'ajouter rapidement des soumissions complètes à "
+"l'étape de production ou directement dans un numéro."
