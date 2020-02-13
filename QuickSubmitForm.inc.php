@@ -69,7 +69,7 @@ class QuickSubmitForm extends Form {
 			$supportedSubmissionLocales = array($this->_context->getPrimaryLocale());
 		$this->addCheck(new FormValidatorInSet($this, 'locale', 'required', 'submission.submit.form.localeRequired', $supportedSubmissionLocales));
 
-		$this->addCheck(new FormValidatorURL($this, 'licenseURL', 'optional', 'form.url.invalid'));
+		$this->addCheck(new FormValidatorURL($this, 'licenseUrl', 'optional', 'form.url.invalid'));
 	}
 
 	/**
@@ -255,7 +255,7 @@ class QuickSubmitForm extends Form {
 				'issueId',
 				'pages',
 				'datePublished',
-				'licenseURL',
+				'licenseUrl',
 				'copyrightHolder',
 				'copyrightYear',
 				'sectionId',
@@ -322,7 +322,7 @@ class QuickSubmitForm extends Form {
 			$publication = $this->_submission->getCurrentPublication();
 			$publication->setData('copyrightYear', $this->getData('copyrightYear'));
 			$publication->setData('copyrightHolder', $this->getData('copyrightHolder'), null);
-			$publication->setData('licenseURL', $this->getData('licenseURL'));
+			$publication->setData('licenseUrl', $this->getData('licenseUrl'));
 			$publication->setData('pages', $this->getData('pages'));
 			$publication->setData('datePublished', $this->getData('datePublished'));
 			$publication->setData('accessStatus', ARTICLE_ACCESS_ISSUE_DEFAULT);

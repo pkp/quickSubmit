@@ -100,7 +100,7 @@
 					{/fbvFormArea}
 
 					{fbvFormArea id="permissions" title="submission.permissions"}
-						{fbvElement type="text" id="licenseURL" label="submission.licenseURL" value=$licenseURL}
+						{fbvElement type="text" id="licenseUrl" label="submission.licenseURL" value=$licenseUrl}
 						{fbvElement type="text" id="copyrightHolder" label="submission.copyrightHolder" value=$copyrightHolder multilingual=true size=$fbvStyles.size.MEDIUM inline=true}
 						{fbvElement type="text" id="copyrightYear" label="submission.copyrightYear" value=$copyrightYear size=$fbvStyles.size.SMALL inline=true}
 					{/fbvFormArea}
