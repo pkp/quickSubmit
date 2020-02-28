@@ -2,11 +2,11 @@
  * @defgroup plugins_importexport_quickSubmit_js
  */
 /**
- * @file plugins/importexport/quickSubmit/js/QuickSubmitFileUploadFormHandler.js
+ * @file js/QuickSubmitFileUploadFormHandler.js
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @class QuickSubmitFileUploadFormHandler
  * @ingroup plugins_importexport_quickSubmit_js
