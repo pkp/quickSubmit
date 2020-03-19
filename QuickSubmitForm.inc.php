@@ -327,6 +327,7 @@ class QuickSubmitForm extends Form {
 			$publication->setData('datePublished', $this->getData('datePublished'));
 			$publication->setData('accessStatus', ARTICLE_ACCESS_ISSUE_DEFAULT);
 			$publication->setData('issueId', $this->getData('issueId'));
+			$publication->setData('status', STATUS_PUBLISHED);
 			$publicationDao = DAORegistry::getDAO('PublicationDAO');
 			$publicationDao->updateObject($publication);
 
