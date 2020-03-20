@@ -313,8 +313,7 @@ class QuickSubmitForm extends Form {
 
 		parent::execute($this->_submission, ...$functionParams);
 
-		$submissionDao = Application::getSubmissionDAO();
-		if ($this->getData('articleStatus') == 1) $this->_submission->setStatus(STATUS_PUBLISHED);
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$submissionDao->updateObject($this->_submission);
 		$this->_submission = $submissionDao->getById($this->_submission->getId());
 
@@ -327,9 +326,7 @@ class QuickSubmitForm extends Form {
 			$publication->setData('datePublished', $this->getData('datePublished'));
 			$publication->setData('accessStatus', ARTICLE_ACCESS_ISSUE_DEFAULT);
 			$publication->setData('issueId', $this->getData('issueId'));
-			$publication->setData('status', STATUS_PUBLISHED);
-			$publicationDao = DAORegistry::getDAO('PublicationDAO');
-			$publicationDao->updateObject($publication);
+			Services::get('publication')->publish($publication);
 
 			/* FIXME: pkp/pkp-lib#5438
 			$publication = $this->_submission->getCurrentPublication();
