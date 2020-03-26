@@ -217,6 +217,7 @@ class QuickSubmitForm extends Form {
 			$publication->setData('language', PKPString::substr($this->getDefaultFormLocale(), 0, 2));
 			$publication->setData('sectionId', $sectionId);
 			$publication->setData('status', STATUS_QUEUED);
+			$publication->setData('version', 1);
 			$publication = Services::get('publication')->add($publication, $this->_request);
 			$this->_submission = Services::get('submission')->edit($this->_submission, ['currentPublicationId' => $publication->getId()], $this->_request);
 
