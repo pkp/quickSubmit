@@ -284,8 +284,6 @@ class QuickSubmitForm extends Form {
 		// Execute submission metadata related operations.
 		$this->_metadataFormImplem->execute($this->_submission, $this->_request);
 
-		$this->_submission->setSectionId($this->getData('sectionId'));
-
 		// Copy GalleyFiles to Submission Files
 		// Get Galley Files by SubmissionId
 		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
@@ -318,33 +316,48 @@ class QuickSubmitForm extends Form {
 		$submissionDao->updateObject($this->_submission);
 		$this->_submission = $submissionDao->getById($this->_submission->getId());
 
+		$publication = $this->_submission->getCurrentPublication();
+		if ($publication->getData('sectionId') !== (int) $this->getData('sectionId')) {
+			$publication = Services::get('publication')->edit($publication, ['sectionId' => (int) $this->getData('sectionId')], $this->_request);
+		}
+
 		if ($this->getData('articleStatus') == 1) {
-			$publication = $this->_submission->getCurrentPublication();
 			$publication->setData('copyrightYear', $this->getData('copyrightYear'));
 			$publication->setData('copyrightHolder', $this->getData('copyrightHolder'), null);
 			$publication->setData('licenseUrl', $this->getData('licenseUrl'));
 			$publication->setData('pages', $this->getData('pages'));
 			$publication->setData('datePublished', $this->getData('datePublished'));
 			$publication->setData('accessStatus', ARTICLE_ACCESS_ISSUE_DEFAULT);
-			$publication->setData('issueId', $this->getData('issueId'));
-			Services::get('publication')->publish($publication);
+			$publication->setData('issueId', (int) $this->getData('issueId'));
 
-			/* FIXME: pkp/pkp-lib#5438
-			$publication = $this->_submission->getCurrentPublication();
-			$publishedSubmissionDao = DAORegistry::getDAO('PublishedArticleDAO');
-			$publishedSubmissionDao->resequencePublishedArticles($this->_submission->getSectionId(), $this->_publishedSubmission->getIssueId());
+			// If other articles in this issue have a custom sequence, put this at the end
+			$otherSubmissionsInSection = Services::get('submission')->getMany([
+				'contextId' => $this->_request->getContext()->getId(),
+				'issueIds' => [$publication->getData('issueId')],
+				'sectionIds' => [$publication->getData('sectionId')],
+			]);
+			if (count($otherSubmissionsInSection)) {
+				$maxSequence = 0;
+				foreach ($otherSubmissionsInSection as $submission) {
+					if ($submission->getCurrentPublication()->getData('seq')) {
+						$maxSequence = max($maxSequence, $submission->getCurrentPublication()->getData('seq'));
+					}
+				}
+				$publication->setData('seq', $maxSequence + 1);
+			}
 
-			// If we're using custom section ordering, and if this is the first
+			$publication = Services::get('publication')->publish($publication);
+
+			// If this submission's issue uses custom section ordering and this is the first
 			// article published in a section, make sure we enter a custom ordering
-			// for it. (Default at the end of the list.)
-			$sectionDao = DAORegistry::getDAO('SectionDAO');
-			if ($sectionDao->customSectionOrderingExists($this->_publishedSubmission->getIssueId())) {
-				if ($sectionDao->getCustomSectionOrder($this->_publishedSubmission->getIssueId(), $this->_submission->getSectionId()) === null) {
-					$sectionDao->insertCustomSectionOrder($this->_publishedSubmission->getIssueId(), $this->_submission->getSectionId(), REALLY_BIG_NUMBER);
-					$sectionDao->resequenceCustomSectionOrders($this->_publishedSubmission->getIssueId());
+			// for that section to place it at the end.
+			if (DAORegistry::getDAO('SectionDAO')->customSectionOrderingExists($publication->getData('issueId'))) {
+				$sectionOrder = DAORegistry::getDAO('SectionDAO')->getCustomSectionOrder($publication->getData('issueId'), $publication->getData('sectionId'));
+				if  ($sectionOrder === null) {
+					DAORegistry::getDAO('SectionDAO')->insertCustomSectionOrder($publication->getData('issueId'), $publication->getData('sectionId'), REALLY_BIG_NUMBER);
+					DAORegistry::getDAO('SectionDAO')->resequenceCustomSectionOrders($publication->getData('issueId'));
 				}
 			}
-			 */
 		}
 
 		// Index article.
