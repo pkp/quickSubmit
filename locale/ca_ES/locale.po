@@ -2,20 +2,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2020-01-17T18:13:55+00:00\n"
+"PO-Revision-Date: 2020-04-05 16:37+0000\n"
+"Last-Translator: Jordi LC <jordi.lacruz@uab.cat>\n"
+"Language-Team: Catalan <http://translate.pkp.sfu.ca/projects/plugins/"
+"quickSubmit/ca/>\n"
+"Language: ca_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-01-17T18:13:55+00:00\n"
-"PO-Revision-Date: 2020-01-17T18:13:55+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "plugins.importexport.quickSubmit.displayName"
 msgstr "Mòdul QuickSubmit"
 
 msgid "plugins.importexport.quickSubmit.description"
-msgstr "Mòdul per a trameses en un sol pas."
+msgstr "Mòdul per a trameses en un sol pas"
 
 msgid "plugins.importexport.quickSubmit.success"
 msgstr "Article afegit"
@@ -25,3 +28,26 @@ msgstr "S'ha creat l'article correctament."
 
 msgid "plugins.importexport.quickSubmit.successReturn"
 msgstr "Tornar al mòdul QuickSubmit plugin."
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Heu de seleccionar un número"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Anar a trameses"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Retirat de publicació"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Publicat"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "La tramesa ha estat cancel·lada."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Tramesa cancel·lada"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr ""
+"Aquest mòdul permet afegir trameses ràpidament a la fase de producció o "
+"directament a un número."
