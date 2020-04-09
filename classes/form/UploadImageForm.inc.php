@@ -13,9 +13,11 @@
  * @brief Form for upload an image.
  */
 
-import('lib.pkp.controllers.tab.settings.form.SettingsFileUploadForm');
+import('lib.pkp.classes.form.Form');
 
-class UploadImageForm extends SettingsFileUploadForm {
+class UploadImageForm extends Form {
+	/** string Setting key that will be associated with the uploaded file. */
+	var $_fileSettingName;
 
 	/** @var $request object */
 	var $request;
@@ -25,6 +27,9 @@ class UploadImageForm extends SettingsFileUploadForm {
 
 	/** @var $submission Submission */
 	var $submission;
+
+	/** @var $publication Publication */
+	var $publication;
 
 	/** @var $plugin QuickSubmitPlugin */
 	var $plugin;
@@ -40,28 +45,18 @@ class UploadImageForm extends SettingsFileUploadForm {
 	function __construct($plugin, $request) {
 		parent::__construct($plugin->getTemplateResource('uploadImageForm.tpl'));
 
+		$this->addCheck(new FormValidator($this, 'temporaryFileId', 'required', 'manager.website.imageFileRequired'));
+
 		$this->plugin = $plugin;
 		$this->request = $request;
 		$this->context = $request->getContext();
 
 		$this->submissionId = $request->getUserVar('submissionId');
 
-		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$this->submission = $submissionDao->getById($request->getUserVar('submissionId'), $this->context->getId(), false);
+		$this->publication = $this->submission->getCurrentPublication();
 	}
-
-
-	//
-	// Extend methods from SettingsFileUploadForm.
-	//
-	/**
-	 * @copydoc SettingsFileUploadForm::fetch()
-	 */
-	function fetch($request, $template = null, $display = false, $params = array()) {
-		$params['fileType'] ='image';
-		return parent::fetch($request, $template, $display, $params);
-	}
-
 
 	//
 	// Extend methods from Form.
@@ -113,9 +108,7 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @copydoc Form::readInputData()
 	 */
 	function readInputData() {
-		$this->readUserVars(array('imageAltText'));
-
-		parent::readInputData();
+		$this->readUserVars(array('imageAltText', 'temporaryFileId'));
 	}
 
 	/**
@@ -126,19 +119,17 @@ class UploadImageForm extends SettingsFileUploadForm {
 	function deleteCoverImage($request) {
 		assert($request->getUserVar('coverImage') != '' && $request->getUserVar('submissionId') != '');
 
-		$submissionDao = Application::getSubmissionDAO();
+		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 		$file = $request->getUserVar('coverImage');
 
 		// Remove cover image and alt text from article settings
 		$locale = AppLocale::getLocale();
-		$this->submission->setCoverImage('', $locale);
-		$this->submission->setCoverImageAltText('', $locale);
-
-		$submissionDao->updateObject($this->submission);
+		$this->publication->setData('coverImage', []);
+		$publicationDao->updateObject($this->publication);
 
 		// Remove the file
 		$publicFileManager = new PublicFileManager();
-		if ($publicFileManager->removeContextFile($this->submission->getJournalId(), $file)) {
+		if ($publicFileManager->removeContextFile($this->submission->getContextId(), $file)) {
 			$json = new JSONMessage(true);
 			$json->setEvent('fileDeleted');
 			return $json;
@@ -152,11 +143,11 @@ class UploadImageForm extends SettingsFileUploadForm {
 	 * @param $request Request.
 	 */
 	function execute($request) {
-		$submissionDao = Application::getSubmissionDAO();
+		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 
 		$temporaryFile = $this->fetchTemporaryFile($request);
 		$locale = AppLocale::getLocale();
-		$coverImage = $this->submission->getCoverImage($locale);
+		$coverImage = $this->publication->getData('coverImage');
 
 		import('classes.file.PublicFileManager');
 		$publicFileManager = new PublicFileManager();
@@ -171,15 +162,13 @@ class UploadImageForm extends SettingsFileUploadForm {
 
 			$newFileName = 'article_' . $this->submissionId . '_cover_' . $locale . $publicFileManager->getImageExtension($temporaryFile->getFileType());
 
-			if($publicFileManager->copyContextFile($this->context->getId(), $temporaryFile->getFilePath(), $newFileName)) {
+			if ($publicFileManager->copyContextFile($this->context->getId(), $temporaryFile->getFilePath(), $newFileName)) {
 
-				$this->submission->setCoverImage($newFileName, $locale);
-
-				$imageAltText = $this->getData('imageAltText');
-
-				$this->submission->setCoverImageAltText($imageAltText, $locale);
-
-				$submissionDao->updateObject($this->submission);
+				$this->publication->setData('coverImage', [
+					'altText' => $this->getData('imageAltText'),
+					'uploadName' => $newFileName,
+				], $locale);
+				$publicationDao->updateObject($this->publication);
 
 				// Clean up the temporary file.
 				$this->removeTemporaryFile($request);
@@ -187,14 +176,96 @@ class UploadImageForm extends SettingsFileUploadForm {
 				return DAO::getDataChangedEvent();
 			}
 		} elseif ($coverImage) {
-			$imageAltText = $this->getData('imageAltText');
-			$this->submission->setCoverImageAltText($imageAltText, $locale);
-			$submissionDao->updateObject($this->submission);
+			$coverImage = $this->publication->getData('coverImage');
+			$coverImage[$locale]['altText'] = $this->getData('imageAltText');
+			$this->publication->setData('coverImage', $coverImage);
+			$publicationDao->updateObject($this->publication);
 			return DAO::getDataChangedEvent();
 		}
 		return new JSONMessage(false, __('common.uploadFailed'));
 
 	}
+
+	/**
+	 * Get the image that this form will upload a file to.
+	 * @return string
+	 */
+	function getFileSettingName() {
+		return $this->_fileSettingName;
+	}
+
+	/**
+	 * Set the image that this form will upload a file to.
+	 * @param $image string
+	 */
+	function setFileSettingName($fileSettingName) {
+		$this->_fileSettingName = $fileSettingName;
+	}
+
+
+	//
+	// Implement template methods from Form.
+	//
+	/**
+	 * @see Form::fetch()
+	 * @param $params template parameters
+	 */
+	function fetch($request, $template = null, $display = false, $params = null) {
+		$templateMgr = TemplateManager::getManager($request);
+		$templateMgr->assign(array(
+			'fileSettingName' => $this->getFileSettingName(),
+			'fileType' => 'image',
+		));
+
+		return parent::fetch($request, $template, $display);
+	}
+
+
+	//
+	// Public methods
+	//
+	/**
+	 * Fecth the temporary file.
+	 * @param $request Request
+	 * @return TemporaryFile
+	 */
+	function fetchTemporaryFile($request) {
+		$user = $request->getUser();
+
+		$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+		$temporaryFile = $temporaryFileDao->getTemporaryFile(
+			$this->getData('temporaryFileId'),
+			$user->getId()
+		);
+		return $temporaryFile;
+	}
+
+	/**
+	 * Clean temporary file.
+	 * @param $request Request
+	 */
+	function removeTemporaryFile($request) {
+		$user = $request->getUser();
+
+		import('lib.pkp.classes.file.TemporaryFileManager');
+		$temporaryFileManager = new TemporaryFileManager();
+		$temporaryFileManager->deleteById($this->getData('temporaryFileId'), $user->getId());
+	}
+
+	/**
+	 * Upload a temporary file.
+	 * @param $request Request
+	 */
+	function uploadFile($request) {
+		$user = $request->getUser();
+
+		import('lib.pkp.classes.file.TemporaryFileManager');
+		$temporaryFileManager = new TemporaryFileManager();
+		$temporaryFile = $temporaryFileManager->handleUpload('uploadedFile', $user->getId());
+
+		if ($temporaryFile) return $temporaryFile->getId();
+
+		return false;
+	}
 }
 
-?>
