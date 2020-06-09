@@ -7,20 +7,21 @@
  *
  * Display a message indicating that the submission was cancelled.
  *}
-{strip}
-{assign var="pageTitle" value="plugins.importexport.quickSubmit.cancel"}
-{include file="common/header.tpl"}
-{/strip}
+{extends file="layouts/backend.tpl"}
 
-<div class="pkp_page_content pkp_cancelQuickSubmit">
-	<p>
-		{translate key="plugins.importexport.quickSubmit.cancelDescription"}  
-	</p>
-	<p> 
-		<a href="{plugin_url}">
-			{translate key="plugins.importexport.quickSubmit.successReturn"}
-		</a>
-	</p>
-</div>
+{block name="page"}
+	<h1 class="app__pageHeading">
+		{translate key="plugins.importexport.quickSubmit.cancel"}
+	</h1>
 
-{include file="common/footer.tpl"}
+	<div class="app__contentPanel">
+		<p>
+			{translate key="plugins.importexport.quickSubmit.cancelDescription"}
+		</p>
+		<p>
+			<a href="{plugin_url}">
+				{translate key="plugins.importexport.quickSubmit.successReturn"}
+			</a>
+		</p>
+	</div>
+{/block}
