@@ -11,8 +11,7 @@ describe('Quick Submit plugin tests', function() {
 	it('Creates a published quick submission', function() {
 		cy.login('admin', 'admin', 'publicknowledge');
 
-		cy.get('ul[id="navigationPrimary"] a:contains("Tools")').click();
-		cy.get('ul[id="navigationPrimary"] a:contains("Import/Export")').click();
+		cy.get('.app__nav a:contains("Tools")').click();
 		cy.get('a:contains("QuickSubmit Plugin")').click();
 		cy.get('select[id="sectionId"]').select('Articles');
 		cy.waitJQuery(); // Wait for form resubmission hack on section change.
@@ -38,7 +37,7 @@ describe('Quick Submit plugin tests', function() {
 		cy.get('input#articlePublished').click();
 		cy.get('select#issueId').select('Vol. 1 No. 2 (2014)');
 		cy.get('input[id^="datePublished-"]:visible').type('2020-01-01', {delay: 0});
-		cy.get('legend:contains("Published")').click(); // Take focus out of datepicker
+		cy.get('input[id^="licenseUrl"]').click(); // Take focus out of datepicker
 
 		// Add a galley
 		cy.get('a[id^="component-grid-articlegalleys-articlegalleygrid-addGalley-button-"]').click();
@@ -61,7 +60,8 @@ describe('Quick Submit plugin tests', function() {
 		cy.waitJQuery();
 
 		// Test the submission in the published front end
-		cy.get('a:contains("View Site")').click();
+
+		cy.get('.app__contextTitle:contains("Journal of Public Knowledge")').click();
 		cy.get('a:contains("Archives")').click();
 		cy.get('a:contains("Vol. 1 No. 2 (2014")').click();
 		cy.get('a:contains("QuickSubmit Published Test Submission")').click();
@@ -73,8 +73,7 @@ describe('Quick Submit plugin tests', function() {
 	it('Creates an unpublished quick submission', function() {
 		cy.login('admin', 'admin', 'publicknowledge');
 
-		cy.get('ul[id="navigationPrimary"] a:contains("Tools")').click();
-		cy.get('ul[id="navigationPrimary"] a:contains("Import/Export")').click();
+		cy.get('.app__nav a:contains("Tools")').click();
 		cy.get('a:contains("QuickSubmit Plugin")').click();
 		cy.get('select[id="sectionId"]').select('Articles');
 		cy.waitJQuery(); // Wait for form resubmission hack on section change.

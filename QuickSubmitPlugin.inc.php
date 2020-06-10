@@ -83,6 +83,9 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 				return $this->_deleteUploadedImage($request);
 			default:
 				$this->import('QuickSubmitForm');
+				$templateMgr->assign([
+					'pageTitle' => $this->getDisplayName(),
+				]);
 				$form = new QuickSubmitForm($this, $request);
 				$form->initData();
 				$form->display($request);
@@ -108,6 +111,9 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		$notificationMgr->createTrivialNotification($currentUser->getId(), NOTIFICATION_TYPE_SUCCESS, array('contents' => $notificationContent));
 
 		$templateMgr = TemplateManager::getManager($request);
+		$templateMgr->assign([
+			'pageTitle' => __('plugins.importexport.quickSubmit.cancel'),
+		]);
 		$templateMgr->display($this->getTemplateResource('submitCancel.tpl'));
 	}
 
@@ -181,6 +187,7 @@ class QuickSubmitPlugin extends ImportExportPlugin {
 		if($form->validate()){
 			$form->execute();
 			$templateMgr->assign(array(
+				'pageTitle' => __('plugins.importexport.quickSubmit.success'),
 				'submissionId' => $form->getSubmission()->getId(),
 				'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,
 			));
