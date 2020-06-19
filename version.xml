@@ -13,6 +13,6 @@
 <version>
 	<application>quickSubmit</application>
 	<type>plugins.importexport</type>
-	<release>1.0.5.2</release>
+	<release>1.0.5.3</release>
 	<date>2020-06-19</date>
 </version>
