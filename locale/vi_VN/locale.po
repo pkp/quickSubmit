@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-07-11 18:40+0000\n"
+"Last-Translator: Tran Ngoc Trung <khuchatthienduong@gmail.com>\n"
+"Language-Team: Vietnamese <http://translate.pkp.sfu.ca/projects/plugins/"
+"quickSubmit/vi_VN/>\n"
+"Language: vi_VN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.9.1\n"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Một số phải được chọn"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Tới bài gửi"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Chưa xuất bản"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Đã xuất bản"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "Bài gửi đã bị hủy bỏ."
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "Trở lại plugin gửi nhanh."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Bài báo đã hủy"
+
+msgid "plugins.importexport.quickSubmit.successDescription"
+msgstr "Bài báo tạo ra đã thành công."
+
+msgid "plugins.importexport.quickSubmit.success"
+msgstr "Bài báo được thêm"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr ""
+"Plugin này cho phép bạn nhanh chóng thêm các bài gửi hoàn chỉnh vào giai "
+"đoạn chế bản hoặc trực tiếp vào một số."
+
+msgid "plugins.importexport.quickSubmit.description"
+msgstr "Plugin gửi bài một bước"
+
+msgid "plugins.importexport.quickSubmit.displayName"
+msgstr "Plugin Gửi nhanh"
