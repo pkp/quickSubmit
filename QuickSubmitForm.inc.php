@@ -265,6 +265,21 @@ class QuickSubmitForm extends Form {
 				'locale'
 			)
 		);
+
+		// Process entered tagit fields values
+		// @see PKPSubmissionHandler::saveStep
+		$tagitKeywords = $this->getData('keywords');
+		if (is_array($tagitKeywords)) {
+			$tagitFieldNames = $this->_metadataFormImplem->getTagitFieldNames();
+			$locales = array_keys($this->supportedLocales);
+			$formTagitData = array();
+			foreach ($tagitFieldNames as $tagitFieldName) {
+				foreach ($locales as $locale) {
+					$formTagitData[$locale] = array_key_exists($locale . "-$tagitFieldName", $tagitKeywords) ? $tagitKeywords[$locale . "-$tagitFieldName"] : array();
+				}
+				$this->setData($tagitFieldName, $formTagitData);
+			}
+		}
 	}
 
 	/**
