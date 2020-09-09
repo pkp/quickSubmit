@@ -302,20 +302,19 @@ class QuickSubmitForm extends Form {
 		// Copy GalleyFiles to Submission Files
 		// Get Galley Files by SubmissionId
 		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
-		$galleyFilesRes = $galleyDao->getByPublicationId($this->_submission->getCurrentPublication()->getId());
+		$galleysResponse = $galleyDao->getByPublicationId($this->_submission->getCurrentPublication()->getId());
 
-		if (!is_null($galleyFilesRes)) {
-			$galleyFiles = $galleyFilesRes->toAssociativeArray();
+		if (!is_null($galleysResponse)) {
+			$galleys = $galleysResponse->toAssociativeArray();
 
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-			import('lib.pkp.classes.file.SubmissionFileManager');
-			$submissionFileManager = new SubmissionFileManager($this->_context->getId(), $this->_submission->getId());
-
-			foreach($galleyFiles as $galleyFile) {
-				$newFile = $galleyFile->getFile();
+			foreach($galleys as $galley) {
+				$file = $galley->getFile();
 				if ($newFile) {
-					$revisionNumber = $submissionFileDao->getLatestRevisionNumber($newFile->getFileId());
-					$submissionFileManager->copyFileToFileStage($newFile->getFileId(), $revisionNumber, SUBMISSION_FILE_SUBMISSION, null, true);
+					$newSubmissionFile = clone $file;
+					$newSubmissionFile->setData('fileStage', SUBMISSION_FILE_SUBMISSION);
+					$newSubmissionFile->setData('viewable', true);
+					$newSubmissionFile->setData('sourceSubmissionFileId', $file->getId());
+					$newSubmissionFile = Services::get('submissionFile')->add($newSubmissionFile, Application::get()->getRequest());
 				}
 			}
 		}
