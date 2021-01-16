@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2021-01-17 07:53+0000\n"
-"Last-Translator: Jovan Jonovski <jonovski@hotmail.com>\n"
+"Last-Translator: Mirko Spiroski <mspiroski@id-press.eu>\n"
 "Language-Team: Macedonian <http://translate.pkp.sfu.ca/projects/plugins/"
 "quickSubmit/mk_MK/>\n"
 "Language: mk_MK\n"
@@ -27,3 +27,24 @@ msgstr "Плагин за поднесување во еден чекор"
 
 msgid "plugins.importexport.quickSubmit.displayName"
 msgstr "QuickSubmit  плагин"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Мора да се избере број"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Оди кон Поднесување"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Необјавено"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Објавено"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "Поднесувањето е откажано."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Поднесувањето е повлечено"
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "Врати се на плагинот за брзо поднесување."
