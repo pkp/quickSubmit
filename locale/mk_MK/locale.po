@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2021-01-17 07:53+0000\n"
-"Last-Translator: Mirko Spiroski <mspiroski@id-press.eu>\n"
+"PO-Revision-Date: 2021-01-19 12:53+0000\n"
+"Last-Translator: Jovan Jonovski <jonovski@hotmail.com>\n"
 "Language-Team: Macedonian <http://translate.pkp.sfu.ca/projects/plugins/"
 "quickSubmit/mk_MK/>\n"
 "Language: mk_MK\n"
@@ -12,10 +12,10 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 
 msgid "plugins.importexport.quickSubmit.successDescription"
-msgstr "Сосдавањето на текстот е успешно."
+msgstr "Создавањето на текстот е успешно."
 
 msgid "plugins.importexport.quickSubmit.success"
-msgstr "Текстот е доодаден"
+msgstr "Текстот е додаден"
 
 msgid "plugins.importexport.quickSubmit.descriptionLong"
 msgstr ""
@@ -32,7 +32,7 @@ msgid "plugins.importexport.quickSubmit.selectIssue"
 msgstr "Мора да се избере број"
 
 msgid "plugins.importexport.quickSubmit.goToSubmission"
-msgstr "Оди кон Поднесување"
+msgstr "Оди кон поднесување"
 
 msgid "plugins.importexport.quickSubmit.unpublished"
 msgstr "Необјавено"
