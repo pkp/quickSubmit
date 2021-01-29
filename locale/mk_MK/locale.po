@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2021-01-19 12:53+0000\n"
+"Last-Translator: Jovan Jonovski <jonovski@hotmail.com>\n"
+"Language-Team: Macedonian <http://translate.pkp.sfu.ca/projects/plugins/"
+"quickSubmit/mk_MK/>\n"
+"Language: mk_MK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n==1 || n%10==1 ? 0 : 1;\n"
+"X-Generator: Weblate 3.9.1\n"
+
+msgid "plugins.importexport.quickSubmit.successDescription"
+msgstr "Создавањето на текстот е успешно."
+
+msgid "plugins.importexport.quickSubmit.success"
+msgstr "Текстот е додаден"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr ""
+"Овој плагин ви овозможува брзо да додадете целосни поднесоци до фазата на "
+"продукција или директно во издание."
+
+msgid "plugins.importexport.quickSubmit.description"
+msgstr "Плагин за поднесување во еден чекор"
+
+msgid "plugins.importexport.quickSubmit.displayName"
+msgstr "QuickSubmit  плагин"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Мора да се избере број"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Оди кон поднесување"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Необјавено"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Објавено"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "Поднесувањето е откажано."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Поднесувањето е повлечено"
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "Врати се на плагинот за брзо поднесување."
