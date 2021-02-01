@@ -309,7 +309,7 @@ class QuickSubmitForm extends Form {
 
 			foreach($galleys as $galley) {
 				$file = $galley->getFile();
-				if ($newFile) {
+				if ($file) {
 					$newSubmissionFile = clone $file;
 					$newSubmissionFile->setData('fileStage', SUBMISSION_FILE_SUBMISSION);
 					$newSubmissionFile->setData('viewable', true);
