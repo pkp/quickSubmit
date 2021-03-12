@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-20T15:57:55+00:00\n"
+"PO-Revision-Date: 2020-10-19 15:42+0000\n"
+"Last-Translator: Eirik Hanssen <eirikh@oslomet.no>\n"
+"Language-Team: Norwegian Bokmål <http://translate.pkp.sfu.ca/projects/"
+"plugins/quickSubmit/nb_NO/>\n"
+"Language: nb_NO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
+
+msgid "plugins.importexport.quickSubmit.displayName"
+msgstr "QuickSubmit"
+
+msgid "plugins.importexport.quickSubmit.description"
+msgstr "Programtillegg for ett-trinns innlevering"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr "Ved å bruke dette programtillegget, kan du legge til en fullstendig innlevering enten til produksjonsstadiet eller direkte til en utgave."
+
+msgid "plugins.importexport.quickSubmit.success"
+msgstr "Artikkel lagt til"
+
+msgid "plugins.importexport.quickSubmit.successDescription"
+msgstr "Artikkelopprettelsen var vellykket."
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "Returner til QuickSubmit programtillegg."
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Publisert"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Upublisert"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Gå til innlevering"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Velg en utgave"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "Innleveringen ble avbrutt."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Innleveringen er avbrutt"
