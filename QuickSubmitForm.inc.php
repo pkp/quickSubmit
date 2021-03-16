@@ -57,10 +57,9 @@ class QuickSubmitForm extends Form {
 			$this->_submission->setLocale($this->getDefaultFormLocale());
 			$publication = $this->_submission->getCurrentPublication();
 			$publication->setData('locale', $this->getDefaultFormLocale());
-			$publication->setData('language', PKPString::substr($this->getDefaultFormLocale(), 0, 2));
 			$submissionDao->updateObject($this->_submission);
 			$publicationDao->updateObject($publication);
-			
+
 			$this->_metadataFormImplem->addChecks($this->_submission);
 		}
 
@@ -234,7 +233,6 @@ class QuickSubmitForm extends Form {
 			$publication = new Publication();
 			$publication->setData('submissionId', $this->_submission->getId());
 			$publication->setData('locale', $this->getDefaultFormLocale());
-			$publication->setData('language', PKPString::substr($this->getDefaultFormLocale(), 0, 2));
 			$publication->setData('sectionId', $sectionId);
 			$publication->setData('status', STATUS_QUEUED);
 			$publication->setData('version', 1);
