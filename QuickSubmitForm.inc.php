@@ -51,10 +51,15 @@ class QuickSubmitForm extends Form {
 
 		if ($submissionId = $request->getUserVar('submissionId')) {
 			$submissionDao = Application::getSubmissionDAO();
+			$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 			$this->_submission = $submissionDao->getById($submissionId);
 			if ($this->_submission->getContextId() != $this->_context->getId()) throw new Exeption('Submission not in context!');
 			$this->_submission->setLocale($this->getDefaultFormLocale());
+			$publication = $this->_submission->getCurrentPublication();
+			$publication->setData('locale', $this->getDefaultFormLocale());
+			$publication->setData('language', PKPString::substr($this->getDefaultFormLocale(), 0, 2));
 			$submissionDao->updateObject($this->_submission);
+			$publicationDao->updateObject($publication);
 
 			$this->_metadataFormImplem->addChecks($this->_submission);
 		}
