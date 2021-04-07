@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2021-04-01 11:55+0000\n"
+"PO-Revision-Date: 2021-04-08 09:55+0000\n"
 "Last-Translator: Dimitri Gogelia <dimitri.gogelia@iliauni.edu.ge>\n"
 "Language-Team: Georgian <http://translate.pkp.sfu.ca/projects/plugins/"
 "quickSubmit/ka_GE/>\n"
@@ -16,3 +16,35 @@ msgstr "გამოქვეყნებული"
 
 msgid "plugins.importexport.quickSubmit.unpublished"
 msgstr "გამოუქვეყნებელი"
+
+msgid "plugins.importexport.quickSubmit.displayName"
+msgstr "QuickSubmit პლაგინი"
+
+msgid "plugins.importexport.quickSubmit.description"
+msgstr "ერთსაფეხურიანი შეტანის პლაგინი"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr ""
+"ეს პლაგინი საშუალებას გაძლევთ სწრაფად დაამატოთ სრული წარდგინება წარმოების "
+"ეტაპზე ან უშუალოდ საკითხის გადასაცემად."
+
+msgid "plugins.importexport.quickSubmit.success"
+msgstr "სტატია დამატებულია"
+
+msgid "plugins.importexport.quickSubmit.successDescription"
+msgstr "სტატიის შექმნა წარმატებით დასრულდა."
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "QuickSubmit პლაგინზე დაბრუნება."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "მასალა უარყოფილია"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "მასალა უარყოფილია."
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "გადასვლა მასალაზე"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "გამოცემა უნდა შეირჩეს"
