@@ -259,6 +259,21 @@ class QuickSubmitForm extends Form {
 				}
 			}
 
+			// Pre-fill the copyright information fields from setup (#7236)
+			$this->_data['licenseUrl'] = $this->_context->getData('licenseUrl');
+			switch ($this->_context->getData('copyrightHolderType')) {
+			case 'author':
+				// The author has not been entered yet; let the user fill it in.
+				break;
+			case 'context':
+				$this->_data['copyrightHolder'] = $this->_context->getData('name');
+				break;
+			case 'other':
+				$this->_data['copyrightHolder'] = $this->_context->getData('copyrightHolderOther');
+				break;
+			}
+			$this->_data['copyrightYear'] = date('Y');
+
 			// Assign the user author to the stage
 			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
 			$stageAssignmentDao->build($this->_submission->getId(), $userGroupId, $user->getId());
