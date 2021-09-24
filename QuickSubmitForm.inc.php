@@ -13,10 +13,10 @@
  * @brief Form for QuickSubmit one-page submission plugin
  */
 
-
-import('lib.pkp.classes.form.Form');
-import('classes.submission.SubmissionMetadataFormImplementation');
-import('classes.publication.Publication');
+use APP\submission\SubmissionMetadataFormImplementation;
+use APP\publication\Publication;
+use APP\facades\Repo;
+use PKP\form\Form;
 
 class QuickSubmitForm extends Form {
 	/** @var Request */
@@ -50,30 +50,28 @@ class QuickSubmitForm extends Form {
 		}
 
 		if ($submissionId = $request->getUserVar('submissionId')) {
-			$submissionDao = Application::getSubmissionDAO();
-			$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
-			$this->_submission = $submissionDao->getById($submissionId);
+			$this->_submission = Repo::submission()->get($submissionId);
 			if ($this->_submission->getContextId() != $this->_context->getId()) throw new Exeption('Submission not in context!');
 			$this->_submission->setLocale($this->getDefaultFormLocale());
 			$publication = $this->_submission->getCurrentPublication();
 			$publication->setData('locale', $this->getDefaultFormLocale());
-			$submissionDao->updateObject($this->_submission);
-			$publicationDao->updateObject($publication);
+			Repo::submission()->edit($this->_submission, []);
+			Repo::publication()->edit($publication, []);
 
 			$this->_metadataFormImplem->addChecks($this->_submission);
 		}
 
-		$this->addCheck(new FormValidatorPost($this));
-		$this->addCheck(new FormValidatorCSRF($this));
-		$this->addCheck(new FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->_context->getId())));
+		$this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCSRF($this));
+		$this->addCheck(new \PKP\form\validation\FormValidatorCustom($this, 'sectionId', 'required', 'author.submit.form.sectionRequired', array(DAORegistry::getDAO('SectionDAO'), 'sectionExists'), array($this->_context->getId())));
 
 		// Validation checks for this form
 		$supportedSubmissionLocales = $this->_context->getSupportedSubmissionLocales();
 		if (!is_array($supportedSubmissionLocales) || count($supportedSubmissionLocales) < 1)
 			$supportedSubmissionLocales = array($this->_context->getPrimaryLocale());
-		$this->addCheck(new FormValidatorInSet($this, 'locale', 'required', 'submission.submit.form.localeRequired', $supportedSubmissionLocales));
+		$this->addCheck(new \PKP\form\validation\FormValidatorInSet($this, 'locale', 'required', 'submission.submit.form.localeRequired', $supportedSubmissionLocales));
 
-		$this->addCheck(new FormValidatorURL($this, 'licenseUrl', 'optional', 'form.url.invalid'));
+		$this->addCheck(new \PKP\form\validation\FormValidatorUrl($this, 'licenseUrl', 'optional', 'form.url.invalid'));
 	}
 
 	/**
@@ -142,9 +140,10 @@ class QuickSubmitForm extends Form {
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
 		// Get published Issues
-		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$issuesIterator = $issueDao->getIssues($this->_context->getId());
-		$issues = $issuesIterator->toArray();
+		$issues = Repo::issue()->getMany(
+			Repo::issue()->getCollector()->filterByContextIds([$this->_context->getId()])
+			->orderBy(\APP\issue\Collector::ORDERBY_SHELF)
+		)->toArray();
 		$templateMgr->assign('hasIssues', count($issues) > 0);
 
 		// Get Issues
@@ -215,9 +214,8 @@ class QuickSubmitForm extends Form {
 			$sectionDao = DAORegistry::getDAO('SectionDAO');
 			$sectionOptions = $sectionDao->getTitlesByContextId($this->_context->getId());
 
-			// Create and insert a new submission
-			$submissionDao = Application::getSubmissionDAO();
-			$this->_submission = $submissionDao->newDataObject();
+			// Create and insert a new submission and publication
+			$this->_submission = Repo::submission()->dao->newDataObject();
 			$this->_submission->setContextId($this->_context->getId());
 			$this->_submission->setStatus(STATUS_QUEUED);
 			$this->_submission->setSubmissionProgress(1);
@@ -226,18 +224,15 @@ class QuickSubmitForm extends Form {
 			$this->_submission->setData('sectionId', $sectionId = current(array_keys($sectionOptions)));
 			$this->_submission->setLocale($this->getDefaultFormLocale());
 
-			// Insert the submission
-			$this->_submission = Services::get('submission')->add($this->_submission, $this->_request);
-			$this->setData('submissionId', $this->_submission->getId());
-
 			$publication = new Publication();
-			$publication->setData('submissionId', $this->_submission->getId());
 			$publication->setData('locale', $this->getDefaultFormLocale());
 			$publication->setData('sectionId', $sectionId);
 			$publication->setData('status', STATUS_QUEUED);
 			$publication->setData('version', 1);
-			$publication = Services::get('publication')->add($publication, $this->_request);
-			$this->_submission = Services::get('submission')->edit($this->_submission, ['currentPublicationId' => $publication->getId()], $this->_request);
+
+			Repo::submission()->add($this->_submission, $publication);
+			$this->_submission = Repo::submission()->get($this->_submission->getId());
+			$this->setData('submissionId', $this->_submission->getId());
 
 			$this->_metadataFormImplem->initData($this->_submission);
 
@@ -304,10 +299,9 @@ class QuickSubmitForm extends Form {
 	 * cancel submit
 	 */
 	function cancel() {
-		$submissionDao = Application::getSubmissionDAO();
-		$submission = $submissionDao->getById($this->getData('submissionId'));
+		$submission = Repo::submission()->get((int) $this->getData('submissionId'));
 		if ($this->_submission->getContextId() != $this->_context->getId()) throw new Exeption('Submission not in context!');
-		if ($submission) $submissionDao->deleteById($submission->getId());
+		if ($submission) Repo::submission()->delete($submission->getId());
 	}
 
 	/**
@@ -344,13 +338,12 @@ class QuickSubmitForm extends Form {
 
 		parent::execute($this->_submission, ...$functionParams);
 
-		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
-		$submissionDao->updateObject($this->_submission);
-		$this->_submission = $submissionDao->getById($this->_submission->getId());
+		Repo::submission()->edit($this->_submission, []);
+		$this->_submission = Repo::submission()->get($this->_submission->getId());
 
 		$publication = $this->_submission->getCurrentPublication();
 		if ($publication->getData('sectionId') !== (int) $this->getData('sectionId')) {
-			$publication = Services::get('publication')->edit($publication, ['sectionId' => (int) $this->getData('sectionId')], $this->_request);
+			$publication = Repo::publication()->edit($publication, ['sectionId' => (int) $this->getData('sectionId')], $this->_request);
 		}
 
 		if ($this->getData('articleStatus') == 1) {
@@ -363,11 +356,12 @@ class QuickSubmitForm extends Form {
 			$publication->setData('issueId', (int) $this->getData('issueId'));
 
 			// If other articles in this issue have a custom sequence, put this at the end
-			$otherSubmissionsInSection = Services::get('submission')->getMany([
-				'contextId' => $this->_request->getContext()->getId(),
-				'issueIds' => [$publication->getData('issueId')],
-				'sectionIds' => [$publication->getData('sectionId')],
-			]);
+			$otherSubmissionsInSection = Repo::submission()->getMany(
+				Repo::submission()->getCollector()
+				->filterByContextIds([$this->_request->getContext()->getId()])
+				->filterByIssueIds([$publication->getData('issueId')])
+				->filterBySectionIds([$publication->getData('sectionId')])
+			)->toArray();
 			if (count($otherSubmissionsInSection)) {
 				$maxSequence = 0;
 				foreach ($otherSubmissionsInSection as $submission) {
@@ -378,7 +372,7 @@ class QuickSubmitForm extends Form {
 				$publication->setData('seq', $maxSequence + 1);
 			}
 
-			$publication = Services::get('publication')->publish($publication);
+			Repo::publication()->publish($publication);
 
 			// If this submission's issue uses custom section ordering and this is the first
 			// article published in a section, make sure we enter a custom ordering
@@ -410,18 +404,23 @@ class QuickSubmitForm extends Form {
 		$issueOptions = array();
 		$journalId = $journal->getId();
 
-		$issueDao = DAORegistry::getDAO('IssueDAO');
-
 		$issueOptions[-1] =  '------    ' . __('editor.issues.futureIssues') . '    ------';
-		$issueIterator = $issueDao->getUnpublishedIssues($journalId);
-		while ($issue = $issueIterator->next()) {
+		$issues = Repo::issue()->getMany(
+			Repo::issue()->getCollector()->filterByContextIds([$journalId])
+				->filterByPublished(false)
+				->orderBy(\APP\issue\Collector::ORDERBY_SHELF)
+		);
+		foreach ($issues as $issue) {
 			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
 			$issuesPublicationDates[$issue->getId()] = strftime(Config::getVar('general', 'date_format_short'), strtotime(Core::getCurrentDate()));
 		}
 		$issueOptions[-2] = '------    ' . __('editor.issues.currentIssue') . '    ------';
-		$issuesIterator = $issueDao->getPublishedIssues($journalId);
-		$issues = $issuesIterator->toArray();
-		if (isset($issues[0]) && $issues[0]->getCurrent()) {
+		$issues = array_values(Repo::issue()->getMany(
+			Repo::issue()->getCollector()->filterByContextIds([$journalId])
+				->filterByPublished(true)
+				->orderBy(\APP\issue\Collector::ORDERBY_SHELF)
+		)->toArray());
+		if (isset($issues[0]) && $issues[0]->getId() == $journal->getData('currentIssueId')) {
 			$issueOptions[$issues[0]->getId()] = $issues[0]->getIssueIdentification();
 			$issuesPublicationDates[$issues[0]->getId()] = strftime(Config::getVar('general', 'date_format_short'), strtotime($issues[0]->getDatePublished()));
 			array_shift($issues);
