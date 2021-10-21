@@ -50,17 +50,25 @@ class QuickSubmitForm extends Form {
 		}
 
 		if ($submissionId = $request->getUserVar('submissionId')) {
-			$submissionDao = Application::getSubmissionDAO();
+			$submissionDao = DAORegistry::getDAO('SubmissionDAO');
 			$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
+
 			$this->_submission = $submissionDao->getById($submissionId);
 			if ($this->_submission->getContextId() != $this->_context->getId()) throw new Exeption('Submission not in context!');
+
 			$this->_submission->setLocale($this->getDefaultFormLocale());
 			$publication = $this->_submission->getCurrentPublication();
 			$publication->setData('locale', $this->getDefaultFormLocale());
 			$publication->setData('language', PKPString::substr($this->getDefaultFormLocale(), 0, 2));
+
+			$sectionId = $request->getUserVar('sectionId');
+			if (!empty($sectionId)) {
+				$this->_submission->setSectionId($sectionId);
+			}
+
 			$submissionDao->updateObject($this->_submission);
 			$publicationDao->updateObject($publication);
-			
+
 			$this->_metadataFormImplem->addChecks($this->_submission);
 		}
 
@@ -217,7 +225,7 @@ class QuickSubmitForm extends Form {
 			$sectionOptions = $sectionDao->getTitlesByContextId($this->_context->getId());
 
 			// Create and insert a new submission
-			$submissionDao = Application::getSubmissionDAO();
+			$submissionDao = DAORegistry::getDAO('SubmissionDAO');
 			$this->_submission = $submissionDao->newDataObject();
 			$this->_submission->setContextId($this->_context->getId());
 			$this->_submission->setStatus(STATUS_QUEUED);
@@ -306,7 +314,7 @@ class QuickSubmitForm extends Form {
 	 * cancel submit
 	 */
 	function cancel() {
-		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO');
 		$submission = $submissionDao->getById($this->getData('submissionId'));
 		if ($this->_submission->getContextId() != $this->_context->getId()) throw new Exeption('Submission not in context!');
 		if ($submission) $submissionDao->deleteById($submission->getId());
