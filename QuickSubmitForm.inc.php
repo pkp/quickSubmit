@@ -326,7 +326,7 @@ class QuickSubmitForm extends Form {
 					$newSubmissionFile->setData('fileStage', SUBMISSION_FILE_SUBMISSION);
 					$newSubmissionFile->setData('viewable', true);
 					$newSubmissionFile->setData('sourceSubmissionFileId', $file->getId());
-					$newSubmissionFile = Services::get('submissionFile')->add($newSubmissionFile, Application::get()->getRequest());
+					$newSubmissionFile = Repo::submissionFile()->add($newSubmissionFile);
 				}
 			}
 		}
