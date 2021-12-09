@@ -47,8 +47,8 @@ describe('Quick Submit plugin tests', function() {
 		cy.get('select[id=genreId]').select('Article Text');
 		cy.wait(250);
 		cy.fixture('dummy.pdf', 'base64').then(fileContent => {
-			cy.get('div[id^="fileUploadWizard"] input[type=file]').upload(
-				{fileContent, 'fileName': 'article.pdf', 'mimeType': 'application/pdf', 'encoding': 'base64'}
+			cy.get('div[id^="fileUploadWizard"] input[type=file]').attachFile(
+				{fileContent, 'filePath': 'article.pdf', 'mimeType': 'application/pdf', 'encoding': 'base64'}
 			);
 		});
 		cy.get('button').contains('Continue').click();
