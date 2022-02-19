@@ -17,6 +17,9 @@ use APP\submission\SubmissionMetadataFormImplementation;
 use APP\publication\Publication;
 use APP\facades\Repo;
 use PKP\form\Form;
+use PKP\facades\Locale;
+use PKP\linkAction\LinkAction;
+use PKP\linkAction\request\AjaxModal;
 
 class QuickSubmitForm extends Form {
 	/** @var Request */
@@ -45,7 +48,7 @@ class QuickSubmitForm extends Form {
 		$this->_metadataFormImplem = new SubmissionMetadataFormImplementation($this);
 
 		$locale = $request->getUserVar('locale');
-		if ($locale && ($locale != AppLocale::getLocale())) {
+		if ($locale && ($locale != Locale::getLocale())) {
 			$this->setDefaultFormLocale($locale);
 		}
 
@@ -110,10 +113,8 @@ class QuickSubmitForm extends Form {
 		}
 
 		// Cover image delete link action
-		$locale = AppLocale::getLocale();
+		$locale = Locale::getLocale();
 
-		import('lib.pkp.classes.linkAction.LinkAction');
-		import('lib.pkp.classes.linkAction.request.AjaxModal');
 		$router = $this->_request->getRouter();
 		$templateMgr->assign('openCoverImageLinkAction', new LinkAction(
 			'uploadFile',

@@ -13,21 +13,12 @@
  * @brief Quick Submit one-page submission plugin
  */
 
-
-import('lib.pkp.classes.plugins.ImportExportPlugin');
-
-class QuickSubmitPlugin extends ImportExportPlugin {
+class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 
 	/**
 	 * @copydoc Plugin::register()
 	 */
 	public function register($category, $path, $mainContextId = NULL) {
-		AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON,
-			LOCALE_COMPONENT_APP_SUBMISSION,
-			LOCALE_COMPONENT_APP_AUTHOR,
-			LOCALE_COMPONENT_APP_EDITOR,
-			LOCALE_COMPONENT_PKP_SUBMISSION);
-
 		$success = parent::register($category, $path, $mainContextId);
 		$this->addLocaleData();
 

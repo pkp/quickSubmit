@@ -13,7 +13,12 @@
  * @brief Form for upload an image.
  */
 
-import('lib.pkp.classes.form.Form');
+use PKP\form\Form;
+use PKP\facades\Locale;
+use PKP\linkAction\LinkAction;
+use PKP\linkAction\Request\RemoteActionConfirmationModal;
+use PKP\file\PublicFileManager;
+use PKP\file\TemporaryFileManager;
 
 class UploadImageForm extends Form {
 	/** string Setting key that will be associated with the uploaded file. */
@@ -75,12 +80,10 @@ class UploadImageForm extends Form {
 		$templateMgr = TemplateManager::getManager($this->request);
 		$templateMgr->assign('submissionId', $this->submissionId);
 
-		$locale = AppLocale::getLocale();
+		$locale = Locale::getLocale();
 		$coverImage = $this->submission->getCoverImage($locale);
 
 		if ($coverImage) {
-			import('lib.pkp.classes.linkAction.LinkAction');
-			import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
 			$router = $this->request->getRouter();
 			$deleteCoverImageLinkAction = new LinkAction(
 				'deleteCoverImage',
@@ -123,7 +126,7 @@ class UploadImageForm extends Form {
 		$file = $request->getUserVar('coverImage');
 
 		// Remove cover image and alt text from article settings
-		$locale = AppLocale::getLocale();
+		$locale = Locale::getLocale();
 		$this->publication->setData('coverImage', []);
 		$publicationDao->updateObject($this->publication);
 
@@ -146,10 +149,9 @@ class UploadImageForm extends Form {
 		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 
 		$temporaryFile = $this->fetchTemporaryFile($request);
-		$locale = AppLocale::getLocale();
+		$locale = Locale::getLocale();
 		$coverImage = $this->publication->getData('coverImage');
 
-		import('classes.file.PublicFileManager');
 		$publicFileManager = new PublicFileManager();
 
 		if (is_a($temporaryFile, 'TemporaryFile')) {
@@ -158,7 +160,7 @@ class UploadImageForm extends Form {
 			if (!$extension) {
 				return false;
 			}
-			$locale = AppLocale::getLocale();
+			$locale = Locale::getLocale();
 
 			$newFileName = 'article_' . $this->submissionId . '_cover_' . $locale . $publicFileManager->getImageExtension($temporaryFile->getFileType());
 
@@ -247,7 +249,6 @@ class UploadImageForm extends Form {
 	function removeTemporaryFile($request) {
 		$user = $request->getUser();
 
-		import('lib.pkp.classes.file.TemporaryFileManager');
 		$temporaryFileManager = new TemporaryFileManager();
 		$temporaryFileManager->deleteById($this->getData('temporaryFileId'), $user->getId());
 	}
@@ -259,7 +260,6 @@ class UploadImageForm extends Form {
 	function uploadFile($request) {
 		$user = $request->getUser();
 
-		import('lib.pkp.classes.file.TemporaryFileManager');
 		$temporaryFileManager = new TemporaryFileManager();
 		$temporaryFile = $temporaryFileManager->handleUpload('uploadedFile', $user->getId());
 
