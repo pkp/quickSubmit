@@ -20,6 +20,7 @@ use PKP\form\Form;
 use PKP\facades\Locale;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
+use PKP\core\PKPString;
 
 class QuickSubmitForm extends Form {
 	/** @var Request */
@@ -413,7 +414,7 @@ class QuickSubmitForm extends Form {
 		);
 		foreach ($issues as $issue) {
 			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
-			$issuesPublicationDates[$issue->getId()] = strftime(Config::getVar('general', 'date_format_short'), strtotime(Core::getCurrentDate()));
+			$issuesPublicationDates[$issue->getId()] = date(PKPString::convertStrftimeFormat(Config::getVar('general', 'date_format_short')), strtotime(Core::getCurrentDate()));
 		}
 		$issueOptions[-2] = '------    ' . __('editor.issues.currentIssue') . '    ------';
 		$issues = array_values(Repo::issue()->getMany(
@@ -423,13 +424,13 @@ class QuickSubmitForm extends Form {
 		)->toArray());
 		if (isset($issues[0]) && $issues[0]->getId() == $journal->getData('currentIssueId')) {
 			$issueOptions[$issues[0]->getId()] = $issues[0]->getIssueIdentification();
-			$issuesPublicationDates[$issues[0]->getId()] = strftime(Config::getVar('general', 'date_format_short'), strtotime($issues[0]->getDatePublished()));
+			$issuesPublicationDates[$issues[0]->getId()] = date(PKPString::convertStrftimeFormat(Config::getVar('general', 'date_format_short')), strtotime($issues[0]->getDatePublished()));
 			array_shift($issues);
 		}
 		$issueOptions[-3] = '------    ' . __('editor.issues.backIssues') . '    ------';
 		foreach ($issues as $issue) {
 			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
-			$issuesPublicationDates[$issue->getId()] = strftime(Config::getVar('general', 'date_format_short'), strtotime($issues[0]->getDatePublished()));
+			$issuesPublicationDates[$issue->getId()] = date(PKPString::convertStrftimeFormat(Config::getVar('general', 'date_format_short')), strtotime($issues[0]->getDatePublished()));
 		}
 
 		$templateMgr = TemplateManager::getManager($this->_request);

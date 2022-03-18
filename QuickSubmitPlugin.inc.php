@@ -50,7 +50,7 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 * @copydoc ImportExportPlugin::display()
 	 */
 	public function display($args, $request) {
-		$templateMgr = TemplateManager::getManager();
+		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'smartyPluginUrl'));
 
 		switch (array_shift($args)) {
