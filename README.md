@@ -3,7 +3,7 @@
 - OJS QuickSubmit Plugin
 - Version: (see version.xml)
 
-[![Build Status](https://travis-ci.org/pkp/quickSubmit.svg?branch=stable-3_3_0)](https://travis-ci.org/pkp/quickSubmit)
+[![Build Status](https://travis-ci.org/pkp/quickSubmit.svg?branch=main)](https://travis-ci.org/pkp/quickSubmit)
 
 ## About
 
