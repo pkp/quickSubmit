@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2021-03-12 09:54+0000\n"
+"Last-Translator: Real Academia Galega <reacagal@gmail.com>\n"
+"Language-Team: Galician <http://translate.pkp.sfu.ca/projects/plugins/"
+"quickSubmit/gl_ES/>\n"
+"Language: gl_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Débese seleccionar un número"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Ir a Envíos"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Inédito, non publicado"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Publicado"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "O envío foi cancelado."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Envío cancelado"
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "Volver ao complemento QuickSubmit."
+
+msgid "plugins.importexport.quickSubmit.successDescription"
+msgstr "A creación do artigo tivo éxito."
+
+msgid "plugins.importexport.quickSubmit.success"
+msgstr "Artigo engadido"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr ""
+"Este complemento permítelle engadir rápidamente envíos completos á fase de "
+"produción ou directamente a un número."
+
+msgid "plugins.importexport.quickSubmit.description"
+msgstr "Complemento para o envío nun paso"
+
+msgid "plugins.importexport.quickSubmit.displayName"
+msgstr "Complemento QuickSubmit"

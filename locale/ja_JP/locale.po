@@ -1,15 +1,19 @@
+# TAKASHI IMAGIRE <imagire@gmail.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2020-01-17T18:13:58+00:00\n"
+"PO-Revision-Date: 2021-12-11 17:15+0000\n"
+"Last-Translator: TAKASHI IMAGIRE <imagire@gmail.com>\n"
+"Language-Team: Japanese <http://translate.pkp.sfu.ca/projects/plugins/"
+"quickSubmit/ja_JP/>\n"
+"Language: ja_JP\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-01-17T18:13:58+00:00\n"
-"PO-Revision-Date: 2020-01-17T18:13:58+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "plugins.importexport.quickSubmit.displayName"
 msgstr "クイック投稿プラグイン"
@@ -25,3 +29,24 @@ msgstr "論文の作成が成功しました。"
 
 msgid "plugins.importexport.quickSubmit.successReturn"
 msgstr "クイック投稿プラグインに戻る。"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "巻号を選択する必要があります"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "投稿へ行く"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "未公開"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "公開済み"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "投稿はキャンセルされました。"
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "キャンセルされた投稿"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr "このプラグインを使うと、完全な投稿作品を制作段階に素早く追加したり、巻号に直接追加できます。"

@@ -1,0 +1,51 @@
+# Cyril Kamburov <cc@intermedia.bg>, 2022.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2022-04-01 09:51+0000\n"
+"Last-Translator: Cyril Kamburov <cc@intermedia.bg>\n"
+"Language-Team: Bulgarian <http://translate.pkp.sfu.ca/projects/plugins/"
+"quickSubmit/bg_BG/>\n"
+"Language: bg_BG\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
+
+msgid "plugins.importexport.quickSubmit.selectIssue"
+msgstr "Трябва да бъде избран брой"
+
+msgid "plugins.importexport.quickSubmit.goToSubmission"
+msgstr "Към таблото за подадени материали"
+
+msgid "plugins.importexport.quickSubmit.unpublished"
+msgstr "Непубликувана"
+
+msgid "plugins.importexport.quickSubmit.published"
+msgstr "Публикувана"
+
+msgid "plugins.importexport.quickSubmit.cancelDescription"
+msgstr "Подаването на материали беше отменено."
+
+msgid "plugins.importexport.quickSubmit.cancel"
+msgstr "Подаването на материали е отменено"
+
+msgid "plugins.importexport.quickSubmit.successReturn"
+msgstr "Обратно към QuickSubmit."
+
+msgid "plugins.importexport.quickSubmit.successDescription"
+msgstr "Създаването на статия беше успешно."
+
+msgid "plugins.importexport.quickSubmit.success"
+msgstr "Статията е добавена"
+
+msgid "plugins.importexport.quickSubmit.descriptionLong"
+msgstr ""
+"Тази добавка (плъгин) ви позволява бързо да добавите подаден материал към "
+"производствения етап или директно към брои на списанието."
+
+msgid "plugins.importexport.quickSubmit.description"
+msgstr "Добавка (плъгин) за подаване на материали в една стъпка"
+
+msgid "plugins.importexport.quickSubmit.displayName"
+msgstr "Добавка (плъгин) QuickSubmit"
