@@ -117,13 +117,14 @@ class QuickSubmitForm extends Form {
 		$locale = Locale::getLocale();
 
 		$router = $this->_request->getRouter();
+		$publication = $this->_submission->getCurrentPublication();
 		$templateMgr->assign('openCoverImageLinkAction', new LinkAction(
 			'uploadFile',
 			new AjaxModal(
 				$router->url($this->_request, null, null, 'importexport', array('plugin', 'QuickSubmitPlugin', 'uploadCoverImage'), array(
-					'coverImage' => $this->_submission->getCoverImage($locale),
+					'coverImage' => $publication->getData('coverImage', $locale),
 					'submissionId' => $this->_submission->getId(),
-					'publicationId' => $this->_submission->getCurrentPublication()->getId(),
+					'publicationId' => $publication->getId(),
 					// This action can be performed during any stage,
 					// but we have to provide a stage id to make calls
 					// to IssueEntryTabHandler
@@ -153,7 +154,7 @@ class QuickSubmitForm extends Form {
 			'issueOptions' => $this->getIssueOptions($this->_context),
 			'submission' => $this->_submission,
 			'locale' => $this->getDefaultFormLocale(),
-			'publicationId' => $this->_submission->getCurrentPublication()->getId(),
+			'publicationId' => $publication->getId(),
 		));
 
 		$sectionDao = DAORegistry::getDAO('SectionDAO');
@@ -313,10 +314,12 @@ class QuickSubmitForm extends Form {
 		// Execute submission metadata related operations.
 		$this->_metadataFormImplem->execute($this->_submission, $this->_request);
 
+		$publication = $this->_submission->getCurrentPublication();
+
 		// Copy GalleyFiles to Submission Files
 		// Get Galley Files by SubmissionId
 		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
-		$galleysResponse = $galleyDao->getByPublicationId($this->_submission->getCurrentPublication()->getId());
+		$galleysResponse = $galleyDao->getByPublicationId($publication->getId());
 
 		if (!is_null($galleysResponse)) {
 			$galleys = $galleysResponse->toAssociativeArray();
@@ -343,7 +346,6 @@ class QuickSubmitForm extends Form {
 		Repo::submission()->edit($this->_submission, []);
 		$this->_submission = Repo::submission()->get($this->_submission->getId());
 
-		$publication = $this->_submission->getCurrentPublication();
 		if ($publication->getData('sectionId') !== (int) $this->getData('sectionId')) {
 			$publication = Repo::publication()->edit($publication, ['sectionId' => (int) $this->getData('sectionId')], $this->_request);
 		}
@@ -367,8 +369,8 @@ class QuickSubmitForm extends Form {
 			if (count($otherSubmissionsInSection)) {
 				$maxSequence = 0;
 				foreach ($otherSubmissionsInSection as $submission) {
-					if ($submission->getCurrentPublication()->getData('seq')) {
-						$maxSequence = max($maxSequence, $submission->getCurrentPublication()->getData('seq'));
+					if ($publication->getData('seq')) {
+						$maxSequence = max($maxSequence, $publication->getData('seq'));
 					}
 				}
 				$publication->setData('seq', $maxSequence + 1);

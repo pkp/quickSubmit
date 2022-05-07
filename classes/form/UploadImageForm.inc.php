@@ -81,7 +81,7 @@ class UploadImageForm extends Form {
 		$templateMgr->assign('submissionId', $this->submissionId);
 
 		$locale = Locale::getLocale();
-		$coverImage = $this->submission->getCoverImage($locale);
+		$coverImage = $this->publication->getData('coverImage', $locale);
 
 		if ($coverImage) {
 			$router = $this->request->getRouter();
@@ -104,7 +104,7 @@ class UploadImageForm extends Form {
 		}
 
 		$this->setData('coverImage', $coverImage);
-		$this->setData('imageAltText', $this->submission->getCoverImageAltText($locale));
+		$this->setData('imageAltText', $coverImage['altText'] ?? '');
 	}
 
 	/**
