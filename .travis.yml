@@ -1,9 +1,12 @@
 # @file
 # .travis.yml - PKP Plugins Integration
 
+dist: bionic
 language: php
 
 addons:
+  chrome: beta
+  postgresql: "9.5"
   apt:
     update: true
 
@@ -35,5 +38,6 @@ script:
   - $(npm bin)/cypress run --config integrationFolder=plugins/importexport/quickSubmit/cypress/tests
 
 after_failure:
+  - cat error.log
   - sudo apt-get install sharutils
   - tar cz cypress/screenshots | uuencode /dev/stdout
