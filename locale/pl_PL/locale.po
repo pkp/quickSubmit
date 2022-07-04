@@ -1,12 +1,13 @@
+# Piotr Pielach <ppielach@gmail.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-30T18:03:13+00:00\n"
-"PO-Revision-Date: 2020-05-04 08:38+0000\n"
-"Last-Translator: Dorota Siwecka <dorota.k.siwecka@gmail.com>\n"
+"PO-Revision-Date: 2022-07-05 19:41+0000\n"
+"Last-Translator: Piotr Pielach <ppielach@gmail.com>\n"
 "Language-Team: Polish <http://translate.pkp.sfu.ca/projects/plugins/"
-"quickSubmit/pl/>\n"
+"quickSubmit/pl_PL/>\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,19 +23,21 @@ msgid "plugins.importexport.quickSubmit.description"
 msgstr "Wtyczka do szybkiego przesyłania tekstu"
 
 msgid "plugins.importexport.quickSubmit.descriptionLong"
-msgstr "Wtyczka pozwala na szybkie i kompletne dodanie tekstu na etap realizacji lub bezpośrednio do numeru czasopisma."
+msgstr ""
+"Wtyczka pozwala na szybkie dodanie kompletnego zgłoszenia do etapu "
+"realizacji lub bezpośrednio do numeru czasopisma."
 
 msgid "plugins.importexport.quickSubmit.success"
-msgstr "Artykuł dodano"
+msgstr "Dodano artykuł"
 
 msgid "plugins.importexport.quickSubmit.successDescription"
-msgstr "Utworzenie artykułu zakończone sukcesem."
+msgstr "Utworzenie artykułu zakończyło się sukcesem."
 
 msgid "plugins.importexport.quickSubmit.successReturn"
 msgstr "Powrót do wtyczki szybkiego przesyłania."
 
 msgid "plugins.importexport.quickSubmit.cancel"
-msgstr "Zgłoszenie anulowane"
+msgstr "Anulowano zgłoszenie"
 
 msgid "plugins.importexport.quickSubmit.cancelDescription"
 msgstr "Zgłoszenie zostało anulowane."
