@@ -13,6 +13,7 @@
  * @brief Form for QuickSubmit one-page submission plugin
  */
 
+use APP\core\Application;
 use APP\submission\SubmissionMetadataFormImplementation;
 use APP\publication\Publication;
 use APP\facades\Repo;
@@ -318,12 +319,10 @@ class QuickSubmitForm extends Form {
 
 		// Copy GalleyFiles to Submission Files
 		// Get Galley Files by SubmissionId
-		$galleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
-		$galleysResponse = $galleyDao->getByPublicationId($publication->getId());
+		$galleyDao = Application::getRepresentationDAO();
+		$galleys = $galleyDao->getByPublicationId($publication->getId());
 
-		if (!is_null($galleysResponse)) {
-			$galleys = $galleysResponse->toAssociativeArray();
-
+		if (!is_null($galleys)) {
 			foreach($galleys as $galley) {
 				$file = $galley->getFile();
 				if ($file) {
