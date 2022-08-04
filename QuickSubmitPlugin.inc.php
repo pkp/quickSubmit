@@ -13,6 +13,8 @@
  * @brief Quick Submit one-page submission plugin
  */
 
+use PKP\core\JSONMessage;
+
 class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 
 	/**
