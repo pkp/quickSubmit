@@ -77,6 +77,7 @@ describe('Quick Submit plugin tests', function() {
 		cy.get('a:contains("QuickSubmit Plugin")').click();
 		cy.get('select[id="sectionId"]').select('Articles');
 		cy.waitJQuery(); // Wait for form resubmission hack on section change.
+		cy.wait(2000); // FIXME: Detached element delay
 
 		cy.get('input[id^="title-en_US-"]').type('QuickSubmit Unpublished Test Submission', {delay: 0});
 		cy.get('textarea[id^="abstract-en_US-"]').then(node => {
