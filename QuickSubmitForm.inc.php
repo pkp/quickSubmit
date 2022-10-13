@@ -144,10 +144,12 @@ class QuickSubmitForm extends Form {
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
 		// Get published Issues
-		$issues = Repo::issue()->getMany(
-			Repo::issue()->getCollector()->filterByContextIds([$this->_context->getId()])
+		$issues = Repo::issue()->getCollector()
+			->filterByContextIds([$this->_context->getId()])
 			->orderBy(\APP\issue\Collector::ORDERBY_SHELF)
-		)->toArray();
+			->getMany()
+			->toArray();
+
 		$templateMgr->assign('hasIssues', count($issues) > 0);
 
 		// Get Issues
@@ -243,18 +245,16 @@ class QuickSubmitForm extends Form {
 			// Add the user manager group (first that is found) to the stage_assignment for that submission
 			$user = $this->_request->getUser();
 
-			$userGroupAssignmentDao = DAORegistry::getDAO('UserGroupAssignmentDAO');
-			$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
+			$managerUserGroups = Repo::userGroup()->getCollector()
+				->filterByUserIds([$user->getId()])
+				->filterByContextIds([$this->_context->getId()])
+				->filterByRoleIds([Role::ROLE_ID_MANAGER])
+				->getMany();
 
-			$userGroupId = null;
-			$managerUserGroupAssignments = $userGroupAssignmentDao->getByUserId($user->getId(), $this->_context->getId(), ROLE_ID_MANAGER);
-			if($managerUserGroupAssignments) {
-				while($managerUserGroupAssignment = $managerUserGroupAssignments->next()) {
-					$managerUserGroup = $userGroupDao->getById($managerUserGroupAssignment->getUserGroupId());
-					$userGroupId = $managerUserGroup->getId();
-					break;
-				}
-			}
+			// $userGroupId is being used for $stageAssignmentDao->build
+			// This build function needs the userGroupId
+			// So here the first function should fail if no manager user group is found. 
+			$userGroupId = $managerUserGroups->firstOrFail()->getId();
 
 			// Pre-fill the copyright information fields from setup (#7236)
 			$this->_data['licenseUrl'] = $this->_context->getData('licenseUrl');
@@ -408,21 +408,26 @@ class QuickSubmitForm extends Form {
 		$journalId = $journal->getId();
 
 		$issueOptions[-1] =  '------    ' . __('editor.issues.futureIssues') . '    ------';
-		$issues = Repo::issue()->getMany(
-			Repo::issue()->getCollector()->filterByContextIds([$journalId])
-				->filterByPublished(false)
-				->orderBy(\APP\issue\Collector::ORDERBY_SHELF)
-		);
+		$issues = Repo::issue()->getCollector()
+			->filterByContextIds([$journalId])
+			->filterByPublished(false)
+			->orderBy(\APP\issue\Collector::ORDERBY_SHELF)
+			->getMany();
+
 		foreach ($issues as $issue) {
 			$issueOptions[$issue->getId()] = $issue->getIssueIdentification();
 			$issuesPublicationDates[$issue->getId()] = date(PKPString::convertStrftimeFormat(Config::getVar('general', 'date_format_short')), strtotime(Core::getCurrentDate()));
 		}
 		$issueOptions[-2] = '------    ' . __('editor.issues.currentIssue') . '    ------';
-		$issues = array_values(Repo::issue()->getMany(
-			Repo::issue()->getCollector()->filterByContextIds([$journalId])
-				->filterByPublished(true)
-				->orderBy(\APP\issue\Collector::ORDERBY_SHELF)
-		)->toArray());
+		$issues = array_values(Repo::issue()
+			->getCollector()
+			->filterByContextIds([$journalId])
+			->filterByPublished(true)
+			->orderBy(\APP\issue\Collector::ORDERBY_SHELF)
+			->getMany()
+			->toArray()
+		);
+
 		if (isset($issues[0]) && $issues[0]->getId() == $journal->getData('currentIssueId')) {
 			$issueOptions[$issues[0]->getId()] = $issues[0]->getIssueIdentification();
 			$issuesPublicationDates[$issues[0]->getId()] = date(PKPString::convertStrftimeFormat(Config::getVar('general', 'date_format_short')), strtotime($issues[0]->getDatePublished()));
