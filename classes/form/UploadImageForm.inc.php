@@ -140,9 +140,10 @@ class UploadImageForm extends Form {
 
 	/**
 	 * Save file image to Submission
-	 * @param $request Request.
+	 * @param mixed $functionArgs,... Arguments from the caller to be passed to the hook consumer
 	 */
-	function execute($request) {
+	function execute(...$functionArgs) {
+		$request = Application::get()->getRequest();
 		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 
 		$temporaryFile = $this->fetchTemporaryFile($request);
