@@ -359,12 +359,11 @@ class QuickSubmitForm extends Form {
 			$publication->setData('issueId', (int) $this->getData('issueId'));
 
 			// If other articles in this issue have a custom sequence, put this at the end
-			$otherSubmissionsInSection = Repo::submission()->getMany(
-				Repo::submission()->getCollector()
+			$otherSubmissionsInSection = Repo::submission()->getCollector()
 				->filterByContextIds([$this->_request->getContext()->getId()])
 				->filterByIssueIds([$publication->getData('issueId')])
 				->filterBySectionIds([$publication->getData('sectionId')])
-			)->toArray();
+				->getMany()->toArray();
 			if (count($otherSubmissionsInSection)) {
 				$maxSequence = 0;
 				foreach ($otherSubmissionsInSection as $submission) {
