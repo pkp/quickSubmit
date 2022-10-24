@@ -108,6 +108,7 @@ class UploadImageForm extends Form {
 
 		$this->setData('coverImage', $coverImage);
 		$this->setData('imageAltText', $coverImage['altText'] ?? '');
+		$this->setData('coverImageName', $coverImage['uploadName'] ?? '');
 	}
 
 	/**
@@ -130,7 +131,7 @@ class UploadImageForm extends Form {
 		// Remove cover image and alt text from article settings
 		$locale = Locale::getLocale();
 		$this->publication->setData('coverImage', []);
-		Repo::publication()->edit($this->publication);
+		Repo::publication()->edit($this->publication, []);
 
 		// Remove the file
 		$publicFileManager = new PublicFileManager();
@@ -166,13 +167,14 @@ class UploadImageForm extends Form {
 
 			$newFileName = 'article_' . $this->submissionId . '_cover_' . $locale . $fileManager->getImageExtension($temporaryFile->getFileType());
 
+			$publicFileManager = new PublicFileManager();
 			if ($publicFileManager->copyContextFile($this->context->getId(), $temporaryFile->getFilePath(), $newFileName)) {
 
 				$this->publication->setData('coverImage', [
 					'altText' => $this->getData('imageAltText'),
 					'uploadName' => $newFileName,
 				], $locale);
-				Repo::publication()->edit($this->publication);
+				Repo::publication()->edit($this->publication, []);
 
 				// Clean up the temporary file.
 				$this->removeTemporaryFile($this->request);
@@ -183,7 +185,7 @@ class UploadImageForm extends Form {
 			$coverImage = $this->publication->getData('coverImage');
 			$coverImage[$locale]['altText'] = $this->getData('imageAltText');
 			$this->publication->setData('coverImage', $coverImage);
-			Repo::publication()->edit($this->publication);
+			Repo::publication()->edit($this->publication, []);
 			return DAO::getDataChangedEvent();
 		}
 		return new JSONMessage(false, __('common.uploadFailed'));
