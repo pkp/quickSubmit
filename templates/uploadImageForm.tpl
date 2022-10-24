@@ -54,7 +54,7 @@
 			{if $coverImage != ''}
 				<div class="pkp_form_file_view pkp_form_image_view">
 					<div class="img">
-						<img src="{$publicFilesDir}/{$coverImage|escape:"url"}{'?'|uniqid}" {if $coverImageAlt !== ''} alt="{$coverImageAlt|escape}"{/if}>
+						<img src="{$publicFilesDir}/{$coverImageName|escape:"url"}{'?'|uniqid}" {if $imageAltText !== ''} alt="{$imageAltText|escape}"{/if}>
 					</div>
 
 					<div class="data">
