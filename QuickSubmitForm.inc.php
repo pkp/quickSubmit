@@ -36,6 +36,8 @@ class QuickSubmitForm extends Form {
 	/** @var SubmissionMetadataFormImplementation */
 	protected $_metadataFormImplem;
 
+	private QuickSubmitPlugin $_plugin;
+
 	/**
 	 * Constructor
 	 * @param $plugin object
@@ -43,6 +45,8 @@ class QuickSubmitForm extends Form {
 	 */
 	function __construct($plugin, $request) {
 		parent::__construct($plugin->getTemplateResource('index.tpl'));
+
+		$this->_plugin = $plugin;
 
 		$this->_request = $request;
 		$this->_context = $request->getContext();
@@ -236,7 +240,7 @@ class QuickSubmitForm extends Form {
 			$publication->setData('status', STATUS_QUEUED);
 			$publication->setData('version', 1);
 
-			Repo::submission()->add($this->_submission, $publication);
+			Repo::submission()->add($this->_submission, $publication, $this->_context, $this->_plugin);
 			$this->_submission = Repo::submission()->get($this->_submission->getId());
 			$this->setData('submissionId', $this->_submission->getId());
 

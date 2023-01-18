@@ -14,8 +14,10 @@
  */
 
 use PKP\core\JSONMessage;
+use PKP\log\contracts\iSubmissionIntroducer;
+use PKP\log\contracts\SubmissionIntroducerEventEntry;
 
-class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
+class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin implements iSubmissionIntroducer {
 
 	/**
 	 * @copydoc Plugin::register()
@@ -234,6 +236,13 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 */
 	public function executeCLI($scriptName, &$args) {
 		fatalError('Not implemented');
+	}
+
+	/**
+	 * @return SubmissionIntroducerEventEntry
+	 */
+	public function getSubmissionIntroducerEventEntry(): SubmissionIntroducerEventEntry {
+		return new SubmissionIntroducerEventEntry($this);
 	}
 }
 
