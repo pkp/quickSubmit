@@ -13,6 +13,7 @@
 
 namespace APP\plugins\importexport\quickSubmit;
 
+use APP\plugins\importexport\quickSubmit\classes\log\QuickSubmitSubmissionIntroducerEventEntry;
 use PKP\core\Core;
 use PKP\form\Form;
 use APP\facades\Repo;
@@ -40,6 +41,8 @@ class QuickSubmitForm extends Form {
 	protected Journal $_context;
 	protected classes\form\SubmissionMetadataFormImplementation $_metadataFormImplem;
 
+	protected $_plugin;
+
 	/**
 	 * Constructor
 	 * @param $plugin object
@@ -50,6 +53,7 @@ class QuickSubmitForm extends Form {
 
 		$this->_request = $request;
 		$this->_context = $request->getContext();
+		$this->_plugin = $plugin;
 
 		$this->_metadataFormImplem = new classes\form\SubmissionMetadataFormImplementation($this);
 
@@ -274,7 +278,8 @@ class QuickSubmitForm extends Form {
 			$publication->setData('status', PKPSubmission::STATUS_QUEUED);
 			$publication->setData('version', 1);
 
-			Repo::submission()->add($this->_submission, $publication, $this->_context);
+			$submissionIntroducerLogEntry = new QuickSubmitSubmissionIntroducerEventEntry($this->_plugin);
+			Repo::submission()->add($this->_submission, $publication, $submissionIntroducerLogEntry, $this->_context);
 			$this->_submission = Repo::submission()->get($this->_submission->getId());
 			$this->setData('submissionId', $this->_submission->getId());
 
