@@ -14,6 +14,9 @@
  */
 
 use PKP\core\JSONMessage;
+use APP\template\TemplateManager;
+use PKP\notification\PKPNotification;
+use APP\notification\NotificationManager;
 
 class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 
@@ -101,7 +104,7 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 		$notificationContent = __('notification.removedSubmission');
 		$currentUser = $request->getUser();
 		$notificationMgr = new NotificationManager();
-		$notificationMgr->createTrivialNotification($currentUser->getId(), NOTIFICATION_TYPE_SUCCESS, array('contents' => $notificationContent));
+		$notificationMgr->createTrivialNotification($currentUser->getId(), PKPNotification::NOTIFICATION_TYPE_SUCCESS, array('contents' => $notificationContent));
 
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign([
