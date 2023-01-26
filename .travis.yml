@@ -6,9 +6,13 @@ os: linux
 language: php
 
 addons:
+  chrome: beta
   postgresql: "9.5"
   apt:
     update: true
+    packages:
+      - libvulkan1
+      - libu2f-udev
 
 sudo: required
 
@@ -34,8 +38,8 @@ install:
 
 script:
   # Install OJS/OMP & prep data environment
-  - $(npm bin)/cypress run --spec "cypress/tests/data/10-Installation.spec.js,cypress/tests/data/20-CreateContext.spec.js,cypress/tests/data/40-CreateUsers.spec.js,cypress/tests/data/50-CreateIssues.spec.js,cypress/tests/data/50-CreateSections.spec.js"
-  - $(npm bin)/cypress run --config integrationFolder=plugins/importexport/quickSubmit/cypress/tests
+  - $(npm bin)/cypress run --spec "cypress/tests/data/10-ApplicationSetup/10-Installation.cy.js,cypress/tests/data/10-ApplicationSetup/20-CreateContext.cy.js,cypress/tests/data/10-ApplicationSetup/40-CreateUsers.cy.js,cypress/tests/data/10-ApplicationSetup/50-CreateIssues.cy.js,cypress/tests/data/10-ApplicationSetup/50-CreateSections.cy.js"
+  - $(npm bin)/cypress run --config '{"specPattern":["plugins/importexport/quickSubmit/cypress/tests/functional/*.cy.js"]}'
 
 after_failure:
   - cat error.log
