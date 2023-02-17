@@ -17,19 +17,19 @@ describe('Quick Submit plugin tests', function() {
 		cy.waitJQuery(); // Wait for form resubmission hack on section change.
 		cy.wait(2000); // FIXME: Detached element delay
 
-		cy.get('input[id^="title-en_US-"]').type('QuickSubmit Published Test Submission', {delay: 0});
-		cy.get('textarea[id^="abstract-en_US-"]').then(node => {
+		cy.get('input[id^="title-en-"]').type('QuickSubmit Published Test Submission', {delay: 0});
+		cy.get('textarea[id^="abstract-en-"]').then(node => {
 			cy.setTinyMceContent(node.attr('id'), 'This is a published QuickSubmit test submission.');
 		});
 
 		// Add an author
 		cy.get('a[id^="component-grid-users-author-authorgrid-addAuthor-button-"]').click();
 		cy.wait(1000); // Form init delay
-		cy.get('input[id^="givenName-en_US-"]').type('Quincy', {delay: 0});
-		cy.get('input[id^="familyName-en_US-"]').type('Submitter', {delay: 0});
+		cy.get('input[id^="givenName-en-"]').type('Quincy', {delay: 0});
+		cy.get('input[id^="familyName-en-"]').type('Submitter', {delay: 0});
 		cy.get('select[id="country"]').select('Canada');
 		cy.get('input[id^=email-]').type('qsubmitter@mailinator.com', {delay: 0});
-		cy.get('input[id^="affiliation-en_US-"]').type('Queens University', {delay: 0});
+		cy.get('input[id^="affiliation-en-"]').type('Queens University', {delay: 0});
 		cy.get('label:contains("Author")').click();
 		cy.get('form[id="editAuthor"] button:contains("Save")').click();
 		cy.get('div:contains("Author added.")');
@@ -80,19 +80,19 @@ describe('Quick Submit plugin tests', function() {
 		cy.waitJQuery(); // Wait for form resubmission hack on section change.
 		cy.wait(2000); // FIXME: Detached element delay
 
-		cy.get('input[id^="title-en_US-"]').type('QuickSubmit Unpublished Test Submission', {delay: 0});
-		cy.get('textarea[id^="abstract-en_US-"]').then(node => {
+		cy.get('input[id^="title-en-"]').type('QuickSubmit Unpublished Test Submission', {delay: 0});
+		cy.get('textarea[id^="abstract-en-"]').then(node => {
 			cy.setTinyMceContent(node.attr('id'), 'This is an unpublished QuickSubmit test submission.');
 		});
 
 		// Add an author
 		cy.get('a[id^="component-grid-users-author-authorgrid-addAuthor-button-"]').click();
 		cy.wait(1000); // Form init delay
-		cy.get('input[id^="givenName-en_US-"]').type('Quincy', {delay: 0});
-		cy.get('input[id^="familyName-en_US-"]').type('Submitter', {delay: 0});
+		cy.get('input[id^="givenName-en-"]').type('Quincy', {delay: 0});
+		cy.get('input[id^="familyName-en-"]').type('Submitter', {delay: 0});
 		cy.get('select[id="country"]').select('Canada');
 		cy.get('input[id^=email-]').type('qsubmitter@mailinator.com', {delay: 0});
-		cy.get('input[id^="affiliation-en_US-"]').type('Queens University', {delay: 0});
+		cy.get('input[id^="affiliation-en-"]').type('Queens University', {delay: 0});
 		cy.get('label:contains("Author")').click();
 		cy.get('form[id="editAuthor"] button:contains("Save")').click();
 		cy.get('div:contains("Author added.")');
