@@ -13,7 +13,6 @@
  * @brief Form for QuickSubmit one-page submission plugin
  */
 
-use Exception;
 use PKP\core\Core;
 use PKP\form\Form;
 use APP\facades\Repo;
@@ -68,7 +67,7 @@ class QuickSubmitForm extends Form {
 		if ($submissionId = $request->getUserVar('submissionId')) {
 			$this->_submission = Repo::submission()->get($submissionId);
 			if ($this->_submission->getContextId() != $this->_context->getId()) {
-				throw new Exception('Submission not in context!');
+				throw new \Exception('Submission not in context!');
 			}
 			
 			$this->_submission->setLocale($this->getDefaultFormLocale());
@@ -335,7 +334,7 @@ class QuickSubmitForm extends Form {
 		$submission = Repo::submission()->get((int) $this->getData('submissionId')); /** @var Submission $submission */
 
 		if ($this->_submission->getContextId() != $this->_context->getId()) {
-			throw new Exception('Submission not in context!');
+			throw new \Exception('Submission not in context!');
 		}
 
 		if ($submission) {
