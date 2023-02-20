@@ -69,7 +69,7 @@ class QuickSubmitForm extends Form {
 			if ($this->_submission->getContextId() != $this->_context->getId()) {
 				throw new \Exception('Submission not in context!');
 			}
-			
+
 			$this->_submission->setLocale($this->getDefaultFormLocale());
 			$publication = $this->_submission->getCurrentPublication();
 			$publication->setData('locale', $this->getDefaultFormLocale());
@@ -79,18 +79,18 @@ class QuickSubmitForm extends Form {
 			$this->_metadataFormImplem->addChecks($this->_submission);
 		}
 
-		$sectionDao = DAORegistry::getDAO('SectionDAO'); /** @var SectionDAO $sectionDao */
-
 		$this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
 		$this->addCheck(new \PKP\form\validation\FormValidatorCSRF($this));
+		$contextId = $this->_context->getId();
 		$this->addCheck(
 			new \PKP\form\validation\FormValidatorCustom(
-				$this, 
-				'sectionId', 
-				'required', 
-				'author.submit.form.sectionRequired', 
-				array($sectionDao, 'sectionExists'), 
-				array($this->_context->getId())
+				$this,
+				'sectionId',
+				'required',
+				'author.submit.form.sectionRequired',
+				function ($sectionId) use ($contextId) {
+					return Repo::section()->exists($sectionId, $contextId);
+				}
 			)
 		);
 
@@ -163,8 +163,17 @@ class QuickSubmitForm extends Form {
 		));
 
 		// Get section for this context
-		$sectionDao = DAORegistry::getDAO('SectionDAO'); /** @var SectionDAO $sectionDao */
-		$sectionOptions = array('0' => '') + $sectionDao->getTitlesByContextId($this->_context->getId());
+		$sectionTitles = Repo::section()
+			->getCollector()
+			->filterByContextIds([$this->_context->getId()])
+			->getMany()
+			->map(function ($section) {
+				return [
+					$section->getId() => $section->getLocalizedTitle()
+				];
+			})
+			->toArray();
+		$sectionOptions = array('0' => '') + $sectionTitles;
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
 		// Get published Issues
@@ -184,9 +193,8 @@ class QuickSubmitForm extends Form {
 			'publicationId' => $publication->getId(),
 		));
 
-		// $sectionDao = DAORegistry::getDAO('SectionDAO');
 		$sectionId = $this->getData('sectionId') ?: $this->_submission->getSectionId();
-		$section = $sectionDao->getById($sectionId, $this->_context->getId());
+		$section = Repo::section()->get($sectionId, $this->_context->getId());
 		$templateMgr->assign(array(
 			'wordCount' => $section->getAbstractWordCount(),
 			'abstractsRequired' => !$section->getAbstractsNotRequired(),
@@ -245,8 +253,16 @@ class QuickSubmitForm extends Form {
 			$this->_data['locale'] = $this->getDefaultFormLocale();
 
 			// Get Sections
-			$sectionDao = DAORegistry::getDAO('SectionDAO'); /** @var SectionDAO $sectionDao */
-			$sectionOptions = $sectionDao->getTitlesByContextId($this->_context->getId());
+			$sectionOptions = Repo::section()
+				->getCollector()
+				->filterByContextIds([$this->_context->getId()])
+				->getMany()
+				->map(function ($section) {
+					return [
+						$section->getId() => $section->getLocalizedTitle()
+					];
+				})
+				->toArray();
 
 			// Create and insert a new submission and publication
 			$this->_submission = Repo::submission()->dao->newDataObject();
@@ -281,7 +297,7 @@ class QuickSubmitForm extends Form {
 
 			// $userGroupId is being used for $stageAssignmentDao->build
 			// This build function needs the userGroupId
-			// So here the first function should fail if no manager user group is found. 
+			// So here the first function should fail if no manager user group is found.
 			$userGroupId = $managerUserGroups->firstOrFail()->getId();
 
 			// Pre-fill the copyright information fields from setup (#7236)
@@ -410,17 +426,6 @@ class QuickSubmitForm extends Form {
 
 			Repo::publication()->publish($publication);
 
-			// If this submission's issue uses custom section ordering and this is the first
-			// article published in a section, make sure we enter a custom ordering
-			// for that section to place it at the end.
-			$sectionDao = DAORegistry::getDAO('SectionDAO'); /** @var SectionDAO $sectionDao */
-			if ($sectionDao->customSectionOrderingExists($publication->getData('issueId'))) {
-				$sectionOrder = $sectionDao->getCustomSectionOrder($publication->getData('issueId'), $publication->getData('sectionId'));
-				if  ($sectionOrder === null) {
-					$sectionDao->insertCustomSectionOrder($publication->getData('issueId'), $publication->getData('sectionId'), REALLY_BIG_NUMBER);
-					$sectionDao->resequenceCustomSectionOrders($publication->getData('issueId'));
-				}
-			}
 		}
 
 		// Index article.
