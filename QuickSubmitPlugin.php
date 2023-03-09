@@ -57,6 +57,7 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	public function display($args, $request) {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'smartyPluginUrl'));
+		$templateMgr->assign('quickSubmitPlugin', $this);
 
 		switch (array_shift($args)) {
 			case 'saveSubmit':

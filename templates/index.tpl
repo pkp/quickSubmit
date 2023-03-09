@@ -59,11 +59,9 @@
 					{/fbvFormSection}
 			{/if}
 
-			{include file="submission/form/section.tpl" sectionOptions=$sectionOptions readOnly=$formParams.readOnly}
-
-			{include file="core:submission/submissionMetadataFormTitleFields.tpl"}
-			{include file="submission/submissionMetadataFormFields.tpl"}
-
+			{include file=$quickSubmitPlugin->getTemplateResource("section.tpl") sectionOptions=$sectionOptions readOnly=$formParams.readOnly}
+			{include file=$quickSubmitPlugin->getTemplateResource("submissionMetadataFormTitleFields.tpl")}
+			{include file=$quickSubmitPlugin->getTemplateResource("submissionMetadataFormFields.tpl")}
 
 			{fbvFormArea id="contributors"}
 				<!--  Contributors -->

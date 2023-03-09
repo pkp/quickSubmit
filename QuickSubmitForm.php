@@ -29,35 +29,29 @@ use APP\publication\Publication;
 use APP\template\TemplateManager;
 use PKP\submission\PKPSubmission;
 use PKP\linkAction\request\AjaxModal;
-use PKP\context\Context as PKPContext;
+use PKP\context\Context;
+use PKP\core\PKPRequest;
 use PKP\submissionFile\SubmissionFile;
-use APP\submission\SubmissionMetadataFormImplementation;
+use APP\plugins\importexport\quickSubmit\QuickSubmitPlugin;
 
 class QuickSubmitForm extends Form {
-	/** @var Request */
-	protected $_request;
-
-	/** @var Submission */
-	protected $_submission;
-
-	/** @var Journal */
-	protected $_context;
-
-	/** @var SubmissionMetadataFormImplementation */
-	protected $_metadataFormImplem;
+	protected PKPRequest $_request;
+	protected ?PKPSubmission $_submission = null;
+	protected Journal $_context;
+	protected classes\form\SubmissionMetadataFormImplementation $_metadataFormImplem;
 
 	/**
 	 * Constructor
 	 * @param $plugin object
 	 * @param $request object
 	 */
-	function __construct($plugin, $request) {
+	function __construct(QuickSubmitPlugin $plugin, PKPRequest $request) {
 		parent::__construct($plugin->getTemplateResource('index.tpl'));
 
 		$this->_request = $request;
 		$this->_context = $request->getContext();
 
-		$this->_metadataFormImplem = new SubmissionMetadataFormImplementation($this);
+		$this->_metadataFormImplem = new classes\form\SubmissionMetadataFormImplementation($this);
 
 		$locale = $request->getUserVar('locale');
 		if ($locale && ($locale != Locale::getLocale())) {
@@ -133,8 +127,8 @@ class QuickSubmitForm extends Form {
 		// Tell the form what fields are enabled (and which of those are required)
 		foreach (Application::getMetadataFields() as $field) {
 			$templateMgr->assign(array(
-				$field . 'Enabled' => in_array($this->_context->getData($field), array(PKPContext::METADATA_ENABLE, PKPContext::METADATA_REQUEST, PKPContext::METADATA_REQUIRE)),
-				$field . 'Required' => $this->_context->getData($field) === PKPContext::METADATA_REQUIRE,
+				$field . 'Enabled' => in_array($this->_context->getData($field), array(Context::METADATA_ENABLE, Context::METADATA_REQUEST, Context::METADATA_REQUIRE)),
+				$field . 'Required' => $this->_context->getData($field) === Context::METADATA_REQUIRE,
 			));
 		}
 
@@ -173,7 +167,6 @@ class QuickSubmitForm extends Form {
 				];
 			})
 			->toArray();
-		error_log(print_r($sectionTitles,true));
 		$sectionOptions = [0 => ''] + $sectionTitles;
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
@@ -395,6 +388,7 @@ class QuickSubmitForm extends Form {
 
 		Repo::submission()->edit($this->_submission, []);
 		$this->_submission = Repo::submission()->get($this->_submission->getId());
+		$publication = $this->_submission->getCurrentPublication();
 
 		if ($publication->getData('sectionId') !== (int) $this->getData('sectionId')) {
 			$publication = Repo::publication()->edit($publication, ['sectionId' => (int) $this->getData('sectionId')], $this->_request);
