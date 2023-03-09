@@ -1,8 +1,8 @@
 {**
  * templates/index.tpl
  *
- * Copyright (c) 2013-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2013-2023 Simon Fraser University
+ * Copyright (c) 2003-2023 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * Template for one-page submission form
@@ -59,7 +59,7 @@
 					{/fbvFormSection}
 			{/if}
 
-			{include file="submission/form/section.tpl" readOnly=$formParams.readOnly}
+			{include file="submission/form/section.tpl" sectionOptions=$sectionOptions readOnly=$formParams.readOnly}
 
 			{include file="core:submission/submissionMetadataFormTitleFields.tpl"}
 			{include file="submission/submissionMetadataFormFields.tpl"}

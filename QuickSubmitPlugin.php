@@ -1,17 +1,17 @@
 <?php
 
 /**
- * @file QuickSubmitPlugin.inc.php
+ * @file QuickSubmitPlugin.php
  *
- * Copyright (c) 2013-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2013-2023 Simon Fraser University
+ * Copyright (c) 2003-2023 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @class QuickSubmitPlugin
- * @ingroup plugins_importexport_quickSubmit
- *
  * @brief Quick Submit one-page submission plugin
  */
+
+namespace APP\plugins\importexport\quickSubmit;
 
 use PKP\core\JSONMessage;
 use APP\template\TemplateManager;
@@ -78,7 +78,6 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 			case 'deleteCoverImage':
 				return $this->_deleteUploadedImage($request);
 			default:
-				$this->import('QuickSubmitForm');
 				$templateMgr->assign([
 					'pageTitle' => $this->getDisplayName(),
 				]);
@@ -94,7 +93,6 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 * @param $request Request
 	 */
 	protected function _cancelSubmit($request) {
-		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
 
@@ -119,8 +117,7 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 * @return JSONMessage JSON object
 	 */
 	protected function _showFileUploadForm($request) {
-		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
-		$imageUploadForm = new UploadImageForm($this, $request);
+		$imageUploadForm = new classes\form\UploadImageForm($this, $request);
 		$imageUploadForm->initData($request);
 		return new JSONMessage(true, $imageUploadForm->fetch($request));
 	}
@@ -131,8 +128,7 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 * @return JSONMessage JSON object
 	 */
 	protected function _uploadImage($request) {
-		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
-		$imageUploadForm = new UploadImageForm($this, $request);
+		$imageUploadForm = new classes\form\UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
 
 		$temporaryFileId = $imageUploadForm->uploadFile($request);
@@ -153,8 +149,7 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 * @return JSONMessage JSON object
 	 */
 	protected function _saveUploadedImage($request) {
-		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
-		$imageUploadForm = new UploadImageForm($this, $request);
+		$imageUploadForm = new classes\form\UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
 		return $imageUploadForm->execute($request);
 	}
@@ -165,8 +160,7 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 * @return JSONMessage JSON object
 	 */
 	protected function _deleteUploadedImage($request) {
-		import('plugins.importexport.quickSubmit.classes.form.UploadImageForm');
-		$imageUploadForm = new UploadImageForm($this, $request);
+		$imageUploadForm = new classes\form\UploadImageForm($this, $request);
 		$imageUploadForm->readInputData();
 		return $imageUploadForm->deleteCoverImage($request);
 	}
@@ -177,7 +171,6 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 */
 	protected function _saveSubmit($request) {
 		$templateMgr = TemplateManager::getManager($request);
-		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
 		if($form->validate()){
@@ -199,7 +192,6 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 */
 	protected function _reloadForm($request) {
 		$templateMgr = TemplateManager::getManager($request);
-		$this->import('QuickSubmitForm');
 		$form = new QuickSubmitForm($this, $request);
 		$form->readInputData();
 		$form->display($request);

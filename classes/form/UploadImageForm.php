@@ -1,23 +1,26 @@
 <?php
 
 /**
- * @file classes/form/UploadImageForm.inc.php
+ * @file classes/form/UploadImageForm.php
  *
- * Copyright (c) 2014-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2014-2023 Simon Fraser University
+ * Copyright (c) 2003-2023 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @class UploadImageForm
- * @ingroup plugins_importexport_quicksubmit_classes_form
- *
  * @brief Form for upload an image.
  */
+
+namespace APP\plugins\importexport\quickSubmit\classes\form;
 
 use PKP\form\Form;
 use PKP\form\validation\FormValidator;
 use PKP\facades\Locale;
 use PKP\linkAction\LinkAction;
-use PKP\linkAction\Request\RemoteActionConfirmationModal;
+use APP\template\TemplateManager;
+use APP\file\PublicFileManager;
+use PKP\linkAction\request\RemoteActionConfirmationModal;
+use PKP\db\DAORegistry;
 use PKP\file\TemporaryFileManager;
 use PKP\file\FileManager;
 use PKP\core\JSONMessage;
@@ -93,11 +96,11 @@ class UploadImageForm extends Form {
 				new RemoteActionConfirmationModal(
 					$this->request->getSession(),
 					__('common.confirmDelete'), null,
-					$router->url($this->request, null, null, 'importexport', array('plugin', 'QuickSubmitPlugin', 'deleteCoverImage'), array(
-						'coverImage' => $coverImage,
+					$router->url($this->request, null, null, 'importexport', ['plugin', 'QuickSubmitPlugin', 'deleteCoverImage'], [
+						'coverImage' => $coverImage['uploadName'],
 						'submissionId' => $this->submission->getId(),
 						'stageId' => WORKFLOW_STAGE_ID_PRODUCTION,
-					)),
+					]),
 					'modal_delete'
 				),
 				__('common.delete'),
@@ -178,18 +181,14 @@ class UploadImageForm extends Form {
 
 				// Clean up the temporary file.
 				$this->removeTemporaryFile($this->request);
-
-				return DAO::getDataChangedEvent();
 			}
 		} elseif ($coverImage) {
 			$coverImage = $this->publication->getData('coverImage');
 			$coverImage[$locale]['altText'] = $this->getData('imageAltText');
 			$this->publication->setData('coverImage', $coverImage);
 			Repo::publication()->edit($this->publication, []);
-			return DAO::getDataChangedEvent();
 		}
-		return new JSONMessage(false, __('common.uploadFailed'));
-
+		return \PKP\db\DAO::getDataChangedEvent();
 	}
 
 	/**

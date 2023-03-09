@@ -4,8 +4,8 @@
 <!--
   * version.xml
   *
-  * Copyright (c) 2013-2021 Simon Fraser University
-  * Copyright (c) 2003-2021 John Willinsky
+  * Copyright (c) 2013-2023 Simon Fraser University
+  * Copyright (c) 2003-2023 John Willinsky
   * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
   *
   * Plugin version information.
@@ -13,6 +13,6 @@
 <version>
 	<application>quickSubmit</application>
 	<type>plugins.importexport</type>
-	<release>1.0.6.0</release>
-	<date>2021-01-28</date>
+	<release>1.0.7.0</release>
+	<date>2023-03-09</date>
 </version>

@@ -1,17 +1,17 @@
 <?php
 
 /**
- * @file QuickSubmitForm.inc.php
+ * @file QuickSubmitForm.php
  *
- * Copyright (c) 2013-2021 Simon Fraser University
- * Copyright (c) 2003-2021 John Willinsky
+ * Copyright (c) 2013-2023 Simon Fraser University
+ * Copyright (c) 2003-2023 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @class QuickSubmitForm
- * @ingroup plugins_importexport_quickSubmit
- *
  * @brief Form for QuickSubmit one-page submission plugin
  */
+
+namespace APP\plugins\importexport\quickSubmit;
 
 use PKP\core\Core;
 use PKP\form\Form;
@@ -167,13 +167,14 @@ class QuickSubmitForm extends Form {
 			->getCollector()
 			->filterByContextIds([$this->_context->getId()])
 			->getMany()
-			->map(function ($section) {
+			->mapWithKeys(function ($section) {
 				return [
 					$section->getId() => $section->getLocalizedTitle()
 				];
 			})
 			->toArray();
-		$sectionOptions = array('0' => '') + $sectionTitles;
+		error_log(print_r($sectionTitles,true));
+		$sectionOptions = [0 => ''] + $sectionTitles;
 		$templateMgr->assign('sectionOptions', $sectionOptions);
 
 		// Get published Issues
