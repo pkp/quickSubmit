@@ -332,6 +332,8 @@ class QuickSubmitForm extends Form {
 				if ($file) {
 					$newSubmissionFile = clone $file;
 					$newSubmissionFile->setData('fileStage', SUBMISSION_FILE_SUBMISSION);
+					$newSubmissionFile->unsetData('assocType');
+					$newSubmissionFile->unsetData('assocId');
 					$newSubmissionFile->setData('viewable', true);
 					$newSubmissionFile->setData('sourceSubmissionFileId', $file->getId());
 					$newSubmissionFile = Services::get('submissionFile')->add($newSubmissionFile, Application::get()->getRequest());
