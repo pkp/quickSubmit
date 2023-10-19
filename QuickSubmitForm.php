@@ -372,6 +372,8 @@ class QuickSubmitForm extends Form {
 				if ($file) {
 					$newSubmissionFile = clone $file;
 					$newSubmissionFile->setData('fileStage', SubmissionFile::SUBMISSION_FILE_SUBMISSION);
+					$newSubmissionFile->unsetData('assocType');
+					$newSubmissionFile->unsetData('assocId');
 					$newSubmissionFile->setData('viewable', true);
 					$newSubmissionFile->setData('sourceSubmissionFileId', $file->getId());
 					$newSubmissionFile = Repo::submissionFile()->add($newSubmissionFile);
