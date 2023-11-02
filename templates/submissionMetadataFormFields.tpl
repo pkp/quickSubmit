@@ -47,14 +47,8 @@
 	{/fbvFormArea}
 {/if}
 
-{if $languagesEnabled || $subjectsEnabled || $agenciesEnabled || $keywordsEnabled || $citationsEnabled || $disciplinesEnabled}
+{if $subjectsEnabled || $agenciesEnabled || $keywordsEnabled || $citationsEnabled || $disciplinesEnabled}
 	{fbvFormArea id="tagitFields" title="submission.submit.metadataForm"}
-		{if $languagesEnabled}
-			{capture assign="sectionDescription"}{if !$readOnly}submission.submit.metadataForm.tip{/if}{/capture}
-			{fbvFormSection description=$sectionDescription label="common.languages" required=$languagesRequired}
-				{fbvElement type="keyword" id="languages" subLabelTranslate=true multilingual=true current=$languages sourceUrl=$languagesSourceUrl disabled=$readOnly}
-			{/fbvFormSection}
-		{/if}
 		{if $subjectsEnabled}
 			{fbvFormSection description="submission.submit.metadataForm.tip" label="common.subjects" required=$subjectsRequired}
 				{fbvElement type="keyword" id="subjects" multilingual=true current=$subjects disabled=$readOnly required=$subjectsRequired sourceUrl=$subjectsSourceUrl}
