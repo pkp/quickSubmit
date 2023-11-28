@@ -151,13 +151,11 @@ class SubmissionMetadataFormImplementation
             $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var SubmissionSubjectDAO $submissionSubjectDao */
             $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var SubmissionDisciplineDAO $submissionDisciplineDao */
             $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var SubmissionAgencyDAO $submissionAgencyDao */
-            $submissionLanguageDao = DAORegistry::getDAO('SubmissionLanguageDAO'); /** @var SubmissionLanguageDAO $submissionLanguageDao */
 
             $this->_parentForm->setData('subjects', $submissionSubjectDao->getSubjects($publication->getId(), $locales));
             $this->_parentForm->setData('keywords', $submissionKeywordDao->getKeywords($publication->getId(), $locales));
             $this->_parentForm->setData('disciplines', $submissionDisciplineDao->getDisciplines($publication->getId(), $locales));
             $this->_parentForm->setData('agencies', $submissionAgencyDao->getAgencies($publication->getId(), $locales));
-            $this->_parentForm->setData('languages', $submissionLanguageDao->getLanguages($publication->getId(), $locales));
             $this->_parentForm->setData('abstractsRequired', $this->_getAbstractsRequired($submission));
         }
     }
@@ -189,7 +187,7 @@ class SubmissionMetadataFormImplementation
      */
     public function getTagitFieldNames()
     {
-        return ['subjects', 'keywords', 'disciplines', 'agencies', 'languages'];
+        return ['subjects', 'keywords', 'disciplines', 'agencies'];
     }
 
     /**
@@ -243,12 +241,10 @@ class SubmissionMetadataFormImplementation
         $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var SubmissionSubjectDAO $submissionSubjectDao */
         $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var SubmissionDisciplineDAO $submissionDisciplineDao */
         $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var SubmissionAgencyDAO $submissionAgencyDao */
-        $submissionLanguageDao = DAORegistry::getDAO('SubmissionLanguageDAO'); /** @var SubmissionLanguageDAO $submissionLanguageDao */
 
         $keywords = [];
         $agencies = [];
         $disciplines = [];
-        $languages = [];
         $subjects = [];
 
         $tagitKeywords = $this->_parentForm->getData('keywords');
@@ -258,7 +254,6 @@ class SubmissionMetadataFormImplementation
                 $keywords[$locale] = array_key_exists($locale . '-keywords', $tagitKeywords) ? $tagitKeywords[$locale . '-keywords'] : [];
                 $agencies[$locale] = array_key_exists($locale . '-agencies', $tagitKeywords) ? $tagitKeywords[$locale . '-agencies'] : [];
                 $disciplines[$locale] = array_key_exists($locale . '-disciplines', $tagitKeywords) ? $tagitKeywords[$locale . '-disciplines'] : [];
-                $languages[$locale] = array_key_exists($locale . '-languages', $tagitKeywords) ? $tagitKeywords[$locale . '-languages'] : [];
                 $subjects[$locale] = array_key_exists($locale . '-subjects', $tagitKeywords) ? $tagitKeywords[$locale . '-subjects'] : [];
             }
         }
@@ -267,7 +262,6 @@ class SubmissionMetadataFormImplementation
         $submissionKeywordDao->insertKeywords($keywords, $submission->getCurrentPublication()->getId());
         $submissionAgencyDao->insertAgencies($agencies, $submission->getCurrentPublication()->getId());
         $submissionDisciplineDao->insertDisciplines($disciplines, $submission->getCurrentPublication()->getId());
-        $submissionLanguageDao->insertLanguages($languages, $submission->getCurrentPublication()->getId());
         $submissionSubjectDao->insertSubjects($subjects, $submission->getCurrentPublication()->getId());
 
         // Only log modifications on completed submissions
