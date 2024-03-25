@@ -29,13 +29,13 @@ use PKP\security\Validation;
 
 class SubmissionMetadataFormImplementation
 {
-    /** @var Form Form that uses this implementation */
+    /** @var \APP\plugins\importexport\quickSubmit\QuickSubmitForm Form that uses this implementation */
     public $_parentForm;
 
     /**
      * Constructor.
      *
-     * @param Form $parentForm A form that can use this form.
+     * @param \APP\plugins\importexport\quickSubmit\QuickSubmitForm $parentForm A form that can use this form.
      */
     public function __construct($parentForm = null)
     {
@@ -149,10 +149,10 @@ class SubmissionMetadataFormImplementation
             $locales = array_keys($this->_parentForm->supportedLocales);
 
             // load the persisted metadata controlled vocabularies
-            $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var SubmissionKeywordDAO $submissionKeywordDao */
-            $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var SubmissionSubjectDAO $submissionSubjectDao */
-            $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var SubmissionDisciplineDAO $submissionDisciplineDao */
-            $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var SubmissionAgencyDAO $submissionAgencyDao */
+            $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var \PKP\submission\SubmissionKeywordDAO $submissionKeywordDao */
+            $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var \PKP\submission\SubmissionSubjectDAO $submissionSubjectDao */
+            $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var \PKP\submission\SubmissionDisciplineDAO $submissionDisciplineDao */
+            $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var \PKP\submission\SubmissionAgencyDAO $submissionAgencyDao */
 
             $this->_parentForm->setData('subjects', $submissionSubjectDao->getSubjects($publication->getId(), $locales));
             $this->_parentForm->setData('keywords', $submissionKeywordDao->getKeywords($publication->getId(), $locales));
@@ -195,10 +195,8 @@ class SubmissionMetadataFormImplementation
     /**
      * Save changes to submission.
      *
-     * @param Submission $submission
-     * @param PKPRequest $request
-     *
-     * @return Submission
+     * @param \APP\submission\Submission $submission
+     * @param \PKP\core\PKPRequest $request
      */
     public function execute($submission, $request)
     {
@@ -239,10 +237,10 @@ class SubmissionMetadataFormImplementation
         $locales = array_keys($this->_parentForm->supportedLocales);
 
         // persist the metadata/keyword fields.
-        $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var SubmissionKeywordDAO $submissionKeywordDao */
-        $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var SubmissionSubjectDAO $submissionSubjectDao */
-        $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var SubmissionDisciplineDAO $submissionDisciplineDao */
-        $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var SubmissionAgencyDAO $submissionAgencyDao */
+        $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var \PKP\submission\SubmissionKeywordDAO $submissionKeywordDao */
+        $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var \PKP\submission\SubmissionSubjectDAO $submissionSubjectDao */
+        $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var \PKP\submission\SubmissionDisciplineDAO $submissionDisciplineDao */
+        $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var \PKP\submission\SubmissionAgencyDAO $submissionAgencyDao */
 
         $keywords = [];
         $agencies = [];

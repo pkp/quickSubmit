@@ -235,7 +235,7 @@ class UploadImageForm extends Form {
 	/**
 	 * Fecth the temporary file.
 	 * @param $request Request
-	 * @return TemporaryFile
+	 * @return \PKP\file\TemporaryFile
 	 */
 	function fetchTemporaryFile($request) {
 		$user = $request->getUser();
