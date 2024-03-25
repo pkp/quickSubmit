@@ -393,7 +393,7 @@ class QuickSubmitForm extends Form {
 		$publication = $this->_submission->getCurrentPublication();
 
 		if ($publication->getData('sectionId') !== (int) $this->getData('sectionId')) {
-			$publication = Repo::publication()->edit($publication, ['sectionId' => (int) $this->getData('sectionId')], $this->_request);
+			$publication = Repo::publication()->edit($publication, ['sectionId' => (int) $this->getData('sectionId')]);
 		}
 
 		if ($this->getData('articleStatus') == 1) {

@@ -119,7 +119,7 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin {
 	 */
 	protected function _showFileUploadForm($request) {
 		$imageUploadForm = new classes\form\UploadImageForm($this, $request);
-		$imageUploadForm->initData($request);
+		$imageUploadForm->initData();
 		return new JSONMessage(true, $imageUploadForm->fetch($request));
 	}
 
