@@ -83,7 +83,7 @@ class QuickSubmitForm extends Form {
 				'required',
 				'author.submit.form.sectionRequired',
 				function ($sectionId) use ($contextId) {
-					return Repo::section()->exists($sectionId, $contextId);
+					return Repo::section()->exists((int) $sectionId, $contextId);
 				}
 			)
 		);
