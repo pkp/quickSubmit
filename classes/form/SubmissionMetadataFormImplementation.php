@@ -20,10 +20,12 @@ namespace APP\plugins\importexport\quickSubmit\classes\form;
 
 use APP\core\Application;
 use APP\facades\Repo;
-use APP\log\SubmissionEventLogEntry;
+use APP\log\event\SubmissionEventLogEntry;
+use APP\submission\Submission;
 use PKP\context\Context;
+use PKP\core\Core;
 use PKP\db\DAORegistry;
-use PKP\log\SubmissionLog;
+use PKP\security\Validation;
 
 class SubmissionMetadataFormImplementation
 {
@@ -267,7 +269,16 @@ class SubmissionMetadataFormImplementation
         // Only log modifications on completed submissions
         if (!$submission->getSubmissionProgress()) {
             // Log the metadata modification event.
-            SubmissionLog::logEvent($request, $submission, SubmissionEventLogEntry::SUBMISSION_LOG_METADATA_UPDATE, 'submission.event.general.metadataUpdated');
+            $eventLog = Repo::eventLog()->newDataObject([
+                'assocType' => Application::ASSOC_TYPE_SUBMISSION,
+                'assocId' => $submission->getId(),
+                'eventType' => SubmissionEventLogEntry::SUBMISSION_LOG_METADATA_UPDATE,
+                'userId' => Validation::loggedInAs() ?? $request->getUser()?->getId(),
+                'message' => 'submission.event.general.metadataUpdated',
+                'isTranslated' => false,
+                'dateLogged' => Core::getCurrentDate(),
+            ]);
+            Repo::eventLog()->add($eventLog);
         }
     }
 }
