@@ -13,6 +13,7 @@
 
 namespace APP\plugins\importexport\quickSubmit\classes\form;
 
+use Exception;
 use PKP\form\Form;
 use PKP\form\validation\FormValidator;
 use PKP\facades\Locale;
@@ -65,7 +66,9 @@ class UploadImageForm extends Form {
 		$this->submissionId = $request->getUserVar('submissionId');
 
 		$this->submission = Repo::submission()->get($request->getUserVar('submissionId'));
-		if ($this->submission->getContextId() != $this->context->getId()) throw new Exception('Submission context ID does not match context!');
+		if ($this->submission->getContextId() != $this->context->getId()) {
+			throw new Exception('Submission context ID does not match context!');
+		}
 		$this->publication = $this->submission->getCurrentPublication();
 	}
 
