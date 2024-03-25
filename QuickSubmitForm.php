@@ -63,11 +63,11 @@ class QuickSubmitForm extends Form
 
         if ($submissionId = $request->getUserVar('submissionId')) {
             $this->_submission = Repo::submission()->get($submissionId);
-            if ($this->_submission->getContextId() != $this->_context->getId()) {
+            if ($this->_submission->getData('contextId') != $this->_context->getId()) {
                 throw new \Exception('Submission not in context!');
             }
 
-            $this->_submission->setLocale($this->getDefaultFormLocale());
+            $this->_submission->setData('locale', $this->getDefaultFormLocale());
             $publication = $this->_submission->getCurrentPublication();
             $publication->setData('locale', $this->getDefaultFormLocale());
             Repo::submission()->edit($this->_submission, []);
@@ -222,7 +222,7 @@ class QuickSubmitForm extends Form
         }
 
         $templateMgr->assign([
-            'primaryLocale' => $this->_submission->getLocale(),
+            'primaryLocale' => $this->_submission->getData('locale'),
         ]);
 
         parent::display($request, $template);
@@ -275,13 +275,13 @@ class QuickSubmitForm extends Form
 
             // Create and insert a new submission and publication
             $this->_submission = Repo::submission()->dao->newDataObject();
-            $this->_submission->setContextId($this->_context->getId());
-            $this->_submission->setStatus(PKPSubmission::STATUS_QUEUED);
-            $this->_submission->setSubmissionProgress(1);
-            $this->_submission->stampStatusModified();
-            $this->_submission->setStageId(WORKFLOW_STAGE_ID_SUBMISSION);
+            $this->_submission->setData('contextId', $this->_context->getId());
+            $this->_submission->setData('status', PKPSubmission::STATUS_QUEUED);
+            $this->_submission->setData('submissionProgress', 1);
+            $this->_submission->stampLastActivity();
+            $this->_submission->setData('stageId', WORKFLOW_STAGE_ID_SUBMISSION);
             $this->_submission->setData('sectionId', $sectionId = current(array_keys($sectionOptions)));
-            $this->_submission->setLocale($this->getDefaultFormLocale());
+            $this->_submission->setData('locale', $this->getDefaultFormLocale());
 
             $publication = new Publication();
             $publication->setData('locale', $this->getDefaultFormLocale());
@@ -360,7 +360,7 @@ class QuickSubmitForm extends Form
     {
         $submission = Repo::submission()->get((int) $this->getData('submissionId')); /** @var Submission $submission */
 
-        if ($this->_submission->getContextId() != $this->_context->getId()) {
+        if ($this->_submission->getData('contextId') != $this->_context->getId()) {
             throw new \Exception('Submission not in context!');
         }
 
@@ -399,10 +399,10 @@ class QuickSubmitForm extends Form
             }
         }
 
-        $this->_submission->setLocale($this->getData('locale'));
-        $this->_submission->setStageId(WORKFLOW_STAGE_ID_PRODUCTION);
-        $this->_submission->setDateSubmitted(Core::getCurrentDate());
-        $this->_submission->setSubmissionProgress(0);
+        $this->_submission->setData('locale', $this->getData('locale'));
+        $this->_submission->setData('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
+        $this->_submission->setData('dateSubmitted', Core::getCurrentDate());
+        $this->_submission->setData('submissionProgress', 0);
 
         parent::execute($this->_submission, ...$functionParams);
 

@@ -78,7 +78,7 @@ class SubmissionMetadataFormImplementation
         ));
 
         $contextDao = Application::getContextDao();
-        $context = $contextDao->getById($submission->getContextId());
+        $context = $contextDao->getById($submission->getData('contextId'));
         $metadataFields = Application::getMetadataFields();
         foreach ($metadataFields as $field) {
             $requiredLocaleKey = 'submission.submit.form.' . $field . 'Required';
@@ -266,7 +266,7 @@ class SubmissionMetadataFormImplementation
         $submissionSubjectDao->insertSubjects($subjects, $submission->getCurrentPublication()->getId());
 
         // Only log modifications on completed submissions
-        if (!$submission->getSubmissionProgress()) {
+        if (!$submission->getData('submissionProgress')) {
             // Log the metadata modification event.
             $eventLog = Repo::eventLog()->newDataObject([
                 'assocType' => Application::ASSOC_TYPE_SUBMISSION,

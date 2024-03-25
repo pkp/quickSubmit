@@ -39,16 +39,16 @@ class UploadImageForm extends Form
     /** @var int $submissionId */
     public $submissionId;
 
-    /** @var Submission $submission */
+    /** @var \APP\submission\Submission $submission */
     public $submission;
 
-    /** @var Publication $publication */
+    /** @var \APP\publication\Publication $publication */
     public $publication;
 
-    /** @var QuickSubmitPlugin $plugin */
+    /** @var \APP\plugins\importexport\quickSubmit\QuickSubmitPlugin $plugin */
     public $plugin;
 
-    /** @var Journal $context */
+    /** @var \APP\journal\Journal $context */
     public $context;
 
     /**
@@ -70,7 +70,7 @@ class UploadImageForm extends Form
         $this->submissionId = $request->getUserVar('submissionId');
 
         $this->submission = Repo::submission()->get($request->getUserVar('submissionId'));
-        if ($this->submission->getContextId() != $this->context->getId()) {
+        if ($this->submission->getData('contextId') != $this->context->getId()) {
             throw new Exception('Submission context ID does not match context!');
         }
         $this->publication = $this->submission->getCurrentPublication();
@@ -152,7 +152,7 @@ class UploadImageForm extends Form
 
         // Remove the file
         $publicFileManager = new PublicFileManager();
-        if ($publicFileManager->removeContextFile($this->submission->getContextId(), $file)) {
+        if ($publicFileManager->removeContextFile($this->submission->getData('contextId'), $file)) {
             $json = new JSONMessage(true);
             $json->setEvent('fileDeleted');
             return $json;
@@ -248,7 +248,7 @@ class UploadImageForm extends Form
     // Public methods
     //
     /**
-     * Fecth the temporary file.
+     * Fetch the temporary file.
      *
      * @param $request Request
      *
