@@ -310,7 +310,7 @@ class QuickSubmitForm extends Form {
 			$this->_data['copyrightYear'] = date('Y');
 
 			// Assign the user author to the stage
-			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /** @var StageAssignmentDAO $stageAssignmentDao */
+			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /** @var \PKP\stageAssignment\StageAssignmentDAO $stageAssignmentDao */
 			$stageAssignmentDao->build($this->_submission->getId(), $userGroupId, $user->getId());
 		}
 	}
