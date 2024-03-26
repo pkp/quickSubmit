@@ -1,7 +1,7 @@
 # @file
 # .travis.yml - PKP Plugins Integration
 
-dist: bionic
+dist: focal
 os: linux
 language: php
 
@@ -17,29 +17,40 @@ addons:
 sudo: required
 
 php:
-  - 8.2.0
   - 8.1.0
+  - 8.2.0
+
 env:
-  - APPLICATION=ojs BRANCH=main TEST=mysql
-  - APPLICATION=ojs BRANCH=main TEST=pgsql
+  - APPLICATION=ojs BRANCH=main TEST=mysql DBTYPE=MySQL
+  - APPLICATION=ojs BRANCH=main TEST=pgsql DBTYPE=PostgreSQL
 
 install:
-  # Prepare OJS/OMP environment
+  # Prepare OJS environment
   - git clone -b ${BRANCH} https://github.com/pkp/${APPLICATION} ~/${APPLICATION}
   - cd ~/${APPLICATION}
   - git submodule update --init --recursive
+  # Grab a ready dataset
+  - git clone -b main https://github.com/pkp/datasets ~/datasets
+  # Setup environment variables
   - source lib/pkp/tools/travis/prepare-tests.sh
+  # The script below requires these extra variables
+  - export DBTYPE_SYMBOLIC=${TEST}
+  - export APP=${APPLICATION}
+  # Load the database/files from the dataset
+  - ../datasets/tools/load.sh
+  # Undo configuration update from the load.sh
+  - sed -i -e "s/^name = ${APP}-${BRANCH}$/name = ${APP}-ci/" config.inc.php
+  # Start the server
   - lib/pkp/tools/travis/prepare-webserver.sh
   # Build/install dependencies
   - lib/pkp/tools/travis/install-composer-dependencies.sh
-  - npm i g -npm && npm install && npm run build
+  - npm i g -npm && npm install --silent && npm run build
   # Make sure we're using the current checkout of this repo rather than the built-in OJS/OMP version
+  - rm -rf ~/${APPLICATION}/plugins/importexport/quickSubmit
   - ln -s ${TRAVIS_BUILD_DIR} ~/${APPLICATION}/plugins/importexport/quickSubmit
 
 script:
-  # Install OJS/OMP & prep data environment
-  - $(npm bin)/cypress run --spec "cypress/tests/data/10-ApplicationSetup/10-Installation.cy.js,cypress/tests/data/10-ApplicationSetup/20-CreateContext.cy.js,cypress/tests/data/10-ApplicationSetup/40-CreateUsers.cy.js,cypress/tests/data/10-ApplicationSetup/50-CreateIssues.cy.js,cypress/tests/data/10-ApplicationSetup/50-CreateSections.cy.js"
-  - $(npm bin)/cypress run --config '{"specPattern":["plugins/importexport/quickSubmit/cypress/tests/functional/*.cy.js"]}'
+  - $(npm bin)/cypress run --headless --browser chrome --config '{"specPattern":["plugins/importexport/quickSubmit/cypress/tests/functional/*.cy.{js,jsx,ts,tsx}"]}'
 
 after_failure:
   - cat error.log

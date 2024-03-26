@@ -1,13 +1,14 @@
 <?php
 
 /**
- * @file classes/submission/PKPSubmissionMetadataFormImplementation.php
+ * @file classes/submission/SubmissionMetadataForm.php
  *
  * Copyright (c) 2014-2021 Simon Fraser University
  * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
- * @class SubmissionMetadataFormImplementation
+ * @class SubmissionMetadataForm
+ *
  * @ingroup submission
  *
  * @deprecated 3.4
@@ -20,20 +21,22 @@ namespace APP\plugins\importexport\quickSubmit\classes\form;
 
 use APP\core\Application;
 use APP\facades\Repo;
-use APP\log\SubmissionEventLogEntry;
+use APP\log\event\SubmissionEventLogEntry;
+use APP\submission\Submission;
 use PKP\context\Context;
+use PKP\core\Core;
 use PKP\db\DAORegistry;
-use PKP\log\SubmissionLog;
+use PKP\security\Validation;
 
-class SubmissionMetadataFormImplementation
+class SubmissionMetadataForm
 {
-    /** @var Form Form that uses this implementation */
+    /** @var \APP\plugins\importexport\quickSubmit\QuickSubmitForm Form that uses this implementation */
     public $_parentForm;
 
     /**
      * Constructor.
      *
-     * @param Form $parentForm A form that can use this form.
+     * @param \APP\plugins\importexport\quickSubmit\QuickSubmitForm $parentForm A form that can use this form.
      */
     public function __construct($parentForm = null)
     {
@@ -42,7 +45,7 @@ class SubmissionMetadataFormImplementation
     }
 
     /**
-     * @copydoc PKPSubmissionMetadataFormImplementation::_getAbstractsRequired
+     * Retrieve whether abstracts are required
      */
     public function _getAbstractsRequired($submission)
     {
@@ -75,7 +78,7 @@ class SubmissionMetadataFormImplementation
         ));
 
         $contextDao = Application::getContextDao();
-        $context = $contextDao->getById($submission->getContextId());
+        $context = $contextDao->getById($submission->getData('contextId'));
         $metadataFields = Application::getMetadataFields();
         foreach ($metadataFields as $field) {
             $requiredLocaleKey = 'submission.submit.form.' . $field . 'Required';
@@ -147,10 +150,10 @@ class SubmissionMetadataFormImplementation
             $locales = array_keys($this->_parentForm->supportedLocales);
 
             // load the persisted metadata controlled vocabularies
-            $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var SubmissionKeywordDAO $submissionKeywordDao */
-            $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var SubmissionSubjectDAO $submissionSubjectDao */
-            $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var SubmissionDisciplineDAO $submissionDisciplineDao */
-            $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var SubmissionAgencyDAO $submissionAgencyDao */
+            $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var \PKP\submission\SubmissionKeywordDAO $submissionKeywordDao */
+            $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var \PKP\submission\SubmissionSubjectDAO $submissionSubjectDao */
+            $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var \PKP\submission\SubmissionDisciplineDAO $submissionDisciplineDao */
+            $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var \PKP\submission\SubmissionAgencyDAO $submissionAgencyDao */
 
             $this->_parentForm->setData('subjects', $submissionSubjectDao->getSubjects($publication->getId(), $locales));
             $this->_parentForm->setData('keywords', $submissionKeywordDao->getKeywords($publication->getId(), $locales));
@@ -193,10 +196,8 @@ class SubmissionMetadataFormImplementation
     /**
      * Save changes to submission.
      *
-     * @param Submission $submission
-     * @param PKPRequest $request
-     *
-     * @return Submission
+     * @param \APP\submission\Submission $submission
+     * @param \PKP\core\PKPRequest $request
      */
     public function execute($submission, $request)
     {
@@ -237,10 +238,10 @@ class SubmissionMetadataFormImplementation
         $locales = array_keys($this->_parentForm->supportedLocales);
 
         // persist the metadata/keyword fields.
-        $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var SubmissionKeywordDAO $submissionKeywordDao */
-        $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var SubmissionSubjectDAO $submissionSubjectDao */
-        $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var SubmissionDisciplineDAO $submissionDisciplineDao */
-        $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var SubmissionAgencyDAO $submissionAgencyDao */
+        $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var \PKP\submission\SubmissionKeywordDAO $submissionKeywordDao */
+        $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var \PKP\submission\SubmissionSubjectDAO $submissionSubjectDao */
+        $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var \PKP\submission\SubmissionDisciplineDAO $submissionDisciplineDao */
+        $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var \PKP\submission\SubmissionAgencyDAO $submissionAgencyDao */
 
         $keywords = [];
         $agencies = [];
@@ -265,9 +266,18 @@ class SubmissionMetadataFormImplementation
         $submissionSubjectDao->insertSubjects($subjects, $submission->getCurrentPublication()->getId());
 
         // Only log modifications on completed submissions
-        if (!$submission->getSubmissionProgress()) {
+        if (!$submission->getData('submissionProgress')) {
             // Log the metadata modification event.
-            SubmissionLog::logEvent($request, $submission, SubmissionEventLogEntry::SUBMISSION_LOG_METADATA_UPDATE, 'submission.event.general.metadataUpdated');
+            $eventLog = Repo::eventLog()->newDataObject([
+                'assocType' => Application::ASSOC_TYPE_SUBMISSION,
+                'assocId' => $submission->getId(),
+                'eventType' => SubmissionEventLogEntry::SUBMISSION_LOG_METADATA_UPDATE,
+                'userId' => Validation::loggedInAs() ?? $request->getUser()?->getId(),
+                'message' => 'submission.event.general.metadataUpdated',
+                'isTranslated' => false,
+                'dateLogged' => Core::getCurrentDate(),
+            ]);
+            Repo::eventLog()->add($eventLog);
         }
     }
 }
