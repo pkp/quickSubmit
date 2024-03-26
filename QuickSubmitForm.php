@@ -68,6 +68,11 @@ class QuickSubmitForm extends Form
                 throw new \Exception('Submission not in context!');
             }
 
+            $sectionId = $request->getUserVar('sectionId');
+            if (!empty($sectionId)) {
+                $this->_submission->setSectionId($sectionId);
+            }
+
             $this->_submission->setLocale($this->getDefaultFormLocale());
             $publication = $this->_submission->getCurrentPublication();
             $publication->setData('locale', $this->getDefaultFormLocale());
