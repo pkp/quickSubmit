@@ -16,6 +16,9 @@ namespace APP\plugins\importexport\quickSubmit\classes\form;
 
 use APP\facades\Repo;
 use APP\file\PublicFileManager;
+use APP\journal\Journal;
+use APP\publication\Publication;
+use APP\submission\Submission;
 use APP\template\TemplateManager;
 use Exception;
 use PKP\core\JSONMessage;
@@ -45,7 +48,7 @@ class UploadImageForm extends Form
     /** @var Publication $publication */
     public $publication;
 
-    /** @var QuickSubmitPlugin $plugin */
+    /** @var \APP\plugins\importexport\quickSubmit\QuickSubmitPlugin $plugin */
     public $plugin;
 
     /** @var Journal $context */

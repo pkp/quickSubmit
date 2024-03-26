@@ -1,14 +1,23 @@
 # QuickSubmit Plugin
 
-- OJS QuickSubmit Plugin
-- Version: (see version.xml)
+[![Build Status](https://travis-ci.com/pkp/quickSubmit.svg?branch=stable-3_4_0)](https://travis-ci.com/pkp/quickSubmit)
+[![OJS compatibility](https://img.shields.io/badge/ojs-3.5-brightgreen)](https://github.com/pkp/ojs/tree/stable-3_5_0)
+[![GitHub release](https://img.shields.io/github/v/release/pkp/quickSubmit?include_prereleases&label=latest%20release)](https://github.com/pkp/quickSubmit/releases)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/pkp/quickSubmit)
+[![License type](https://img.shields.io/github/license/pkp/quickSubmit)](https://github.com/pkp/quickSubmit/blob/stable-3_4_0/LICENSE)
+[![Number of downloads](https://img.shields.io/github/downloads/pkp/quickSubmit/total)](https://github.com/pkp/quickSubmit/releases)
+[![Commit activity per year](https://img.shields.io/github/commit-activity/y/pkp/quickSubmit)](https://github.com/pkp/quickSubmit/graphs/code-frequency)
+[![Contributors](https://img.shields.io/github/contributors-anon/pkp/quickSubmit)](https://github.com/pkp/quickSubmit/graphs/contributors)
 
-[![Build Status](https://travis-ci.org/pkp/quickSubmit.svg?branch=main)](https://travis-ci.org/pkp/quickSubmit)
+### Compatibility
+OJS 3.4
+
+[![Build Status](https://travis-ci.org/pkp/quickSubmit.svg?branch=stable-3_4_0)](https://travis-ci.org/pkp/quickSubmit)
 
 ## About
 
 This plugin provides the tools for the Journal Manager of a journal to add submissions and publish them without having
-to pass through the whole submission process. 
+to pass through the whole submission process.
 
 ## License
 
@@ -20,7 +29,7 @@ The QuickSubmit plugin integrates the main features of a submission and in no wa
 
 ## Contact/Support
 
-Please use the PKP support forum (http://forum.pkp.sfu.ca/), PKP issue tracker (https://github.com/pkp/pkp-lib#issues or https://github.com/pkp/quickSubmit) for support, bugfixes, or comments.
+Please use the PKP support forum (https://forum.pkp.sfu.ca/), PKP issue tracker (https://github.com/pkp/quickSubmit/issues/) for support, bugfixes, or comments.
 
 ## Install:
 

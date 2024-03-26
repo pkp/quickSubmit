@@ -17,6 +17,7 @@ namespace APP\plugins\importexport\quickSubmit;
 use APP\core\Application;
 use APP\facades\Repo;
 use APP\journal\Journal;
+use APP\plugins\importexport\quickSubmit\classes\form\SubmissionMetadataForm;
 use APP\publication\Publication;
 use APP\submission\Submission;
 use APP\template\TemplateManager;
@@ -39,7 +40,7 @@ class QuickSubmitForm extends Form
     protected PKPRequest $_request;
     protected ?PKPSubmission $_submission = null;
     protected Journal $_context;
-    protected classes\form\SubmissionMetadataFormImplementation $_metadataFormImplem;
+    protected SubmissionMetadataForm $form;
 
     /**
      * Constructor
@@ -54,7 +55,7 @@ class QuickSubmitForm extends Form
         $this->_request = $request;
         $this->_context = $request->getContext();
 
-        $this->_metadataFormImplem = new classes\form\SubmissionMetadataFormImplementation($this);
+        $this->form = new SubmissionMetadataForm($this);
 
         $locale = $request->getUserVar('locale');
         if ($locale && ($locale != Locale::getLocale())) {
@@ -67,13 +68,18 @@ class QuickSubmitForm extends Form
                 throw new \Exception('Submission not in context!');
             }
 
+            $sectionId = $request->getUserVar('sectionId');
+            if (!empty($sectionId)) {
+                $this->_submission->setSectionId($sectionId);
+            }
+
             $this->_submission->setLocale($this->getDefaultFormLocale());
             $publication = $this->_submission->getCurrentPublication();
             $publication->setData('locale', $this->getDefaultFormLocale());
             Repo::submission()->edit($this->_submission, []);
             Repo::publication()->edit($publication, []);
 
-            $this->_metadataFormImplem->addChecks($this->_submission);
+            $this->form->addChecks($this->_submission);
         }
 
         $this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
@@ -118,7 +124,7 @@ class QuickSubmitForm extends Form
      */
     public function getLocaleFieldNames()
     {
-        return $this->_metadataFormImplem->getLocaleFieldNames();
+        return $this->form->getLocaleFieldNames();
     }
 
     /**
@@ -210,7 +216,7 @@ class QuickSubmitForm extends Form
         // @see PKPSubmissionHandler::saveStep
         $tagitKeywords = $this->getData('keywords');
         if (is_array($tagitKeywords)) {
-            $tagitFieldNames = $this->_metadataFormImplem->getTagitFieldNames();
+            $tagitFieldNames = $this->form->getTagitFieldNames();
             $locales = array_keys($this->supportedLocales);
             $formTagitData = [];
             foreach ($tagitFieldNames as $tagitFieldName) {
@@ -293,7 +299,7 @@ class QuickSubmitForm extends Form
             $this->_submission = Repo::submission()->get($this->_submission->getId());
             $this->setData('submissionId', $this->_submission->getId());
 
-            $this->_metadataFormImplem->initData($this->_submission);
+            $this->form->initData($this->_submission);
 
             // Add the user manager group (first that is found) to the stage_assignment for that submission
             $user = $this->_request->getUser();
@@ -335,7 +341,7 @@ class QuickSubmitForm extends Form
      */
     public function readInputData()
     {
-        $this->_metadataFormImplem->readInputData();
+        $this->form->readInputData();
 
         $this->readUserVars(
             [
@@ -375,7 +381,7 @@ class QuickSubmitForm extends Form
     public function execute(...$functionParams)
     {
         // Execute submission metadata related operations.
-        $this->_metadataFormImplem->execute($this->_submission, $this->_request);
+        $this->form->execute($this->_submission, $this->_request);
 
         $publication = $this->_submission->getCurrentPublication();
 

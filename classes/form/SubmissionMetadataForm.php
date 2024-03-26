@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @file classes/submission/PKPSubmissionMetadataFormImplementation.php
+ * @file classes/submission/SubmissionMetadataForm.php
  *
  * Copyright (c) 2014-2021 Simon Fraser University
  * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
- * @class SubmissionMetadataFormImplementation
+ * @class SubmissionMetadataForm
  *
  * @ingroup submission
  *
@@ -28,7 +28,7 @@ use PKP\core\Core;
 use PKP\db\DAORegistry;
 use PKP\security\Validation;
 
-class SubmissionMetadataFormImplementation
+class SubmissionMetadataForm
 {
     /** @var \APP\plugins\importexport\quickSubmit\QuickSubmitForm Form that uses this implementation */
     public $_parentForm;
@@ -45,7 +45,7 @@ class SubmissionMetadataFormImplementation
     }
 
     /**
-     * @copydoc PKPSubmissionMetadataFormImplementation::_getAbstractsRequired
+     * Retrieve whether abstracts are required
      */
     public function _getAbstractsRequired($submission)
     {
