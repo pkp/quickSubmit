@@ -45,7 +45,7 @@ class SubmissionMetadataForm
     }
 
     /**
-     * @copydoc PKPSubmissionMetadataForm::_getAbstractsRequired
+     * Retrieve whether abstracts are required
      */
     public function _getAbstractsRequired($submission)
     {
