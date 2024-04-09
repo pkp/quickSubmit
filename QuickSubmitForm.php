@@ -283,7 +283,7 @@ class QuickSubmitForm extends Form
             $this->_submission = Repo::submission()->dao->newDataObject();
             $this->_submission->setData('contextId', $this->_context->getId());
             $this->_submission->setData('status', PKPSubmission::STATUS_QUEUED);
-            $this->_submission->setData('submissionProgress', 1);
+            $this->_submission->setData('submissionProgress', 'start');
             $this->_submission->stampLastActivity();
             $this->_submission->setData('stageId', WORKFLOW_STAGE_ID_SUBMISSION);
             $this->_submission->setData('sectionId', $sectionId = current(array_keys($sectionOptions)));
@@ -408,7 +408,7 @@ class QuickSubmitForm extends Form
         $this->_submission->setData('locale', $this->getData('locale'));
         $this->_submission->setData('stageId', WORKFLOW_STAGE_ID_PRODUCTION);
         $this->_submission->setData('dateSubmitted', Core::getCurrentDate());
-        $this->_submission->setData('submissionProgress', 0);
+        $this->_submission->setData('submissionProgress', '');
 
         parent::execute($this->_submission, ...$functionParams);
 
