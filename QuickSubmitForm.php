@@ -310,7 +310,7 @@ class QuickSubmitForm extends Form
                 ->filterByRoleIds([Role::ROLE_ID_MANAGER])
                 ->getMany();
 
-            // $userGroupId is being used for $stageAssignmentDao->build
+            // $userGroupId is being used for Repo::stageAssignment()->build(...)
             // This build function needs the userGroupId
             // So here the first function should fail if no manager user group is found.
             $userGroupId = $managerUserGroups->firstOrFail()->getId();
@@ -331,8 +331,12 @@ class QuickSubmitForm extends Form
             $this->_data['copyrightYear'] = date('Y');
 
             // Assign the user author to the stage
-            $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /** @var \PKP\stageAssignment\StageAssignmentDAO $stageAssignmentDao */
-            $stageAssignmentDao->build($this->_submission->getId(), $userGroupId, $user->getId());
+            Repo::stageAssignment()
+                ->build(
+                    $this->_submission->getId(), 
+                    $userGroupId, 
+                    $user->getId()
+                );
         }
     }
 
