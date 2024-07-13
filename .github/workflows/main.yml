@@ -1,0 +1,132 @@
+on: [push]
+name: quickSubmit
+jobs:
+  quickSubmit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - application: ojs
+            php-version: 8.1
+            database: mysql
+          - application: ojs
+            php-version: 8.2
+            database: mysql
+          - application: ojs
+            php-version: 8.1
+            database: pgsql
+          - application: ojs
+            php-version: 8.2
+            database: pgsql
+
+    name: quickSubmit
+    steps:
+      - uses: xmlFlow/pkp-github-actions@v1
+        with:
+         node_version: 20
+         branch: main
+         repository: pkp
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+           python-version: '3.9'
+
+      - name: Install python libraries
+        run: | 
+          sudo apt-get install python3-lxml xmlstarlet
+          pip install lxml
+        shell: bash
+
+      - name: Install plugin for push
+        if: ${{  github.event_name  == 'push'}}
+        run: |
+          cd ~/${{matrix.application}}/plugins/importexport
+          git clone -b ${{ github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ${{ github.event.repository.name }}  --depth 1
+        shell: bash
+
+      - name: Install plugin for pull_request
+        if: ${{github.event_name  == 'pull_request'}}
+        run: |
+          cd ~/${{matrix.application}}/plugins/importexport
+          git clone -b ${{ github.event.pull_request.head.ref}} ${{ github.event.pull_request.head.repo.html_url}} ${{ github.event.pull_request.head.repo.name }} --depth 1
+        shell: bash
+
+      - name: Install from datasets
+        run: |
+          cd ~/${{matrix.application}}
+          git clone  https://github.com/pkp/datasets  datasets --depth 1
+          cp -rf datasets/${APPLICATION}/${DATASET_BRANCH}/${TEST}/public/* public/
+          cp -rf datasets/${APPLICATION}/${DATASET_BRANCH}/${TEST}/files/* files/
+          cp  datasets/${APPLICATION}/${DATASET_BRANCH}/${TEST}/config.inc.php .
+          cat datasets/${APPLICATION}/${DATASET_BRANCH}/${TEST}/database.sql | ./datasets/tools/dbclient.sh
+
+        shell: bash
+        env:
+          APPLICATION: ${{matrix.application}}
+          DATASET_BRANCH: main
+          TEST: ${{matrix.database}}
+          DBTYPE: ${{matrix.database == 'pgsql' && 'PostgreSQL' || 'MySQLi'}}
+          DBHOST: localhost
+          DBNAME: ${{matrix.application}}-ci
+          DBUSERNAME: ${{matrix.application}}-ci
+          DBPASSWORD: ${{matrix.application}}-ci
+
+      - name: get jatsTemplate plugin
+        run: |
+          cd ~/${{matrix.application}}
+          git clone -b ${DATASET_BRANCH} https://github.com/pkp/jatsTemplate plugins/generic/jatsTemplate
+        shell: bash
+        env:
+          DATASET_BRANCH: main
+      - name: Run Plugin installation
+        run: |
+          cd ~/${{matrix.application}}
+          php lib/pkp/tools/installPluginVersion.php plugins/generic/jatsTemplate/version.xml
+          php lib/pkp/tools/installPluginVersion.php plugins/oaiMetadataFormats/oaiJats/version.xml
+        shell: bash
+
+
+      - name : Create testing environment
+        run: |
+          cd ~/${{matrix.application}}
+          echo '{ "baseUrl": "'${CYPRESS_BASE_URL}'", "DBHOST": "'${CYPRESS_DBHOST}'", "DBUSERNAME": "'$CYPRESS_DBUSERNAME'","DBPASSWORD": "'$CYPRESS_DBPASSWORD'","DBNAME": "'$CYPRESS_DBNAME'",  "FILESDIR": "'$CYPRESS_FILESDIR'"}' > cypress.env.json
+          ${{ github.workspace }}/pkp-github-actions/.github/actions/run-http-server.sh
+
+        shell: bash
+        env:
+          CYPRESS_DBHOST: localhost
+          CYPRESS_DBNAME: ${{matrix.application}}-ci
+          CYPRESS_DBUSERNAME: ${{matrix.application}}-ci
+          CYPRESS_DBPASSWORD: ${{matrix.application}}-ci
+          CYPRESS_BASE_URL: "http://localhost"
+
+      - name : Run Cypress tests
+        run: |
+          cd ~/${{matrix.application}}
+          npx cypress run --config '{"specPattern":["plugins/oaiMetadataFormats/oaiJats/cypress/tests/functional/*.cy.js"]}'
+        shell: bash
+
+
+      - name: Fetch a JATS document through oaiJats, removing the OAI-PMH wrapper using xmlstarlet
+        run: |
+          cd ~/${{matrix.application}}
+          wget -q -O - "http://localhost/index.php/publicknowledge/oai?verb=ListRecords&metadataPrefix=jats" | xmlstarlet sel -N x="https://jats.nlm.nih.gov/publishing/1.1/" -t -c "(//x:article)[1]" > jats.xml
+          wget -q "https://eruditps.docs.erudit.org/_downloads/f0f9fb861e01a47df2ce48f588524d29/erudit-style-0.3.sch"
+          python3 plugins/oaiMetadataFormats/oaiJats/validate.py jats.xml erudit-style-0.3.sch
+        shell: bash
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-${{matrix.database }}-${{ matrix.php-version }}
+          path: ~/${{ matrix.application }}/cypress/screenshots
+          if-no-files-found: ignore
+          overwrite: false
+
+
+
+
+
+     
