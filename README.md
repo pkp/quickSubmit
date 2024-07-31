@@ -1,6 +1,6 @@
 # QuickSubmit Plugin
 
-[![Build Status](https://travis-ci.com/pkp/quickSubmit.svg?branch=main)](https://travis-ci.com/pkp/quickSubmit)
+
 [![OJS compatibility](https://img.shields.io/badge/ojs-3.5-brightgreen)](https://github.com/pkp/ojs/tree/stable-3_5_0)
 [![GitHub release](https://img.shields.io/github/v/release/pkp/quickSubmit?include_prereleases&label=latest%20release)](https://github.com/pkp/quickSubmit/releases)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/pkp/quickSubmit)
@@ -12,7 +12,10 @@
 ### Compatibility
 OJS 3.5
 
-[![Build Status](https://travis-ci.org/pkp/quickSubmit.svg?branch=main)](https://travis-ci.org/pkp/quickSubmit)
+| main | 3.4.0 | 3.3.0
+| ---- | ---- | ----
+  | [![quickSubmit](https://github.com/pkp/quickSubmit/actions/workflows/main.yml/badge.svg)](https://github.com/pkp/quickSubmit/actions/workflows/main.yml)                      | [![quickSubmit](https://github.com/pkp/quickSubmit/actions/workflows/stable-3_4_0.yml/badge.svg)](https://github.com/pkp/quickSubmit/actions/workflows/stable-3_4_0.yml)                      | [![quickSubmit](https://github.com/pkp/quickSubmit/actions/workflows/stable-3_3_0.yml/badge.svg)](https://github.com/pkp/quickSubmit/actions/workflows/stable-3_3_0.yml)                |
+
 
 ## About
 
