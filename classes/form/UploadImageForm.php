@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @file classes/form/UploadImageForm.php
+ * @file plugins/importexport/quickSubmit/classes/form/UploadImageForm.php
  *
- * Copyright (c) 2014-2023 Simon Fraser University
- * Copyright (c) 2003-2023 John Willinsky
+ * Copyright (c) 2014-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @class UploadImageForm
@@ -15,49 +15,46 @@
 namespace APP\plugins\importexport\quickSubmit\classes\form;
 
 use APP\facades\Repo;
+use APP\plugins\importexport\quickSubmit\QuickSubmitPlugin;
 use APP\file\PublicFileManager;
 use APP\template\TemplateManager;
 use Exception;
+use PKP\context\Context;
 use PKP\core\JSONMessage;
+use PKP\core\PKPRequest;
 use PKP\db\DAORegistry;
 use PKP\facades\Locale;
+use PKP\file\TemporaryFile;
+use PKP\file\TemporaryFileDAO;
 use PKP\file\FileManager;
 use PKP\file\TemporaryFileManager;
 use PKP\form\Form;
 use PKP\form\validation\FormValidator;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\RemoteActionConfirmationModal;
+use PKP\publication\PKPPublication;
+use PKP\submission\PKPSubmission;
 
 class UploadImageForm extends Form
 {
-    /** string Setting key that will be associated with the uploaded file. */
-    public $_fileSettingName;
+    public string $_fileSettingName;
 
-    /** @var object $request */
-    public $request;
+    public PKPRequest $request;
 
-    /** @var int $submissionId */
-    public $submissionId;
+    public int $submissionId;
 
-    /** @var \APP\submission\Submission $submission */
-    public $submission;
+    public PKPSubmission $submission;
 
-    /** @var \APP\publication\Publication $publication */
-    public $publication;
+    public PKPPublication $publication;
 
-    /** @var \APP\plugins\importexport\quickSubmit\QuickSubmitPlugin $plugin */
-    public $plugin;
+    public QuickSubmitPlugin $plugin;
 
-    /** @var \APP\journal\Journal $context */
-    public $context;
+    public Context $context;
 
     /**
      * Constructor.
-     *
-     * @param $plugin object
-     * @param $request object
      */
-    public function __construct($plugin, $request)
+    public function __construct(QuickSubmitPlugin $plugin, PKPRequest $request)
     {
         parent::__construct($plugin->getTemplateResource('uploadImageForm.tpl'));
 
@@ -80,15 +77,15 @@ class UploadImageForm extends Form
     // Extend methods from Form.
     //
     /**
-     * @copydoc Form::getLocaleFieldNames()
+     * @copydoc \PKP\form\Form::getLocaleFieldNames()
      */
-    public function getLocaleFieldNames()
+    public function getLocaleFieldNames(): array
     {
         return ['imageAltText'];
     }
 
     /**
-     * @copydoc Form::initData()
+     * @copydoc \PKP\form\Form::initData()
      */
     public function initData()
     {
@@ -125,7 +122,7 @@ class UploadImageForm extends Form
     }
 
     /**
-     * @copydoc Form::readInputData()
+     * @copydoc \PKP\form\Form::readInputData()
      */
     public function readInputData()
     {
@@ -134,19 +131,14 @@ class UploadImageForm extends Form
 
     /**
      * An action to delete an article cover image.
-     *
-     * @param $request PKPRequest
-     *
-     * @return JSONMessage JSON object
      */
-    public function deleteCoverImage($request)
+    public function deleteCoverImage(PKPRequest $request): JSONMessage
     {
         assert($request->getUserVar('coverImage') != '' && $request->getUserVar('submissionId') != '');
 
         $file = $request->getUserVar('coverImage');
 
         // Remove cover image and alt text from article settings
-        $locale = Locale::getLocale();
         $this->publication->setData('coverImage', []);
         Repo::publication()->edit($this->publication, []);
 
@@ -156,9 +148,9 @@ class UploadImageForm extends Form
             $json = new JSONMessage(true);
             $json->setEvent('fileDeleted');
             return $json;
-        } else {
-            return new JSONMessage(false, __('editor.article.removeCoverImageFileNotFound'));
         }
+
+        return new JSONMessage(false, __('editor.article.removeCoverImageFileNotFound'));
     }
 
     /**
@@ -167,7 +159,6 @@ class UploadImageForm extends Form
     public function execute(...$functionArgs)
     {
         parent::execute(...$functionArgs);
-
 
         $temporaryFile = $this->fetchTemporaryFile($this->request);
         $locale = Locale::getLocale();
@@ -201,6 +192,7 @@ class UploadImageForm extends Form
             $this->publication->setData('coverImage', $coverImage);
             Repo::publication()->edit($this->publication, []);
         }
+
         return \PKP\db\DAO::getDataChangedEvent();
     }
 
@@ -209,15 +201,15 @@ class UploadImageForm extends Form
      *
      * @return string
      */
-    public function getFileSettingName()
+    public function getFileSettingName(): ?string
     {
-        return $this->_fileSettingName;
+        return isset($this->_fileSettingName) ? $this->_fileSettingName : null;
     }
 
     /**
      * Set the image that this form will upload a file to.
      */
-    public function setFileSettingName($fileSettingName)
+    public function setFileSettingName(string $fileSettingName): void
     {
         $this->_fileSettingName = $fileSettingName;
     }
@@ -249,29 +241,25 @@ class UploadImageForm extends Form
     //
     /**
      * Fetch the temporary file.
-     *
-     * @param $request Request
-     *
-     * @return \PKP\file\TemporaryFile
      */
-    public function fetchTemporaryFile($request)
+    public function fetchTemporaryFile(PKPRequest $request): TemporaryFile
     {
         $user = $request->getUser();
 
+        /** @var TemporaryFileDAO $temporaryFileDao */
         $temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
         $temporaryFile = $temporaryFileDao->getTemporaryFile(
             $this->getData('temporaryFileId'),
             $user->getId()
         );
+
         return $temporaryFile;
     }
 
     /**
      * Clean temporary file.
-     *
-     * @param $request Request
      */
-    public function removeTemporaryFile($request)
+    public function removeTemporaryFile(PKPRequest $request): void
     {
         $user = $request->getUser();
 
@@ -281,10 +269,8 @@ class UploadImageForm extends Form
 
     /**
      * Upload a temporary file.
-     *
-     * @param $request Request
      */
-    public function uploadFile($request)
+    public function uploadFile(PKPRequest $request): int|bool
     {
         $user = $request->getUser();
 

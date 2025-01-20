@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @file QuickSubmitPlugin.php
+ * @file plugins/importexport/quickSubmit/QuickSubmitPlugin.php
  *
- * Copyright (c) 2013-2023 Simon Fraser University
- * Copyright (c) 2003-2023 John Willinsky
+ * Copyright (c) 2013-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @class QuickSubmitPlugin
@@ -16,10 +16,12 @@ namespace APP\plugins\importexport\quickSubmit;
 
 use APP\notification\NotificationManager;
 use APP\template\TemplateManager;
+use Exception;
+use PKP\plugins\ImportExportPlugin;
 use PKP\core\JSONMessage;
-use PKP\notification\PKPNotification;
+use PKP\notification\Notification;
 
-class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin
+class QuickSubmitPlugin extends ImportExportPlugin
 {
     /**
      * @copydoc Plugin::register()
@@ -113,7 +115,11 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin
         $notificationContent = __('notification.removedSubmission');
         $currentUser = $request->getUser();
         $notificationMgr = new NotificationManager();
-        $notificationMgr->createTrivialNotification($currentUser->getId(), PKPNotification::NOTIFICATION_TYPE_SUCCESS, ['contents' => $notificationContent]);
+        $notificationMgr->createTrivialNotification(
+            $currentUser->getId(),
+            Notification::NOTIFICATION_TYPE_SUCCESS,
+            ['contents' => $notificationContent]
+        );
 
         $templateMgr = TemplateManager::getManager($request);
         $templateMgr->assign([
@@ -246,18 +252,18 @@ class QuickSubmitPlugin extends \PKP\plugins\ImportExportPlugin
     }
 
     /**
-     * @copydoc PKPImportExportPlugin::usage
+     * @copydoc ImportExportPlugin::usage
      */
     public function usage($scriptName)
     {
-        fatalError('Not implemented');
+        throw new Exception('Not implemented');
     }
 
     /**
-     * @copydoc PKPImportExportPlugin::executeCLI()
+     * @copydoc ImportExportPlugin::executeCLI()
      */
     public function executeCLI($scriptName, &$args)
     {
-        fatalError('Not implemented');
+        throw new Exception('Not implemented');
     }
 }
