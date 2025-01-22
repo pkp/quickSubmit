@@ -23,20 +23,21 @@ use APP\core\Application;
 use APP\facades\Repo;
 use APP\log\event\SubmissionEventLogEntry;
 use APP\submission\Submission;
+use APP\plugins\importexport\quickSubmit\QuickSubmitForm;
 use PKP\context\Context;
 use PKP\core\Core;
-use PKP\db\DAORegistry;
+use PKP\controlledVocab\ControlledVocab;
 use PKP\security\Validation;
 
 class SubmissionMetadataForm
 {
-    /** @var \APP\plugins\importexport\quickSubmit\QuickSubmitForm Form that uses this implementation */
+    /** @var QuickSubmitForm Form that uses this implementation */
     public $_parentForm;
 
     /**
      * Constructor.
      *
-     * @param \APP\plugins\importexport\quickSubmit\QuickSubmitForm $parentForm A form that can use this form.
+     * @param QuickSubmitForm $parentForm A form that can use this form.
      */
     public function __construct($parentForm = null)
     {
@@ -149,17 +150,42 @@ class SubmissionMetadataForm
             // get the supported locale keys
             $locales = array_keys($this->_parentForm->supportedLocales);
 
-            // load the persisted metadata controlled vocabularies
-            $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var \PKP\submission\SubmissionKeywordDAO $submissionKeywordDao */
-            $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var \PKP\submission\SubmissionSubjectDAO $submissionSubjectDao */
-            $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var \PKP\submission\SubmissionDisciplineDAO $submissionDisciplineDao */
-            $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var \PKP\submission\SubmissionAgencyDAO $submissionAgencyDao */
-
-            $this->_parentForm->setData('subjects', $submissionSubjectDao->getSubjects($publication->getId(), $locales));
-            $this->_parentForm->setData('keywords', $submissionKeywordDao->getKeywords($publication->getId(), $locales));
-            $this->_parentForm->setData('disciplines', $submissionDisciplineDao->getDisciplines($publication->getId(), $locales));
-            $this->_parentForm->setData('agencies', $submissionAgencyDao->getAgencies($publication->getId(), $locales));
-            $this->_parentForm->setData('abstractsRequired', $this->_getAbstractsRequired($submission));
+            $this->_parentForm->setData(
+                'subjects', 
+                Repo::controlledVocab()->getBySymbolic(
+                    ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_SUBJECT,
+                    Application::ASSOC_TYPE_PUBLICATION,
+                    $publication->getId()
+                )
+            );
+            $this->_parentForm->setData(
+                'keywords',
+                Repo::controlledVocab()->getBySymbolic(
+                    ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_KEYWORD,
+                    Application::ASSOC_TYPE_PUBLICATION,
+                    $publication->getId()
+                )
+            );
+            $this->_parentForm->setData(
+                'disciplines',
+                Repo::controlledVocab()->getBySymbolic(
+                    ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_DISCIPLINE,
+                    Application::ASSOC_TYPE_PUBLICATION,
+                    $publication->getId()
+                )
+            );
+            $this->_parentForm->setData(
+                'agencies',
+                Repo::controlledVocab()->getBySymbolic(
+                    ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_AGENCY,
+                    Application::ASSOC_TYPE_PUBLICATION,
+                    $publication->getId()
+                )
+            );
+            $this->_parentForm->setData(
+                'abstractsRequired',
+                $this->_getAbstractsRequired($submission)
+            );
         }
     }
 
@@ -237,12 +263,6 @@ class SubmissionMetadataForm
         // get the supported locale keys
         $locales = array_keys($this->_parentForm->supportedLocales);
 
-        // persist the metadata/keyword fields.
-        $submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO'); /** @var \PKP\submission\SubmissionKeywordDAO $submissionKeywordDao */
-        $submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO'); /** @var \PKP\submission\SubmissionSubjectDAO $submissionSubjectDao */
-        $submissionDisciplineDao = DAORegistry::getDAO('SubmissionDisciplineDAO'); /** @var \PKP\submission\SubmissionDisciplineDAO $submissionDisciplineDao */
-        $submissionAgencyDao = DAORegistry::getDAO('SubmissionAgencyDAO'); /** @var \PKP\submission\SubmissionAgencyDAO $submissionAgencyDao */
-
         $keywords = [];
         $agencies = [];
         $disciplines = [];
@@ -259,11 +279,31 @@ class SubmissionMetadataForm
             }
         }
 
-        // persist the controlled vocabs
-        $submissionKeywordDao->insertKeywords($keywords, $submission->getCurrentPublication()->getId());
-        $submissionAgencyDao->insertAgencies($agencies, $submission->getCurrentPublication()->getId());
-        $submissionDisciplineDao->insertDisciplines($disciplines, $submission->getCurrentPublication()->getId());
-        $submissionSubjectDao->insertSubjects($subjects, $submission->getCurrentPublication()->getId());
+        $currentPublication = $submission->getCurrentPublication();
+        Repo::controlledVocab()->insertBySymbolic(
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_KEYWORD, 
+            $keywords, 
+            Application::ASSOC_TYPE_PUBLICATION, 
+            $currentPublication->getId()
+        );
+        Repo::controlledVocab()->insertBySymbolic(
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_AGENCY, 
+            $agencies[$locale], 
+            Application::ASSOC_TYPE_PUBLICATION, 
+            $currentPublication->getId()
+        );
+        Repo::controlledVocab()->insertBySymbolic(
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_DISCIPLINE, 
+            $disciplines, 
+            Application::ASSOC_TYPE_PUBLICATION, 
+            $currentPublication->getId()
+        );
+        Repo::controlledVocab()->insertBySymbolic(
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_SUBJECT, 
+            $subjects, 
+            Application::ASSOC_TYPE_PUBLICATION, 
+            $currentPublication->getId()
+        );
 
         // Only log modifications on completed submissions
         if (!$submission->getData('submissionProgress')) {

@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @file QuickSubmitForm.php
+ * @file plugins/importexport/quickSubmit/QuickSubmitForm.php
  *
- * Copyright (c) 2013-2023 Simon Fraser University
- * Copyright (c) 2003-2023 John Willinsky
+ * Copyright (c) 2013-2025 Simon Fraser University
+ * Copyright (c) 2003-2025 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @class QuickSubmitForm
@@ -21,6 +21,7 @@ use APP\plugins\importexport\quickSubmit\classes\form\SubmissionMetadataForm;
 use APP\publication\Publication;
 use APP\submission\Submission;
 use APP\template\TemplateManager;
+use Exception;
 use PKP\config\Config;
 use PKP\context\Context;
 use PKP\core\Core;
@@ -29,24 +30,27 @@ use PKP\core\PKPString;
 use PKP\db\DAORegistry;
 use PKP\facades\Locale;
 use PKP\form\Form;
+use PKP\form\validation\FormValidatorUrl;
+use PKP\form\validation\FormValidatorInSet;
+use PKP\form\validation\FormValidatorCustom;
+use PKP\form\validation\FormValidatorCSRF;
+use PKP\form\validation\FormValidatorPost;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\security\Role;
 use PKP\submission\PKPSubmission;
 use PKP\submissionFile\SubmissionFile;
+use PKP\userGroup\UserGroup;
 
 class QuickSubmitForm extends Form
 {
     protected PKPRequest $_request;
-    protected ?PKPSubmission $_submission = null;
+    protected PKPSubmission $_submission;
     protected Journal $_context;
     protected SubmissionMetadataForm $form;
 
     /**
      * Constructor
-     *
-     * @param $plugin object
-     * @param $request object
      */
     public function __construct(QuickSubmitPlugin $plugin, PKPRequest $request)
     {
@@ -64,8 +68,9 @@ class QuickSubmitForm extends Form
 
         if ($submissionId = $request->getUserVar('submissionId')) {
             $this->_submission = Repo::submission()->get($submissionId);
+
             if ($this->_submission->getData('contextId') != $this->_context->getId()) {
-                throw new \Exception('Submission not in context!');
+                throw new Exception('Submission not in context!');
             }
 
             $sectionId = $request->getUserVar('sectionId');
@@ -82,18 +87,18 @@ class QuickSubmitForm extends Form
             $this->form->addChecks($this->_submission);
         }
 
-        $this->addCheck(new \PKP\form\validation\FormValidatorPost($this));
-        $this->addCheck(new \PKP\form\validation\FormValidatorCSRF($this));
-        $contextId = $this->_context->getId();
+        $this->addCheck(new FormValidatorPost($this));
+        $this->addCheck(new FormValidatorCSRF($this));
         $this->addCheck(
-            new \PKP\form\validation\FormValidatorCustom(
+            new FormValidatorCustom(
                 $this,
                 'sectionId',
                 'required',
                 'author.submit.form.sectionRequired',
-                function ($sectionId) use ($contextId) {
-                    return Repo::section()->exists((int) $sectionId, $contextId);
-                }
+                fn ($sectionId) => Repo::section()->exists(
+                    (int) $sectionId,
+                    $this->_context->getId()
+                )
             )
         );
 
@@ -102,27 +107,31 @@ class QuickSubmitForm extends Form
         if (!is_array($supportedSubmissionLocales) || count($supportedSubmissionLocales) < 1) {
             $supportedSubmissionLocales = [$this->_context->getPrimaryLocale()];
         }
-        $this->addCheck(new \PKP\form\validation\FormValidatorInSet($this, 'locale', 'required', 'submission.submit.form.localeRequired', $supportedSubmissionLocales));
+        $this->addCheck(
+            new FormValidatorInSet(
+                $this,
+                'locale',
+                'required',
+                'submission.submit.form.localeRequired',
+                $supportedSubmissionLocales
+            )
+        );
 
-        $this->addCheck(new \PKP\form\validation\FormValidatorUrl($this, 'licenseUrl', 'optional', 'form.url.invalid'));
+        $this->addCheck(new FormValidatorUrl($this, 'licenseUrl', 'optional', 'form.url.invalid'));
     }
 
     /**
      * Get the submission associated with the form.
-     *
-     * @return Submission
      */
-    public function getSubmission()
+    public function getSubmission(): PKPSubmission
     {
         return $this->_submission;
     }
 
     /**
-     * Get the names of fields for which data should be localized
-     *
-     * @return array
+     * @copydoc \PKP\form\Form::getLocaleFieldNames()
      */
-    public function getLocaleFieldNames()
+    public function getLocaleFieldNames(): array
     {
         return $this->form->getLocaleFieldNames();
     }
@@ -235,7 +244,7 @@ class QuickSubmitForm extends Form
     }
 
     /**
-     * @copydoc Form::validate
+     * @copydoc \PKP\form\Form::validate()
      */
     public function validate($callHooks = true)
     {
@@ -258,13 +267,13 @@ class QuickSubmitForm extends Form
     }
 
     /**
-     * Initialize form data for a new form.
+     * @copydoc \PKP\form\Form::initData()
      */
     public function initData()
     {
         $this->_data = [];
 
-        if (!$this->_submission) {
+        if (!isset($this->_submission)) {
             $this->_data['locale'] = $this->getDefaultFormLocale();
 
             // Get Sections
@@ -297,6 +306,7 @@ class QuickSubmitForm extends Form
 
             Repo::submission()->add($this->_submission, $publication, $this->_context);
             $this->_submission = Repo::submission()->get($this->_submission->getId());
+
             $this->setData('submissionId', $this->_submission->getId());
 
             $this->form->initData($this->_submission);
@@ -304,16 +314,16 @@ class QuickSubmitForm extends Form
             // Add the user manager group (first that is found) to the stage_assignment for that submission
             $user = $this->_request->getUser();
 
-            $managerUserGroups = Repo::userGroup()->getCollector()
-                ->filterByUserIds([$user->getId()])
-                ->filterByContextIds([$this->_context->getId()])
-                ->filterByRoleIds([Role::ROLE_ID_MANAGER])
-                ->getMany();
+            $managerUserGroups = UserGroup::query()
+                ->withUserIds([$user->getId()])
+                ->withContextIds([$this->_context->getId()])
+                ->withRoleIds([Role::ROLE_ID_MANAGER])
+                ->cursor();
 
             // $userGroupId is being used for Repo::stageAssignment()->build(...)
             // This build function needs the userGroupId
             // So here the first function should fail if no manager user group is found.
-            $userGroupId = $managerUserGroups->firstOrFail()->getId();
+            $userGroupId = $managerUserGroups->firstOrFail()->id;
 
             // Pre-fill the copyright information fields from setup (#7236)
             $this->_data['licenseUrl'] = $this->_context->getData('licenseUrl');
@@ -341,32 +351,30 @@ class QuickSubmitForm extends Form
     }
 
     /**
-     * Assign form data to user-submitted data.
+     * @copydoc \PKP\form\Form::readInputData()
      */
     public function readInputData()
     {
         $this->form->readInputData();
 
-        $this->readUserVars(
-            [
-                'issueId',
-                'pages',
-                'datePublished',
-                'licenseUrl',
-                'copyrightHolder',
-                'copyrightYear',
-                'sectionId',
-                'submissionId',
-                'articleStatus',
-                'locale'
-            ]
-        );
+        $this->readUserVars([
+            'issueId',
+            'pages',
+            'datePublished',
+            'licenseUrl',
+            'copyrightHolder',
+            'copyrightYear',
+            'sectionId',
+            'submissionId',
+            'articleStatus',
+            'locale'
+        ]);
     }
 
     /**
      * cancel submit
      */
-    public function cancel()
+    public function cancel(): void
     {
         $submission = Repo::submission()->get((int) $this->getData('submissionId')); /** @var Submission $submission */
 
@@ -380,7 +388,7 @@ class QuickSubmitForm extends Form
     }
 
     /**
-     * Save settings.
+     * @copydoc \PKP\form\Form::execute()
      */
     public function execute(...$functionParams)
     {
@@ -421,7 +429,11 @@ class QuickSubmitForm extends Form
         $publication = $this->_submission->getCurrentPublication();
 
         if ($publication->getData('sectionId') !== (int) $this->getData('sectionId')) {
-            $publication = Repo::publication()->edit($publication, ['sectionId' => (int) $this->getData('sectionId')]);
+            $publication = Repo::publication()
+                ->edit(
+                    $publication,
+                    ['sectionId' => (int) $this->getData('sectionId')]
+                );
         }
 
         if ($this->getData('articleStatus') == 1) {
@@ -434,11 +446,14 @@ class QuickSubmitForm extends Form
             $publication->setData('issueId', (int) $this->getData('issueId'));
 
             // If other articles in this issue have a custom sequence, put this at the end
-            $otherSubmissionsInSection = Repo::submission()->getCollector()
+            $otherSubmissionsInSection = Repo::submission()
+                ->getCollector()
                 ->filterByContextIds([$this->_request->getContext()->getId()])
                 ->filterByIssueIds([$publication->getData('issueId')])
                 ->filterBySectionIds([$publication->getData('sectionId')])
-                ->getMany()->toArray();
+                ->getMany()
+                ->toArray();
+
             if (count($otherSubmissionsInSection)) {
                 $maxSequence = 0;
                 foreach ($otherSubmissionsInSection as $submission) {
@@ -462,18 +477,18 @@ class QuickSubmitForm extends Form
     /**
      * builds the issue options pulldown for published and unpublished issues
      *
-     * @param $journal Journal
-     *
+     * @param Journal $journal Journal
      * @return array Associative list of options for pulldown
      */
-    public function getIssueOptions($journal)
+    public function getIssueOptions(Journal $journal): array
     {
         $issuesPublicationDates = [];
         $issueOptions = [];
         $journalId = $journal->getId();
 
         $issueOptions[-1] = '------    ' . __('editor.issues.futureIssues') . '    ------';
-        $issues = Repo::issue()->getCollector()
+        $issues = Repo::issue()
+            ->getCollector()
             ->filterByContextIds([$journalId])
             ->filterByPublished(false)
             ->orderBy(\APP\issue\Collector::ORDERBY_SHELF)
