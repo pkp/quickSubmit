@@ -11,9 +11,9 @@
   * Plugin version information.
   -->
 <version>
-	<application>quickSubmit</application>
-	<type>plugins.importexport</type>
-	<release>1.0.7.1</release>
-	<date>2025-01-17</date>
-  <class>QuickSubmitPlugin</class>
+    <application>quickSubmit</application>
+    <type>plugins.importexport</type>
+    <release>1.0.7.1</release>
+    <date>2025-01-17</date>
+    <class>QuickSubmitPlugin</class>
 </version>
