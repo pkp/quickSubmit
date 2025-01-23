@@ -281,27 +281,27 @@ class SubmissionMetadataForm
 
         $currentPublication = $submission->getCurrentPublication();
         Repo::controlledVocab()->insertBySymbolic(
-            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_KEYWORD, 
-            $keywords, 
-            Application::ASSOC_TYPE_PUBLICATION, 
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_KEYWORD,
+            $keywords,
+            Application::ASSOC_TYPE_PUBLICATION,
             $currentPublication->getId()
         );
         Repo::controlledVocab()->insertBySymbolic(
-            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_AGENCY, 
-            $agencies[$locale], 
-            Application::ASSOC_TYPE_PUBLICATION, 
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_AGENCY,
+            $agencies,
+            Application::ASSOC_TYPE_PUBLICATION,
             $currentPublication->getId()
         );
         Repo::controlledVocab()->insertBySymbolic(
-            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_DISCIPLINE, 
-            $disciplines, 
-            Application::ASSOC_TYPE_PUBLICATION, 
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_DISCIPLINE,
+            $disciplines,
+            Application::ASSOC_TYPE_PUBLICATION,
             $currentPublication->getId()
         );
         Repo::controlledVocab()->insertBySymbolic(
-            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_SUBJECT, 
-            $subjects, 
-            Application::ASSOC_TYPE_PUBLICATION, 
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_SUBJECT,
+            $subjects,
+            Application::ASSOC_TYPE_PUBLICATION,
             $currentPublication->getId()
         );
 
