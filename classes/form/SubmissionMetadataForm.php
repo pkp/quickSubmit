@@ -50,7 +50,12 @@ class SubmissionMetadataForm
      */
     public function _getAbstractsRequired($submission)
     {
-        $section = Repo::section()->get($submission->getCurrentPublication()->getData('sectionId'), $submission->getData('contextId'));
+        $section = Repo::section()
+            ->get(
+                $submission->getCurrentPublication()->getData('sectionId'), 
+                $submission->getData('contextId')
+            );
+
         return !$section->getAbstractsNotRequired();
     }
 
@@ -147,45 +152,11 @@ class SubmissionMetadataForm
                 $this->_parentForm->setData($key, $data);
             }
 
-            // get the supported locale keys
-            $locales = array_keys($this->_parentForm->supportedLocales);
-
-            $this->_parentForm->setData(
-                'subjects', 
-                Repo::controlledVocab()->getBySymbolic(
-                    ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_SUBJECT,
-                    Application::ASSOC_TYPE_PUBLICATION,
-                    $publication->getId()
-                )
-            );
-            $this->_parentForm->setData(
-                'keywords',
-                Repo::controlledVocab()->getBySymbolic(
-                    ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_KEYWORD,
-                    Application::ASSOC_TYPE_PUBLICATION,
-                    $publication->getId()
-                )
-            );
-            $this->_parentForm->setData(
-                'disciplines',
-                Repo::controlledVocab()->getBySymbolic(
-                    ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_DISCIPLINE,
-                    Application::ASSOC_TYPE_PUBLICATION,
-                    $publication->getId()
-                )
-            );
-            $this->_parentForm->setData(
-                'agencies',
-                Repo::controlledVocab()->getBySymbolic(
-                    ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_AGENCY,
-                    Application::ASSOC_TYPE_PUBLICATION,
-                    $publication->getId()
-                )
-            );
-            $this->_parentForm->setData(
-                'abstractsRequired',
-                $this->_getAbstractsRequired($submission)
-            );
+            $this->_parentForm->setData('subjects', $publication->getData('subjects'));
+            $this->_parentForm->setData('keywords', $publication->getData('keywords'));
+            $this->_parentForm->setData('disciplines', $publication->getData('disciplines'));
+            $this->_parentForm->setData('agencies', $publication->getData('supportingAgencies'));
+            $this->_parentForm->setData('abstractsRequired', $this->_getAbstractsRequired($submission));
         }
     }
 
@@ -195,7 +166,21 @@ class SubmissionMetadataForm
     public function readInputData()
     {
         // 'keywords' is a tagit catchall that contains an array of values for each keyword/locale combination on the form.
-        $userVars = ['title', 'prefix', 'subtitle', 'abstract', 'coverage', 'type', 'source', 'rights', 'keywords', 'citationsRaw', 'locale', 'dataAvailability'];
+        $userVars = [
+            'title',
+            'prefix',
+            'subtitle',
+            'abstract',
+            'coverage',
+            'type',
+            'source',
+            'rights',
+            'keywords',
+            'citationsRaw',
+            'locale',
+            'dataAvailability',
+        ];
+
         $this->_parentForm->readUserVars($userVars);
     }
 
@@ -206,7 +191,17 @@ class SubmissionMetadataForm
      */
     public function getLocaleFieldNames()
     {
-        return ['title', 'prefix', 'subtitle', 'abstract', 'coverage', 'type', 'source', 'rights', 'dataAvailability'];
+        return [
+            'title',
+            'prefix',
+            'subtitle',
+            'abstract',
+            'coverage',
+            'type',
+            'source',
+            'rights',
+            'dataAvailability',
+        ];
     }
 
     /**
@@ -281,27 +276,27 @@ class SubmissionMetadataForm
 
         $currentPublication = $submission->getCurrentPublication();
         Repo::controlledVocab()->insertBySymbolic(
-            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_KEYWORD, 
-            $keywords, 
-            Application::ASSOC_TYPE_PUBLICATION, 
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_KEYWORD,
+            $keywords,
+            Application::ASSOC_TYPE_PUBLICATION,
             $currentPublication->getId()
         );
         Repo::controlledVocab()->insertBySymbolic(
-            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_AGENCY, 
-            $agencies[$locale], 
-            Application::ASSOC_TYPE_PUBLICATION, 
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_AGENCY,
+            $agencies,
+            Application::ASSOC_TYPE_PUBLICATION,
             $currentPublication->getId()
         );
         Repo::controlledVocab()->insertBySymbolic(
-            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_DISCIPLINE, 
-            $disciplines, 
-            Application::ASSOC_TYPE_PUBLICATION, 
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_DISCIPLINE,
+            $disciplines,
+            Application::ASSOC_TYPE_PUBLICATION,
             $currentPublication->getId()
         );
         Repo::controlledVocab()->insertBySymbolic(
-            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_SUBJECT, 
-            $subjects, 
-            Application::ASSOC_TYPE_PUBLICATION, 
+            ControlledVocab::CONTROLLED_VOCAB_SUBMISSION_SUBJECT,
+            $subjects,
+            Application::ASSOC_TYPE_PUBLICATION,
             $currentPublication->getId()
         );
 
