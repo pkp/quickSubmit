@@ -48,6 +48,7 @@ class QuickSubmitForm extends Form
     protected PKPSubmission $_submission;
     protected Journal $_context;
     protected SubmissionMetadataForm $form;
+    protected string $oldSubmissionLocale;
 
     /**
      * Constructor
@@ -68,6 +69,11 @@ class QuickSubmitForm extends Form
 
         if ($submissionId = $request->getUserVar('submissionId')) {
             $this->_submission = Repo::submission()->get($submissionId);
+            if ($locale !== $this->_submission->getData('locale')) {
+                // This should actually happen when saving the submission, but I was not able to
+                // find the sulution to have old submission locale in execute()
+                Repo::author()->changePublicationLocale($this->_submission->getCurrentPublication()->getId(), $this->_submission->getData('locale'), $locale);
+            }
 
             if ($this->_submission->getData('contextId') != $this->_context->getId()) {
                 throw new Exception('Submission not in context!');
@@ -343,8 +349,8 @@ class QuickSubmitForm extends Form
             // Assign the user author to the stage
             Repo::stageAssignment()
                 ->build(
-                    $this->_submission->getId(), 
-                    $userGroupId, 
+                    $this->_submission->getId(),
+                    $userGroupId,
                     $user->getId()
                 );
         }
