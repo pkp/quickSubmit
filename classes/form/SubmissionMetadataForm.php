@@ -52,7 +52,7 @@ class SubmissionMetadataForm
     {
         $section = Repo::section()
             ->get(
-                $submission->getCurrentPublication()->getData('sectionId'), 
+                $submission->getCurrentPublication()->getData('sectionId'),
                 $submission->getData('contextId')
             );
 
@@ -238,18 +238,6 @@ class SubmissionMetadataForm
             'citationsRaw' => $this->_parentForm->getData('citationsRaw'),
             'dataAvailability' => $this->_parentForm->getData('dataAvailability'),
         ];
-
-        // Update locale
-        $newLocale = $this->_parentForm->getData('locale');
-        if ($newLocale) {
-            $oldLocale = $publication->getData('locale');
-            if (in_array($newLocale, $context->getData('supportedSubmissionLocales'))) {
-                $params['locale'] = $newLocale;
-            }
-            if ($newLocale !== $oldLocale) {
-                Repo::author()->changePublicationLocale($publication->getId(), $oldLocale, $newLocale);
-            }
-        }
 
         // Save the publication
         Repo::publication()->edit($publication, $params);
