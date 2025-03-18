@@ -11,7 +11,7 @@ describe('Quick Submit plugin tests', function() {
 	it('Creates a published quick submission', function() {
 		cy.login('admin', 'admin', 'publicknowledge');
 
-		cy.get('.app__nav a:contains("Tools")').click();
+		cy.get('nav').contains('Tools').click();
 		cy.get('a:contains("QuickSubmit Plugin")').click();
 		cy.get('select[id="sectionId"]').select('Articles');
 		cy.waitJQuery(); // Wait for form resubmission hack on section change.
@@ -74,7 +74,7 @@ describe('Quick Submit plugin tests', function() {
 	it('Creates an unpublished quick submission', function() {
 		cy.login('admin', 'admin', 'publicknowledge');
 
-		cy.get('.app__nav a:contains("Tools")').click();
+		cy.get('nav').contains('Tools').click();
 		cy.get('a:contains("QuickSubmit Plugin")').click();
 		cy.get('select[id="sectionId"]').select('Articles');
 		cy.waitJQuery(); // Wait for form resubmission hack on section change.
