@@ -1,13 +1,12 @@
 # QuickSubmit Plugin
 
-[![Build Status](https://travis-ci.com/pkp/quickSubmit.svg?branch=stable-3_4_0)](https://travis-ci.com/pkp/quickSubmit)
+[![quickSubmit](https://github.com/pkp/quickSubmit/actions/workflows/stable-3_4_0.yml/badge.svg)](https://github.com/pkp/quickSubmit/actions/workflows/stable-3_4_0.yml)
 [![OJS compatibility](https://img.shields.io/badge/ojs-3.4-brightgreen)](https://github.com/pkp/ojs/tree/stable-3_4_0)
 [![GitHub release](https://img.shields.io/github/v/release/pkp/quickSubmit?include_prereleases&sort=semver&filter=*3.4.0*&display_name=release)](https://github.com/pkp/quickSubmit/releases)
 
 ### Compatibility
-OJS 3.4
 
-[![Build Status](https://travis-ci.org/pkp/quickSubmit.svg?branch=stable-3_4_0)](https://travis-ci.org/pkp/quickSubmit)
+OJS 3.4
 
 ## About
 
@@ -28,4 +27,4 @@ Please use the PKP support forum (https://forum.pkp.sfu.ca/), PKP issue tracker 
 
 ## Install:
 
- * Install the plugin via the Plugin Gallery inside OJS.
+Install the plugin via the Plugin Gallery inside OJS.
