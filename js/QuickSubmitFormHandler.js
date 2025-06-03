@@ -35,8 +35,11 @@
 
 		this.parent($form, options);
 		this.callbackWrapper(this.updateSchedulePublicationDiv_());
+		
+		$('#publishedOption').hide();
+		$('#publishedOption').find('input[name="published"]').attr('checked', false);
 
-		$('#locale, #sectionId').change(function() {
+		$('#locale, #sectionId').on('change', function() {
 			// Trick the form not to validate missing data before submitting
 			$('input,textarea,select').filter('[required]').each(function() {
 				$(this).removeAttr('required');
@@ -51,9 +54,11 @@
 		});
 
 	};
+	
 	$.pkp.classes.Helper.inherits(
-			$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler,
-			$.pkp.controllers.form.FormHandler);
+		$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler,
+		$.pkp.controllers.form.FormHandler
+	);
 
 
 	/**
@@ -64,7 +69,9 @@
 	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler.prototype.
 			updateSchedulePublicationDiv_ = function() {
 
-		$('input[type=radio][name=articleStatus]').change(function() {
+		var self = this;
+
+		$('input[type=radio][name=articleStatus]').on('change', function() {
 			if ($(this).is(':checked') && this.value == '0') {
 				$('#schedulePublicationDiv').hide();
 			} else if ($(this).is(':checked') && this.value == '1') {
@@ -76,21 +83,56 @@
 
 		$('input[type=radio][name=articleStatus]').trigger('change');
 
-		$('#issueId').change(function() {
+		$('input[name="published"]').on('change', function() {
 			var val, array;
 			val = /** @type {string} */ $('#issuesPublicationDates').val();
 			array = JSON.parse(val);
-			if (!array[$('#issueId').val()]) {
-				$('#schedulingInformationDatePublished').hide();
+			if ($(this).is(':checked')) {
+				self.displayDatePublished_($('#issueId').val(), array);
 			} else {
-				$('input[name="datePublished"]').
-						datepicker('setDate', array[$('#issueId').val()]);
-				$('#ui-datepicker-div').hide();
-				$('#schedulingInformationDatePublished').show();
+				$('input[name="datePublished"]').prop('required', false)
+				$('#schedulingInformationDatePublished').hide();
 			}
 		});
 
+		$('#issueId').on('change', function() {
+			$('#publishedOption').find('input[name="published"]').attr('checked', false);
+			$('#schedulingInformationDatePublished').find('input[name="datePublished"]').prop('required', false);
+
+			var val, array, futureIssues, issueId;
+			val = /** @type {string} */ $('#issuesPublicationDates').val();
+			array = JSON.parse(val);
+			futureIssues = JSON.parse($('#futureIssues').val());
+			issueId = parseInt($('#issueId').val());
+
+			if (issueId === 0) {
+				self.displayDatePublished_(issueId, array);
+			} else if (!array[issueId]) {
+				$('input[name="datePublished"]').prop('required', false);
+				$('#schedulingInformationDatePublished').hide();
+			} else {
+				if (futureIssues.includes(issueId)) {
+					$('input[name="datePublished"]').prop('required', false);
+					$('#schedulingInformationDatePublished').hide();
+				} else {
+					self.displayDatePublished_(issueId, array);
+				}
+			}
+			
+			futureIssues.includes(issueId)
+				? $('#publishedOption').show()
+				: $('#publishedOption').hide();
+		});
+
 		$('#issueId').trigger('change');
+	};
+
+	$.pkp.plugins.importexport.quickSubmit.js.QuickSubmitFormHandler.prototype.displayDatePublished_ = function(issueId, issuesPublicationDates) {
+		$('input[name="datePublished"]').prop('required', true);
+		$('input[name="datePublished"]').datepicker('setDate', issuesPublicationDates[issueId]);
+		$('input[name="datePublished"]').val(issuesPublicationDates[issueId]);
+		$('#ui-datepicker-div').hide();
+		$('#schedulingInformationDatePublished').show();
 	};
 
 	/** @param {jQuery} $ jQuery closure. */
