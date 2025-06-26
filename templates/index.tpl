@@ -36,6 +36,9 @@
 			{if $issuesPublicationDates}
 					{fbvElement type="hidden" id="issuesPublicationDates" value=$issuesPublicationDates}
 			{/if}
+			{if $futureIssues}
+				{fbvElement type="hidden" id="futureIssues" value=$futureIssues}
+			{/if}
 
 			{csrf}
 			{include file="controllers/notification/inPlaceNotification.tpl" notificationId="quickSubmitFormNotification"}
@@ -84,6 +87,12 @@
 						{fbvFormArea id="schedulingInformation" title="editor.article.scheduleForPublication"}
 							{fbvFormSection for="schedule"}
 								{fbvElement type="select" required=true id="issueId" from=$issueOptions selected=$issueId translate=false label="editor.article.scheduleForPublication.toBeAssigned"}
+							{/fbvFormSection}
+						{/fbvFormArea}
+
+						{fbvFormArea id="publishedOption" title="manager.setup.continuousPublication"}
+							{fbvFormSection for="published" list="true"}
+								{fbvElement type="checkbox" name="published" id="published" checked=false label="publication.publish.continuousPublication.label" translate="true"}
 							{/fbvFormSection}
 						{/fbvFormArea}
 

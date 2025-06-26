@@ -37,8 +37,9 @@ describe('Quick Submit plugin tests', function() {
 		// Schedule for publication
 		cy.get('input#articlePublished').click();
 		cy.get('select#issueId').select('Vol. 1 No. 2 (2014)');
+		cy.get('input[id^="datePublished-"]:visible').clear();
 		cy.get('input[id^="datePublished-"]:visible').type('2020-01-01', {delay: 0});
-		cy.get('input[id^="licenseUrl"]').click(); // Take focus out of datepicker
+		cy.get('input[id^="datePublished-"]:visible').blur(); // Take focus out of datepicker
 
 		// Add a galley
 		cy.get('a[id^="component-grid-articlegalleys-articlegalleygrid-addGalley-button-"]').click();
