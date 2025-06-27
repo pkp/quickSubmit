@@ -59,7 +59,7 @@ describe('Quick Submit plugin tests', function() {
 
 		// Complete the submission
 		cy.get('form[id="quickSubmitForm"] button:contains("Save")').click();
-		cy.waitJQuery();
+		cy.wait(2000);
 
 		// Test the submission in the published front end
 
