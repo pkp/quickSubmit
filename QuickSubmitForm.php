@@ -17,7 +17,7 @@ namespace APP\plugins\importexport\quickSubmit;
 use APP\core\Application;
 use APP\facades\Repo;
 use APP\journal\Journal;
-use APP\issue\enums\IssueSelection;
+use APP\plugins\importexport\quickSubmit\enums\IssueSelection;
 use APP\plugins\importexport\quickSubmit\classes\form\SubmissionMetadataForm;
 use APP\publication\Publication;
 use APP\submission\Submission;
@@ -324,7 +324,7 @@ class QuickSubmitForm extends Form
             $publication = new Publication();
             $publication->setData('locale', $this->getDefaultFormLocale());
             $publication->setData('sectionId', $sectionId);
-            $publication->setData('status', PKPSubmission::STATUS_QUEUED);
+            $publication->setData('status', Publication::STATUS_QUEUED);
             $publication->setData('version', 1);
 
             Repo::submission()->add($this->_submission, $publication, $this->_context);
@@ -462,7 +462,6 @@ class QuickSubmitForm extends Form
 
         if ($this->getData('articleStatus') == 1) {
 
-            $publication->setData('published', $this->getData('published') ?? false);
             $publication->setData('copyrightYear', $this->getData('copyrightYear'));
             $publication->setData('copyrightHolder', $this->getData('copyrightHolder'), null);
             $publication->setData('licenseUrl', $this->getData('licenseUrl'));
@@ -475,6 +474,18 @@ class QuickSubmitForm extends Form
                     ? null
                     : (int) $this->getData('issueId')
             );
+
+            if ((int) $this->getData('issueId') == IssueSelection::NO_ISSUE->value) {
+                $issue = Repo::issue()->get((int)$this->getData('issueId'), $this->_context->getId());
+                if (!$issue->getData('published')) {
+                    $publication->setData(
+                        'status',
+                        $this->getData('published')
+                            ? Publication::STATUS_READY_TO_PUBLISH
+                            : Publication::STATUS_READY_TO_SCHEDULE
+                    );        
+                }
+            }
 
             // If other articles in this issue have a custom sequence, put this at the end
             $otherSubmissionsInSection = Repo::submission()
