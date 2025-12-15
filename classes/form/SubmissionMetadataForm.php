@@ -146,6 +146,7 @@ class SubmissionMetadataForm
                 'citationsRaw' => $publication->getData('citationsRaw'),
                 'locale' => $publication->getData('locale'),
                 'dataAvailability' => $publication->getData('dataAvailability'),
+                'fundingStatement' => $publication->getData('fundingStatement'),
             ];
 
             foreach ($formData as $key => $data) {
@@ -179,6 +180,7 @@ class SubmissionMetadataForm
             'citationsRaw',
             'locale',
             'dataAvailability',
+            'fundingStatement'
         ];
 
         $this->_parentForm->readUserVars($userVars);
@@ -201,6 +203,7 @@ class SubmissionMetadataForm
             'source',
             'rights',
             'dataAvailability',
+            'fundingStatement',
         ];
     }
 
@@ -237,6 +240,7 @@ class SubmissionMetadataForm
             'source' => $this->_parentForm->getData('source'),
             'citationsRaw' => $this->_parentForm->getData('citationsRaw'),
             'dataAvailability' => $this->_parentForm->getData('dataAvailability'),
+            'fundingStatement' => $this->_parentForm->getData('fundingStatement'),
         ];
 
         // Save the publication
