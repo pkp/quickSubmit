@@ -14,7 +14,7 @@
 	{assign var=citationsEnabled value=false}
 {/if}
 
-{if $coverageEnabled || $typeEnabled || $sourceEnabled || $rightsEnabled || $dataAvailabilityEnabled}
+{if $coverageEnabled || $typeEnabled || $sourceEnabled || $rightsEnabled || $dataAvailabilityEnabled || $fundingStatementEnabled}
 	{fbvFormArea id="additionalDublinCore" title="submission.metadata"}
 		{fbvFormSection description="submission.metadataDescription"}
 
@@ -42,6 +42,11 @@
 		{if $dataAvailabilityEnabled}
 			{fbvFormSection label="submission.dataAvailability" for="dataAvailability" required=$dataAvailabilityRequired}
 				{fbvElement type="textarea" label="submission.dataAvailability.tip" multilingual=true name="dataAvailability" id="dataAvailability" value=$dataAvailability readonly=$readOnly required=$dataAvailabilityRequired}
+			{/fbvFormSection}
+		{/if}
+		{if $fundingStatementEnabled}
+			{fbvFormSection label="submission.fundingStatement" for="fundingStatement" required=$fundingStatementRequired}
+				{fbvElement type="textarea" label="submission.fundingStatement.tip" multilingual=true name="fundingStatement" id="fundingStatement" value=$fundingStatement readonly=$readOnly required=$fundingStatementRequired}
 			{/fbvFormSection}
 		{/if}
 	{/fbvFormArea}
