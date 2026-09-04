@@ -17,9 +17,9 @@ namespace APP\plugins\importexport\quickSubmit;
 use APP\notification\NotificationManager;
 use APP\template\TemplateManager;
 use Exception;
-use PKP\plugins\ImportExportPlugin;
 use PKP\core\JSONMessage;
 use PKP\notification\Notification;
+use PKP\plugins\ImportExportPlugin;
 
 class QuickSubmitPlugin extends ImportExportPlugin
 {

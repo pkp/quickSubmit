@@ -23,11 +23,13 @@ use APP\publication\Publication;
 use APP\submission\Submission;
 use APP\template\TemplateManager;
 use Exception;
+use PKP\components\listPanels\ContributorsListPanel;
 use PKP\config\Config;
 use PKP\context\Context;
 use PKP\core\Core;
 use PKP\core\PKPRequest;
 use PKP\core\PKPString;
+use PKP\db\DAORegistry;
 use PKP\facades\Locale;
 use PKP\form\Form;
 use PKP\form\validation\FormValidatorUrl;
@@ -38,6 +40,7 @@ use PKP\form\validation\FormValidatorPost;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\security\Role;
+use PKP\submission\GenreDAO;
 use PKP\submission\PKPSubmission;
 use PKP\submissionFile\SubmissionFile;
 use PKP\userGroup\UserGroup;
@@ -246,7 +249,48 @@ class QuickSubmitForm extends Form
             'primaryLocale' => $this->_submission->getData('locale'),
         ]);
 
+        $this->setContributorsListPanelState($templateMgr);
+
         parent::display($request, $template);
+    }
+
+    /**
+     * Set the state for the ContributorsListPanel.
+     */
+    protected function setContributorsListPanelState(TemplateManager $templateMgr): void
+    {
+        $submission = $this->_submission;
+        $context = $this->_context;
+        $publication = $submission->getCurrentPublication();
+
+        $locales = collect($context->getSupportedSubmissionMetadataLocaleNames() + $submission->getPublicationLanguageNames())
+            ->map(fn (string $name, string $locale) => ['key' => $locale, 'label' => $name])
+            ->sortBy('key')
+            ->values()
+            ->toArray();
+
+        $authorItems = [];
+        foreach ($publication->getData('authors') as $contributor) {
+            $authorItems[] = Repo::author()->getSchemaMap($submission)->map($contributor);
+        }
+
+        $contributorsListPanel = new ContributorsListPanel(
+            'quickSubmitContributors',
+            __('publication.contributors'),
+            $submission,
+            $context,
+            $locales,
+            $authorItems,
+            true // canEditPublication — QuickSubmit is manager-only
+        );
+
+        $genreDao = DAORegistry::getDAO('GenreDAO'); /** @var GenreDAO $genreDao */
+        $contextGenres = $genreDao->getEnabledByContextId($context->getId())->toArray();
+
+        $templateMgr->setState([
+            'quickSubmitContributorsListPanel' => $contributorsListPanel->getConfig(),
+            'quickSubmitPublication' => Repo::publication()->getSchemaMap($submission, $contextGenres)->map($publication),
+        ]);
     }
 
     /**
@@ -508,12 +552,6 @@ class QuickSubmitForm extends Form
 
             Repo::publication()->publish($publication);
         }
-
-        // Index article.
-        $articleSearchIndex = Application::getSubmissionSearchIndex();
-        $articleSearchIndex->submissionMetadataChanged($this->_submission);
-        $articleSearchIndex->submissionFilesChanged($this->_submission);
-        $articleSearchIndex->submissionChangesFinished();
     }
 
     /**
