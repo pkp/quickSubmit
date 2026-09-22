@@ -17,7 +17,6 @@ namespace APP\plugins\importexport\quickSubmit;
 use APP\core\Application;
 use APP\facades\Repo;
 use APP\journal\Journal;
-use APP\plugins\importexport\quickSubmit\enums\IssueSelection;
 use APP\plugins\importexport\quickSubmit\classes\form\SubmissionMetadataForm;
 use APP\publication\Publication;
 use APP\submission\Submission;
@@ -303,34 +302,17 @@ class QuickSubmitForm extends Form
         }
 
         // Validate Issue if Published is selected
-        // if articleStatus set to 1, it can be issue as continuous publication
-        // or have valid issue selected
+        // if articleStatus == 1 => should have issueId
         if ($this->getData('articleStatus') == 1) {
-            if (in_array($this->getData('issueId'), IssueSelection::unselectableOptionsValue())) {
-                $this->addError('issueId', __('publication.invalidIssue'));
+            if ($this->getData('issueId') <= 0) {
+                $this->addError('issueId', __('plugins.importexport.quickSubmit.selectIssue'));
                 $this->errorFields['issueId'] = 1;
-            }
 
-            $futureIssueIds = Repo::issue()
-                ->getCollector()
-                ->filterByContextIds([$this->_submission->getData('contextId')])
-                ->filterByPublished(false)
-                ->getIds()
-                ->toArray();
-
-            // if issue is future issue and published is not selected, 
-            // we don't need to validate datePublished
-            if (in_array((int) $this->getData('issueId'), $futureIssueIds) && !$this->getData('published')) {
-                return $this->isValid();
-            }
-
-            if (!$this->getData('datePublished')) {
-                $this->addError('datePublished', __('validator.required'));
-                $this->errorFields['datePublished'] = 1;
+                return false;
             }
         }
 
-        return $this->isValid();
+        return true;
     }
 
     /**
@@ -343,12 +325,12 @@ class QuickSubmitForm extends Form
         if (!isset($this->_submission)) {
             $this->_data['locale'] = $this->getDefaultFormLocale();
 
-            // Get Sections
+            // Get Sections (map IDs to titles)
             $sectionOptions = Repo::section()
                 ->getCollector()
                 ->filterByContextIds([$this->_context->getId()])
                 ->getMany()
-                ->map(function ($section) {
+                ->mapWithKeys(function ($section) {
                     return [
                         $section->getId() => $section->getLocalizedTitle()
                     ];
@@ -362,13 +344,18 @@ class QuickSubmitForm extends Form
             $this->_submission->setData('submissionProgress', 'start');
             $this->_submission->stampLastActivity();
             $this->_submission->setData('stageId', WORKFLOW_STAGE_ID_SUBMISSION);
-            $this->_submission->setData('sectionId', $sectionId = current(array_keys($sectionOptions)));
+            // Select the first available section id (if any)
+            $sectionId = function_exists('array_key_first') ? array_key_first($sectionOptions) : (count($sectionOptions) ? array_keys($sectionOptions)[0] : null);
+            if ($sectionId === null) {
+                throw new Exception('No sections found for this context. Please create at least one Section before using QuickSubmit.');
+            }
+            $this->_submission->setData('sectionId', $sectionId);
             $this->_submission->setData('locale', $this->getDefaultFormLocale());
 
             $publication = new Publication();
             $publication->setData('locale', $this->getDefaultFormLocale());
             $publication->setData('sectionId', $sectionId);
-            $publication->setData('status', Publication::STATUS_QUEUED);
+            $publication->setData('status', PKPSubmission::STATUS_QUEUED);
             $publication->setData('version', 1);
 
             Repo::submission()->add($this->_submission, $publication, $this->_context);
@@ -387,10 +374,33 @@ class QuickSubmitForm extends Form
                 ->withRoleIds([Role::ROLE_ID_MANAGER])
                 ->cursor();
 
-            // $userGroupId is being used for Repo::stageAssignment()->build(...)
-            // This build function needs the userGroupId
-            // So here the first function should fail if no manager user group is found.
-            $userGroupId = $managerUserGroups->firstOrFail()->id;
+            // Try to find a suitable user group for stage assignment.
+            $selectedUserGroup = $managerUserGroups->first();
+
+            // Fallback to Sub Editor if no Manager role is found
+            if (!$selectedUserGroup) {
+                $selectedUserGroup = UserGroup::query()
+                    ->withUserIds([$user->getId()])
+                    ->withContextIds([$this->_context->getId()])
+                    ->withRoleIds([Role::ROLE_ID_SUB_EDITOR])
+                    ->cursor()
+                    ->first();
+            }
+
+            // As a last resort, pick any user group the user has in this context
+            if (!$selectedUserGroup) {
+                $selectedUserGroup = UserGroup::query()
+                    ->withUserIds([$user->getId()])
+                    ->withContextIds([$this->_context->getId()])
+                    ->cursor()
+                    ->first();
+            }
+
+            if (!$selectedUserGroup) {
+                throw new Exception('No suitable user group found for the current user in this journal. Assign a Manager or Editor role to use QuickSubmit.');
+            }
+
+            $userGroupId = $selectedUserGroup->id;
 
             // Pre-fill the copyright information fields from setup (#7236)
             $this->_data['licenseUrl'] = $this->_context->getData('licenseUrl');
@@ -434,8 +444,7 @@ class QuickSubmitForm extends Form
             'sectionId',
             'submissionId',
             'articleStatus',
-            'locale',
-            'published',
+            'locale'
         ]);
     }
 
@@ -505,31 +514,13 @@ class QuickSubmitForm extends Form
         }
 
         if ($this->getData('articleStatus') == 1) {
-
             $publication->setData('copyrightYear', $this->getData('copyrightYear'));
             $publication->setData('copyrightHolder', $this->getData('copyrightHolder'), null);
             $publication->setData('licenseUrl', $this->getData('licenseUrl'));
             $publication->setData('pages', $this->getData('pages'));
-            $publication->setData('datePublished', $this->getData('datePublished') ?? null);
+            $publication->setData('datePublished', $this->getData('datePublished'));
             $publication->setData('accessStatus', Submission::ARTICLE_ACCESS_ISSUE_DEFAULT);
-            $publication->setData(
-                'issueId',
-                (int) $this->getData('issueId') === IssueSelection::NO_ISSUE->value
-                    ? null
-                    : (int) $this->getData('issueId')
-            );
-
-            if ((int) $this->getData('issueId') == IssueSelection::NO_ISSUE->value) {
-                $issue = Repo::issue()->get((int)$this->getData('issueId'), $this->_context->getId());
-                if (!$issue->getData('published')) {
-                    $publication->setData(
-                        'status',
-                        $this->getData('published')
-                            ? Publication::STATUS_READY_TO_PUBLISH
-                            : Publication::STATUS_READY_TO_SCHEDULE
-                    );        
-                }
-            }
+            $publication->setData('issueId', (int) $this->getData('issueId'));
 
             // If other articles in this issue have a custom sequence, put this at the end
             $otherSubmissionsInSection = Repo::submission()
@@ -563,16 +554,10 @@ class QuickSubmitForm extends Form
     public function getIssueOptions(Journal $journal): array
     {
         $issuesPublicationDates = [];
-        $issuesPublicationDates[IssueSelection::NO_ISSUE->value] = date(
-            PKPString::convertStrftimeFormat(Config::getVar('general', 'date_format_short')), 
-            strtotime(Core::getCurrentDate())
-        );
-
-        $futureIssues = [];
         $issueOptions = [];
         $journalId = $journal->getId();
-        $issueOptions[IssueSelection::NO_ISSUE->value] = IssueSelection::NO_ISSUE->getLabel();
-        $issueOptions[IssueSelection::FUTURE_ISSUES->value] = IssueSelection::FUTURE_ISSUES->getLabel();
+
+        $issueOptions[-1] = '------    ' . __('editor.issues.futureIssues') . '    ------';
         $issues = Repo::issue()
             ->getCollector()
             ->filterByContextIds([$journalId])
@@ -581,11 +566,10 @@ class QuickSubmitForm extends Form
             ->getMany();
 
         foreach ($issues as $issue) {
-            $futureIssues[] = $issue->getId();
             $issueOptions[$issue->getId()] = $issue->getIssueIdentification();
             $issuesPublicationDates[$issue->getId()] = date(PKPString::convertStrftimeFormat(Config::getVar('general', 'date_format_short')), strtotime(Core::getCurrentDate()));
         }
-        $issueOptions[IssueSelection::CURRENT_ISSUE->value] = IssueSelection::CURRENT_ISSUE->getLabel();
+        $issueOptions[-2] = '------    ' . __('editor.issues.currentIssue') . '    ------';
         $issues = array_values(
             Repo::issue()
                 ->getCollector()
@@ -601,7 +585,7 @@ class QuickSubmitForm extends Form
             $issuesPublicationDates[$issues[0]->getId()] = date(PKPString::convertStrftimeFormat(Config::getVar('general', 'date_format_short')), strtotime($issues[0]->getDatePublished()));
             array_shift($issues);
         }
-        $issueOptions[IssueSelection::BACK_ISSUES->value] = IssueSelection::BACK_ISSUES->getLabel();
+        $issueOptions[-3] = '------    ' . __('editor.issues.backIssues') . '    ------';
         foreach ($issues as $issue) {
             $issueOptions[$issue->getId()] = $issue->getIssueIdentification();
             $issuesPublicationDates[$issue->getId()] = date(PKPString::convertStrftimeFormat(Config::getVar('general', 'date_format_short')), strtotime($issues[0]->getDatePublished()));
@@ -609,7 +593,6 @@ class QuickSubmitForm extends Form
 
         $templateMgr = TemplateManager::getManager($this->_request);
         $templateMgr->assign('issuesPublicationDates', json_encode($issuesPublicationDates));
-        $templateMgr->assign('futureIssues', json_encode($futureIssues));
 
         return $issueOptions;
     }
