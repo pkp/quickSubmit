@@ -84,6 +84,9 @@ class SubmissionMetadataForm
             $requiredLocaleKey = 'submission.submit.form.' . $field . 'Required';
             if ($context->getData($field) === Context::METADATA_REQUIRE) {
                 switch ($field) {
+                    case 'languages':
+                        // Skip validation for languages field, because it is not supported in quicksubmit and will be removed in later versions.
+                        break;
                     case in_array($field, $this->getLocaleFieldNames()):
                         $this->_parentForm->addCheck(new \PKP\form\validation\FormValidatorLocale($this->_parentForm, $field, 'required', $requiredLocaleKey, $submission->getCurrentPublication()->getData('locale')));
                         break;
