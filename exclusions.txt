@@ -1,0 +1,4 @@
+quickSubmit/.gitignore
+quickSubmit/.github
+quickSubmit/cypress
+quickSubmit/exclusions.txt
